@@ -1,0 +1,180 @@
+body{
+overflow-x:hidden;
+-webkit-font-smoothing: antialiased;
+}
+
+.navbar-toggler{
+background: #5895fe !important;
+}
+
+@media only screen and (max-width: 1000px) {
+.display-4 {
+    font-size: 3rem !important;
+    line-height: 1;
+}
+}
+
+@media only screen and (max-width: 768px) {
+.shards-landing-page--1 .welcome {
+    min-height: 1000px;
+}
+.intro-container{
+    margin-top: 100px !important;
+}
+}
+
+.shards-landing-page--1{
+box-shadow: 0px 0px 20px #d2d2d2;
+max-width: 1550px;
+margin: auto;
+}
+
+.shards-landing-page--1 .welcome {
+    position: relative;
+    height: 100vh;
+    min-height: 700px;
+    background: url(../../images/backgrounds/welcome-cover.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+.shards-landing-page--1 .welcome:before {
+    position: absolute;
+    z-index: 0;
+    content: '';
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: .8;
+    background: #007bff;
+}
+
+.shards-landing-page--1 > .container{
+background: #fff;
+}
+.intro-container .row{
+z-index: 1;
+position: relative;
+}
+
+.intro-container .row img{
+position: absolute;
+left: 0;
+top: 0;
+}
+
+#our-services{
+    position: relative;
+    background: #5598e9;
+    border: none !important;
+}
+
+#our-services h3{
+    z-index: 3;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+@media screen and (min-width: 900px) {
+    #our-services h3 {
+    margin-top: -60px;
+    }
+}  
+
+.shards-landing-page--1 .section-title:after {
+    content: '';
+    width: 30px;
+    height: 2px;
+    background: #007bff;
+    position: absolute;
+    left: 50%;
+    margin-left: -15px;
+    bottom: -20px;
+}
+
+#our-services #stripes{
+width: 100%;
+height: 105%;
+overflow: hidden;
+-webkit-transform: skewY(-12deg);
+transform: skewY(-12deg);
+-webkit-transform-origin: 0;
+transform-origin: 0;
+background: linear-gradient(150deg,#ffffff 15%,#ecf7ff 70%,#ffffff 100%);
+position: absolute;
+border-bottom: 4px solid #579aea;
+box-shadow: 0px 0px 30px #00000050;
+z-index: 2;
+}
+
+#our-services .features{
+    z-index: 3;
+    position: relative;
+}
+
+.shards-landing-page--1 .feature .icon {
+    padding-top:20px !important;
+}
+
+.more-features-btn {
+position: absolute;
+left: 42%;
+/* -webkit-transform: translateX(-50%); */
+/* transform: translateX(-50%); */
+bottom: -10px;
+z-index: 1;
+box-shadow: 0px 0px 1px #00000040;
+transform-origin: center;
+animation: beat .8s infinite alternate;
+}
+
+/* Heart beat animation */
+@keyframes beat{
+to { 
+    transform: scale(1.2); 
+    box-shadow: 0px 0px 20px #00000040;
+    }
+}
+
+.contact {
+    position: relative;
+    background: url(../../images/backgrounds/welcome-cover.jpg) no-repeat center center fixed !important;
+    background-size: cover;
+    margin-top: -15%;
+    padding-top: 15% !important;
+}
+
+.contact:before {
+position: absolute;
+z-index: 0;
+content: '';
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+opacity: .8;
+background: #007bff;
+}
+
+.contact h3{
+    position: relative;
+    color: #fff !Important;
+}
+.contact h3:after{
+    background: #fff !important;
+}
+
+footer nav{
+background-color: #fff !important;
+}
+
+footer nav span{ 
+display: block; 
+text-align: center; 
+color: #000; 
+margin-bottom: 10px;
+}
+
+footer nav img{ 
+width:100px;
+}
