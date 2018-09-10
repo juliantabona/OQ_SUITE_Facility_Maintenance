@@ -119,7 +119,7 @@
             <div class="col-12 col-lg-6 mb-4">
                 <div class="card">
                 <div class="card-body pb-0"><div class="feature d-flex pb-0">
-                    <div class="icon text-primary mr-3"><i class="icon-briefcase icons"></i></div>
+                    <div class="icon text-primary mr-3"><i class="icon-organization icons"></i></div>
                     <div class="px-4">
                         <h5>Project Management</h5>
                         <p>Create projects and assign team members, budgets, jobcards, timelines and performance trackers to effectively
@@ -138,7 +138,7 @@
             <div class="col-12 col-lg-6 mb-4">
                 <div class="card">
                 <div class="card-body pb-0"><div class="feature d-flex pb-0">
-                    <div class="icon text-primary mr-3"><i class="icon-briefcase icons"></i></div>
+                    <div class="icon text-primary mr-3"><i class="icon-docs icons"></i></div>
                     <div class="px-4">
                         <h5>Jobcard Management</h5>
                         <p>Manage jobcards efficiently with record of job details, assigned staff, used assets, contractors selected
@@ -154,7 +154,7 @@
             <div class="col-12 col-lg-6 mb-4">
                 <div class="card">
                 <div class="card-body pb-0"><div class="feature d-flex pb-0">
-                    <div class="icon text-primary mr-3"><i class="icon-briefcase icons"></i></div>
+                    <div class="icon text-primary mr-3"><i class="icon-wrench icons"></i></div>
                     <div class="px-4">
                         <h5>Asset Management</h5>
                         <p>Stay in touch with your assets, knowing how much stock you have and how your assets are allocated as per
