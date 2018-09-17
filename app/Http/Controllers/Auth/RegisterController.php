@@ -100,7 +100,7 @@ class RegisterController extends Controller
                 ]);
 
                 //  Send email to the user
-                Mail::to($request->input('email'))->send(new ActivateAccount($user));
+                Mail::to($data->input('email'))->send(new ActivateAccount($user));
 
                 //  Notify the user that account was created successfully
                 Session::forget('alert');
