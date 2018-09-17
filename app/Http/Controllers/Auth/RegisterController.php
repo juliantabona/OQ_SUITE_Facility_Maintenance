@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Mail;
 use App\User;
 use App\Company;
 use App\CompanyBranch;
