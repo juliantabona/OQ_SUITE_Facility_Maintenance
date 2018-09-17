@@ -8,17 +8,34 @@ class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('gender')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->string('bio')->nullable();
+            $table->string('address')->nullable();
+            $table->string('phone_ext')->nullable();
+            $table->string('phone_num')->nullable();
+            $table->string('email')->nullable();
+            $table->string('additional_email')->nullable();
+            $table->string('username')->nullable();
+            $table->string('password')->nullable();
+            $table->string('avatar')->nullable();
+            $table->boolean('status')->default(0);
+            $table->string('verifyToken')->nullable();
+            $table->text('settings')->nullable();
+            $table->text('tutorial_status')->nullable();
+            $table->integer('company_branch_id')->unsigned()->nullable();
+            $table->string('position')->nullable();
+            $table->string('country')->nullable();
+            $table->string('city')->nullable();
+            $table->string('accessibility')->nullable();
+            $table->string('who_created_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -26,8 +43,6 @@ class CreateUsersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

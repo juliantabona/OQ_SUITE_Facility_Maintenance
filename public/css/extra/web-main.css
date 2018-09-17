@@ -15,7 +15,7 @@ body {
 }
 
 @media only screen and (max-width: 768px) {
-    .shards-landing-page--1 .welcome {
+    .landing-page .welcome {
         min-height: 1000px;
     }
 
@@ -24,13 +24,13 @@ body {
     }
 }
 
-.shards-landing-page--1 {
+.landing-page {
     box-shadow: 0px 0px 20px #d2d2d2;
     max-width: 1550px;
     margin: auto;
 }
 
-.shards-landing-page--1 .welcome {
+.landing-page .welcome {
     position: relative;
     height: 100vh;
     min-height: 700px;
@@ -38,7 +38,7 @@ body {
     background-size: cover;
 }
 
-.shards-landing-page--1 .welcome:before {
+.landing-page .welcome:before {
     position: absolute;
     z-index: 0;
     content: '';
@@ -50,7 +50,7 @@ body {
     background: #007bff;
 }
 
-.shards-landing-page--1>.container {
+.landing-page>.container {
     background: #fff;
 }
 
@@ -83,7 +83,7 @@ body {
     }
 }
 
-.shards-landing-page--1 .section-title:after {
+.landing-page .section-title:after {
     content: '';
     width: 30px;
     height: 2px;

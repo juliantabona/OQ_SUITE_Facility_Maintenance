@@ -1,0 +1,92 @@
+/* This is a compiled file, you should be editing the file in the templates directory */
+.pace.pace-inactive {
+    display: none;
+  }
+  
+  .pace {
+    user-select: none;
+    z-index: 2000;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #0e1c39e0;
+  }
+  
+  .pace .pace-progress {
+    z-index: 2000;
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    background-image: url('/images/logo-animated-460x190-2.gif');
+    background-position: center center;
+    background-size: 85%;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    top: 35%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+  
+  .pace .pace-progress:before {
+    content: attr(data-progress-text);
+    text-align: center;
+    color: #fff;
+    background: #ffffff1f;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: 16px;
+    font-weight: 100;
+    line-height: 1;
+    padding: 92px 0 0 90px;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 999;
+    position: absolute;
+  }
+  
+  .pace .pace-activity {
+    font-size: 15px;
+    line-height: 1;
+    z-index: 2000;
+    position: absolute;
+    height: 60px;
+    width: 100px;
+  
+    display: block;
+  }
+  
+  .pace .pace-activity {
+    display: none;
+  }
+  
+  .pace .pace-activity:after {
+    border-radius: 50%;
+    border: 5px solid #2299dd;
+    content: ' ';
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    height: 60px;
+    width: 100px;
+  }
+  
+  .pace .pace-activity:before {
+    border-radius: 50%;
+    border: 5px solid #2299dd;
+    content: ' ';
+    display: block;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    height: 60px;
+    width: 100px;
+  }

@@ -11,6 +11,46 @@
 |
 */
 
+/*
+ *  WEBSITE ROUTES
+ */
+
+Route::get('/email', function () {
+    return view('dashboard.emails.activate_account');
+})->name('welcome');
+
 Route::get('/', function () {
-    return view('welcome');
+    return view('web.pages.welcome');
+})->name('welcome');
+
+Route::get('/features', function () {
+    return view('web.pages.features');
+})->name('features');
+
+/*
+ *  DASHBOARD ROUTES
+ */
+
+Auth::routes();
+
+/*  Company    create
+    Only during registration allow the user to create a company
+    If they do not already have one
+*/
+Route::get('/activate-account', function () {
+    return view('auth.activate-account');
+})->name('activate-account');
+
+Route::get('/overview', function () {
+    return view('dashboard.pages.overview');
+})->name('overview')->middleware('auth');
+
+/*  JOBCARDS    list, create, show, edit, save, delete */
+Route::group(['prefix' => 'jobcards',  'middleware' => 'auth'], function () {
+    Route::get('/', 'JobcardController@index')->name('jobcards');
+    Route::post('/', 'JobcardController@store')->name('jobcard-store');
+    Route::get('/create', 'JobcardController@create')->name('jobcard-create');
+    Route::get('/{jobcard_id}', 'JobcardController@show')->name('jobcard-show');
+    Route::put('/{jobcard_id}', 'JobcardController@update')->name('jobcard-update');
+    Route::delete('/{jobcard_id}', 'JobcardController@delete')->name('jobcard-delete');
 });

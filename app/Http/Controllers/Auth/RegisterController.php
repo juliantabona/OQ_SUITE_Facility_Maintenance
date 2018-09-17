@@ -3,10 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\User;
+use App\Company;
+use App\CompanyBranch;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Session;
 
 class RegisterController extends Controller
 {
@@ -28,12 +32,10 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/activate-account';
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -43,13 +45,16 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|string|max:255',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'username' => 'required|string|max:20|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
         ]);
@@ -58,15 +63,50 @@ class RegisterController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
+     *
      * @return \App\User
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
+        $user = User::create([
+            'first_name' => $data['first_name'],
+            'last_name' => $data['last_name'],
+            'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        //  Create the company
+        $company = Company::create([
+            'name' => $data['company_name'],
+        ]);
+
+        //  If company created successfully
+        if ($company) {
+            //  Create the branch
+            $branch = CompanyBranch::create([
+                'name' => $data['company_branch_name'],
+                'destination' => $data['company_destination'],
+                'company_id' => $company->id,
+            ]);
+
+            //  If company branch was created successfully
+            if ($branch) {
+                //  Assign the created branch to the user
+                User::find($user->id)->update([
+                    'company_branch_id' => $branch->id,
+                ]);
+
+                //  Send email to the user
+                Mail::to($request->input('email'))->send(new ActivateAccount($user));
+
+                //  Notify the user that account was created successfully
+                Session::forget('alert');
+                Session::flash('alert', array('Account created successfully! Welcome Home', 'icon-check icons', 'success'));
+            }
+        }
+
+        return $user;
     }
 }
