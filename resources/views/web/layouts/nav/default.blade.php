@@ -1,7 +1,7 @@
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-dark pt-0">
-        <a class="navbar-brand" href="#">
-            <img src="http://www.optimumqbw.com/optimumqbw.com/wp-content/uploads/2018/09/OQ-INFINITE-B-150X84.gif">
+        <a class="navbar-brand" href="/">
+            <img src="/images/assets/logo/OQ-INFINITE-B-150X84.gif" alt="logo">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown"
             aria-expanded="false" aria-label="Toggle navigation">

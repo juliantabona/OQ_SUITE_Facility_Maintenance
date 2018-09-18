@@ -1,10 +1,10 @@
 <nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
         <div class="text-center navbar-brand-wrapper d-flex align-items-top justify-content-center">
             <a class="navbar-brand brand-logo" href="/overview">
-                <img src="/assets/logos/btc-logo-260x145.png" alt="logo">
+                <img src="/images/assets/logo/OQ-INFINITE-B-150X84.gif" alt="logo">
             </a>
             <a class="navbar-brand brand-logo-mini pr-2 pl-2" href="/overview">
-                <img src="/assets/logos/btc-logo-42x42.png" alt="logo">
+                <img src="/images/assets/logo/OQ-INFINITE-B-150X84.gif" alt="logo">
             </a>
         </div>
         <div class="navbar-menu-wrapper d-flex align-items-center">
