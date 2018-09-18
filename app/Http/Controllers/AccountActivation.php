@@ -69,7 +69,7 @@ class AccountActivation extends Controller
 
                         //  Notify the user that account was verified successfully
                         Session::forget('alert');
-                        Session::flash('alert', array('Account verified successfully! Welcome home', 'icon-check icons', 'success'));
+                        Session::flash('alert', array('Account verified successfully. Welcome home!', 'icon-check icons', 'success'));
 
                         //  Redirect to overview
                         return redirect()->route('overview');
@@ -92,13 +92,27 @@ class AccountActivation extends Controller
 
                 //  If the user account does not exist
             } else {
-                //  Notify the user that the account they are trying to verify does not exist
-                Session::forget('alert');
-                Session::flash('alert', array('Could not verify '.$email.'. Account does not exist!', 'icon-exclamation icons', 'warning'));
+                $user = User::where('email', $email)
+                            ->where('status', 1)
+                            ->whereNull('verifyToken')
+                            ->first();
+
+                if (count(collect($user)->toArray())) {
+                    //  Notify the user that the account already activated!
+                    Session::forget('alert');
+                    Session::flash('alert', array('Account already activated! Please Login', 'icon-exclamation icons', 'warning'));
+
+                    //  Redirect to login page
+                    return redirect()->route('login');
+                } else {
+                    //  Notify the user that the account they are trying to verify does not exist
+                    Session::forget('alert');
+                    Session::flash('alert', array('Could not verify "'.$email.'". Account does not exist! Please register', 'icon-exclamation icons', 'warning'));
+
+                    //  Redirect to register page
+                    return redirect()->route('register');
+                }
             }
         }
-
-        //  Redirect to login page
-        return redirect()->route('login');
     }
 }
