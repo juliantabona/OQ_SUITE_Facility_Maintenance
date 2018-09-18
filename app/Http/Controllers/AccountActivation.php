@@ -22,7 +22,7 @@ class AccountActivation extends Controller
 
             //  Notify the user that email was sent successfully
             Session::forget('alert');
-            Session::flash('alert', array('Account activation email sent successfully!', 'icon-check icons', 'success'));
+            Session::flash('alert', array('Account activation email sent successfully to "'.Auth::user()->email.'"!', 'icon-check icons', 'success'));
         }
 
         return view('auth.activate-account');
