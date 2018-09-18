@@ -55,7 +55,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'no-reply'),
+        'address' => env('MAIL_FROM_ADDRESS', 'no-reply@optimumqbw.com'),
         'name' => env('MAIL_FROM_NAME', 'OQ Facility  Maintenance'),
     ],
 
