@@ -55,8 +55,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => env('MAIL_FROM_ADDRESS', 'noreply@internationaldataweek.org'),
+        'name' => env('MAIL_FROM_NAME', 'International Data Week 2018'),
     ],
 
     /*
