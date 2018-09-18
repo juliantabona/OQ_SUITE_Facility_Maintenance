@@ -6,7 +6,7 @@ use Mail;
 use Auth;
 use Session;
 use App\User;
-use App\Mail\ActivateAccount;
+use App\Mail\AccountActivated;
 use Illuminate\Support\Facades\Input;
 
 class AccountActivation extends Controller
