@@ -146,57 +146,41 @@
                                 <td>
                                     <!-- COPY -->
                                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                            
-                                            <tr>
-                                                <td align="center" class="padding">
-                                                    <img  alt="Logo" src="{{ URL::to('/') }}/images/backgrounds/handshake.jpg" style="max-width: 80px;padding-top: 40px;">
-                                                </td>
-                                            </tr>
                                         <tr>
-                                            <td align="center" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 15px;" class="padding">Account Activated!</td>
+                                            <td style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 50px;" class="padding">Account Activated!</td>
                                         </tr>
                                         <tr>
-                                            <td align="center" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">Hello {{ $user->first_name }}, we managed to verify your account. Now you are a valued part of our platform, welcome home!</td>
+                                            <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">Hello {{ $user->first_name }}, we managed to verify your account. Now you are a valued part of our platform, welcome home!</td>
                                         </tr>
                                         <tr>
-                                            <td align="center" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
-                                                <p>You can always login using your Username and Password</p>
-                                                <br>
-                                                <p><strong>Username: {{ $user->username }}</strong></p>
-                                                <p><strong>Password: *********</strong></p>
-                                                <br>
-                                                <p>Incase you forget your password use the link below</p>
-                                                <br>
-                                                <a href="{{ route('password.request') }}">Forgot password?</a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center">
-                                    <!-- BULLETPROOF BUTTON -->
-                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                        <tr>
-                                            <td align="center" style="padding-top: 25px;" class="padding">
-                                                <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
+                                            <td align="center">
+                                                <!-- BULLETPROOF BUTTON -->
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                     <tr>
-                                                        <td align="center" style="border-radius: 3px;">
-                                                            <a href="{{ route('overview') }}" target="_blank" 
-                                                            style=" font-size: 16px;
-                                                                    font-family: Helvetica,Arial,sans-serif;
-                                                                    color: #ffffff;
-                                                                    text-decoration: none;
-                                                                    border-radius: 3px;
-                                                                    padding: 15px 25px;
-                                                                    border-color: #ffb400;
-                                                                    background-color: #ffb400;
-                                                                    display: inline-block;
-                                                                    margin-bottom: 60px;" 
-                                                            class="mobile-button">Get Started &rarr;</a>
+                                                        <td align="center" style="padding-top: 25px;" class="padding">
+                                                            <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
+                                                                <tr>
+                                                                    <td align="center" style="border-radius: 3px;">
+                                                                        <a href="{{ route('overview') }}" target="_blank" 
+                                                                        style=" font-size: 16px; font-family: Helvetica,Arial,sans-serif;color: #ffffff;text-decoration: none;border-radius: 3px;padding: 15px 25px;border-color: #ffb400;background-color: #ffb400;display: inline-block;margin-bottom: 60px;" 
+                                                                        class="mobile-button">Get Started &rarr;</a>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
                                                         </td>
                                                     </tr>
                                                 </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 20px 0 0 40px; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
+                                                <p>You can always login using your Username and Password</p>
+                                                <div style="border-radius: 2px;background: #ffb400;padding: 18px;color: #fff;">
+                                                    <strong>Username: {{ $user->username }}</strong>
+                                                    <br>
+                                                    <strong>Password: *********</strong>
+                                                </div>
+                                                <p>Incase you forget your password use the following link: <a href="{{ route('password.request') }}">Forgot password?</a></p>
                                             </td>
                                         </tr>
                                     </table>
