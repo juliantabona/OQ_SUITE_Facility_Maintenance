@@ -60,7 +60,7 @@ class AccountActivation extends Controller
                         //  Clear all active sessions
                         Session::flush();
                         //  Get the verified user
-                        $user = User::where('email', $client_email)->first();
+                        $user = User::where('email', $email)->first();
                         //  Login the user
                         Auth::login($user);
 
