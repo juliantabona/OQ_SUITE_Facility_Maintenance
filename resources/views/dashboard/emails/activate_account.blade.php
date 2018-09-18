@@ -99,6 +99,114 @@
 </style>
 </head>
 <body style="margin: 0 !important; padding: 0 !important;">
-        Hello Tabona, thank you for taking your time to be a part of our great platform. Go ahead and activate your account and lets get started!
+
+<!-- HIDDEN PREHEADER TEXT -->
+<div style="display: none; font-size: 1px; color: #fefefe; line-height: 1px; font-family: Helvetica, Arial, sans-serif; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden;">
+    Facility Maintenance
+</div>
+
+<!-- HEADER -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td bgcolor="#ffffff" align="center">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+            <tr>
+            <td align="center" valign="top" width="500">
+            <![endif]-->
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="wrapper">
+                <tr>
+                    <td align="center" valign="top" style="padding: 15px 0;" class="logo">
+                        <a href="#" target="_blank">
+                            <img alt="Logo" src="{{ URL::to('/') }}/images/assets/logo/OQ-INFINITE-B-150X84.gif" style="display: block; font-family: Helvetica, Arial, sans-serif; color: #ffffff; font-size: 16px;" border="0">
+                        </a>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#D8F1FF" align="center" style="padding: 70px 15px 70px 15px;" class="section-padding">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+            <tr>
+            <td align="center" valign="top" width="500">
+            <![endif]-->
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 500px;" class="responsive-table">
+                <tr>
+                    <td>
+                        <!-- HERO IMAGE -->
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <!-- COPY -->
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td align="center" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;" class="padding">Activate Account</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">Hello {{ $user->first_name }}, thank you for taking your time to be a part of our great platform. Go ahead and activate your account and lets get started!</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <!-- BULLETPROOF BUTTON -->
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td align="center" style="padding-top: 25px;" class="padding">
+                                                <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
+                                                    <tr>
+                                                        <td align="center" style="border-radius: 3px;" bgcolor="#256F9C">
+                                                            <a href="#" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 15px 25px; border: 1px solid #256F9C; display: inline-block;" class="mobile-button">Activate Account &rarr;</a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+    <tr>
+        <td bgcolor="#ffffff" align="center" style="padding: 20px 0px;">
+            <!--[if (gte mso 9)|(IE)]>
+            <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
+            <tr>
+            <td align="center" valign="top" width="500">
+            <![endif]-->
+            <!-- UNSUBSCRIBE COPY -->
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" style="max-width: 500px;" class="responsive-table">
+                <tr>
+                    <td align="center" style="font-size: 12px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color:#666666;">
+                        Powered by - Optimum Q
+                    </td>
+                </tr>
+            </table>
+            <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]-->
+        </td>
+    </tr>
+</table>
+
 </body>
 </html>
