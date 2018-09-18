@@ -27,7 +27,7 @@ class RedirectIfAuthenticated
             if ($UserStatus == 0) {
                 //  Notify the user to activate account
                 Session::forget('alert');
-                $request->session()->flash('alert', array('Hi '.Auth::user()->first_name.', you need to activate your account first. Check your "'.Auth::user()->email.'" email', 'icon-exclamation icons', 'warning'));
+                $request->session()->flash('alert', array('Hi '.Auth::user()->first_name.', you need to activate your account first. Check your "'.Auth::user()->email.'" email. Also check your spam folder.', 'icon-exclamation icons', 'warning'));
 
                 //  Redirect to activate account page
                 return redirect()->route('activate-show');
