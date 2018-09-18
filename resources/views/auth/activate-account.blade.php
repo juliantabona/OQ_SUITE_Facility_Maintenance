@@ -55,7 +55,8 @@
                         <img class="mail" src="/images/assets/icons/closed-envelope.png">
                         <h2 class="font-weight-light mt-4 text-center">Activate Account</h2>
                         <p style="text-align:center;">Visit your email to activate your account!</p>
-                        <form method="POST" action="{{ route('activate-resend') }}" class="pt-4">
+                        <form method="POST" action="{{ route('activate-resend') }}">
+                            @csrf
                             <button type="submit" class="btn btn-success d-block m-auto">Resend Activation</button>
                         </form>
                     </div>            
