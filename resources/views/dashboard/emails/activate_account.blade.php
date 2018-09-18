@@ -149,7 +149,7 @@
                                             
                                             <tr>
                                                 <td align="center" class="padding">
-                                                    <img  alt="Logo" src="{{ URL::to('/') }}/images/assets/icons/open-padlock.png">
+                                                    <img  alt="Logo" src="{{ URL::to('/') }}/images/assets/icons/unlocked-padlock.png">
                                                 </td>
                                             </tr>
                                         <tr>
