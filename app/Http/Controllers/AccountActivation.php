@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 class AccountActivation extends Controller
 {
     public function index()
@@ -9,11 +11,11 @@ class AccountActivation extends Controller
         return view('auth.activate-account');
     }
 
-    public function resend()
+    public function resend(Request $request)
     {
         if (Auth::user()->email) {
             //  Send email to the user to activate account
-            Mail::to($data['email'])->send(new ActivateAccount(Auth::user()));
+            Mail::to($request->input('email'))->send(new ActivateAccount(Auth::user()));
 
             //  Notify the user that email was sent successfully
             Session::forget('alert');
