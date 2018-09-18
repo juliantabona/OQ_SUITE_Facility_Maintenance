@@ -25,7 +25,8 @@ class AccountActivation extends Controller
             Session::flash('alert', array('Account activation email sent successfully to "'.Auth::user()->email.'"!', 'icon-check icons', 'success'));
         }
 
-        return view('auth.activate-account');
+        //  Redirect to activate account page
+        return redirect()->route('activate-show');
     }
 
     public function activate()

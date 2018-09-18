@@ -30,7 +30,7 @@ class RedirectIfAuthenticated
                 $request->session()->flash('alert', array('Hi '.Auth::user()->first_name.', you need to activate your account first. Check your "'.Auth::user()->email.'" email', 'icon-exclamation icons', 'warning'));
 
                 //  Redirect to activate account page
-                return redirect()->route('activate-account');
+                return redirect()->route('activate-show');
             }
         }
 
