@@ -17,6 +17,7 @@ class AccountActivation extends Controller
 
     public function resend(Request $request)
     {
+        return dd(Auth::user());
         if (Auth::user()->email) {
             //  Send email to the user to activate account
             Mail::to($request->input('email'))->send(new ActivateAccount(Auth::user()));
