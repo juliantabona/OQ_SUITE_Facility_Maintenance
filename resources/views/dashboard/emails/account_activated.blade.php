@@ -93,7 +93,6 @@
         }
 
         .bg-overlay{
-            background-image: url("{{ URL::to('/') }}/images/backgrounds/handshake.jpg");
             background-size: cover;
             position: relative;
         }
@@ -147,9 +146,9 @@
             </table>
             <![endif]-->
         </td>
-    </tr>
+    </tr> 
     <tr>
-        <td align="center" style="30px 15px 40px 15px" class="bg-overlay section-padding">
+        <td align="center" style="background-image: url('{{ URL::to("/") }}/images/backgrounds/handshake.jpg');" class="bg-overlay section-padding">
             <!--[if (gte mso 9)|(IE)]>
             <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
             <tr>
@@ -170,12 +169,13 @@
                                         <tr>
                                             <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
                                                 <p>Hello {{ $user->first_name }}, we managed to verify your account. Now you are a valued part of our platform, welcome home! You can always login using your Username and Password.</p>
-                                                <a href="{{ route('overview') }}" target="_blank" style=" font-size: 16px; font-family: Helvetica,Arial,sans-serif;color: #ffffff;text-decoration: none;border-radius: 3px;padding: 15px 25px;border-color: #ffb400;background-color: #ffb400;display: inline-block;margin-bottom: 0px;" class="mobile-button">Get Started &rarr;</a>
-                                                <div style="border-radius: 2px;background: #ffb400;padding: 18px;color: #fff;">
+                                                
+                                                <div style="margin: 20px 0;border-radius: 2px;background: #ffb400;padding: 18px;color: #fff;">
                                                     <strong>Username: {{ $user->username }}</strong>
                                                     <br>
                                                     <strong>Password: *********</strong>
                                                 </div>
+                                                <a href="{{ route('overview') }}" target="_blank" style=" font-size: 16px; font-family: Helvetica,Arial,sans-serif;color: #ffffff;text-decoration: none;border-radius: 3px;padding: 15px 25px;border-color: #ffb400;background-color: #ffb400;margin: 20px auto;display: block;max-width: 115px;" class="mobile-button">Get Started &rarr;</a>
                                                 <p style="font-size: 16px;line-height: 25px;font-family: Helvetica,Arial,sans-serif;color: #666666;">Incase you forget your password use the following link: <a href="{{ route('password.request') }}">Forgot password?</a></p>
                                             </td>
                                         </tr>
