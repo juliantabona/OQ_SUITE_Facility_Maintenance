@@ -92,6 +92,24 @@
             display: block !important;
         }
 
+        #bg-overlay{
+            background-image: url("{{ URL::to('/') }}/images/backgrounds/handshake.jpg");
+            background-size: cover;
+            position: relative;
+        }
+
+        #bg-overlay:before{
+            position: absolute;
+            z-index: 0;
+            content: '';
+            top: 0px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: .8;
+            background: #ffffff;
+        }
+
     }
 
     /* ANDROID CENTER FIX */
@@ -131,7 +149,7 @@
         </td>
     </tr>
     <tr>
-        <td bgcolor="#eeeeef" align="center" style="30px 15px 40px 15px" class="section-padding">
+        <td id="bg-overlay" align="center" style="30px 15px 40px 15px" class="section-padding">
             <!--[if (gte mso 9)|(IE)]>
             <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
             <tr>
@@ -150,30 +168,9 @@
                                             <td style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 50px;" class="padding">Account Activated!</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">Hello {{ $user->first_name }}, we managed to verify your account. Now you are a valued part of our platform, welcome home!</td>
-                                        </tr>
-                                        <tr>
-                                            <td align="center">
-                                                <!-- BULLETPROOF BUTTON -->
-                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                                    <tr>
-                                                        <td align="center" style="padding-top: 25px;" class="padding">
-                                                            <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
-                                                                <tr>
-                                                                    <td align="center" style="border-radius: 3px;">
-                                                                        <a href="{{ route('overview') }}" target="_blank" style=" font-size: 16px; font-family: Helvetica,Arial,sans-serif;color: #ffffff;text-decoration: none;border-radius: 3px;padding: 15px 25px;border-color: #ffb400;background-color: #ffb400;display: inline-block;margin-bottom: 0px;" 
-                                                                        class="mobile-button">Get Started &rarr;</a>
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style="padding: 0 0 40px 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
-                                                <p style="font-size: 16px;line-height: 25px;font-family: Helvetica,Arial,sans-serif;color: #666666;">You can always login using your Username and Password</p>
+                                            <td style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
+                                                <p>Hello {{ $user->first_name }}, we managed to verify your account. Now you are a valued part of our platform, welcome home! You can always login using your Username and Password.</p>
+                                                <a href="{{ route('overview') }}" target="_blank" style=" font-size: 16px; font-family: Helvetica,Arial,sans-serif;color: #ffffff;text-decoration: none;border-radius: 3px;padding: 15px 25px;border-color: #ffb400;background-color: #ffb400;display: inline-block;margin-bottom: 0px;" class="mobile-button">Get Started &rarr;</a>
                                                 <div style="border-radius: 2px;background: #ffb400;padding: 18px;color: #fff;">
                                                     <strong>Username: {{ $user->username }}</strong>
                                                     <br>
