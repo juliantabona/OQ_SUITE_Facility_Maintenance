@@ -31,6 +31,12 @@
         min-height: 400px;
     }
 
+    .mail{
+        margin: auto;
+        max-height: 200px;
+        display: block;
+    }
+
 
 </style>
 
@@ -45,6 +51,7 @@
             <div class="container-fluid pt-2">
                 <div class="row mt-5">
                     <div class="activate-box col-lg-6 mx-auto p-5">
+                        <img class="mail" src="/images/assets/icons/closed-envelope.png">
                         <h2 class="font-weight-light mt-4 text-center">Activate Account</h2>
                         @include('dashboard/layouts/alerts/default-top-alerts') 
                         <p style="text-align:center;">Visit your email to activate your account!</p>
