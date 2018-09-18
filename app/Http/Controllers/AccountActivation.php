@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
+use Auth;
+use Session;
 use Illuminate\Http\Request;
+use App\Mail\ActivateAccount;
 
 class AccountActivation extends Controller
 {
