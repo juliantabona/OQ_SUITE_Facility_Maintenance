@@ -13,6 +13,7 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use App\Mail\ActivateAccount;
 use Illuminate\Http\Request;
 use Session;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -77,6 +78,7 @@ class RegisterController extends Controller
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'verifyToken' => Str::random(40),
         ]);
 
         //  If the user was created successfully

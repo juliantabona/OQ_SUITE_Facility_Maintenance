@@ -181,8 +181,8 @@
                                             <td align="center" style="padding-top: 25px;" class="padding">
                                                 <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
                                                     <tr>
-                                                        <td align="center" style="border-radius: 3px;" bgcolor="#256F9C">
-                                                            <a href="{{ route('activate-account') }}?email={{ $user->email }}?token={{ $user->verifyToken }}" target="_blank" 
+                                                        <td align="center" style="border-radius: 3px;">
+                                                            <a href="{{ route('overview') }}" target="_blank" 
                                                             style=" font-size: 16px;
                                                                     font-family: Helvetica,Arial,sans-serif;
                                                                     color: #ffffff;
@@ -193,7 +193,7 @@
                                                                     background-color: #ffb400;
                                                                     display: inline-block;
                                                                     margin-bottom: 60px;" 
-                                                            class="mobile-button">Activate Account &rarr;</a>
+                                                            class="mobile-button">Get Started &rarr;</a>
                                                         </td>
                                                     </tr>
                                                 </table>

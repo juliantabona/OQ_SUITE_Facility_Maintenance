@@ -169,7 +169,7 @@
                                             <td align="center" style="padding-top: 25px;" class="padding">
                                                 <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
                                                     <tr>
-                                                        <td align="center" style="border-radius: 3px;" bgcolor="#256F9C">
+                                                        <td align="center" style="border-radius: 3px;">
                                                             <a href="{{ route('activate-account') }}?email={{ $user->email }}?token={{ $user->verifyToken }}" target="_blank" 
                                                             style=" font-size: 16px;
                                                                     font-family: Helvetica,Arial,sans-serif;
