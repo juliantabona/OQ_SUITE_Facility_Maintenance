@@ -131,7 +131,7 @@
         </td>
     </tr>
     <tr>
-        <td bgcolor="#D8F1FF" align="center" style="padding: 70px 15px 70px 15px;" class="section-padding">
+        <td bgcolor="#0e1c3a1c" align="center" style="30px 15px 40px 15px" class="section-padding">
             <!--[if (gte mso 9)|(IE)]>
             <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
             <tr>
@@ -146,6 +146,12 @@
                                 <td>
                                     <!-- COPY -->
                                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                            
+                                            <tr>
+                                                <td align="center" class="padding">
+                                                    <img  alt="Logo" src="{{ URL::to('/') }}/images/assets/icons/open-padlock.png">
+                                                </td>
+                                            </tr>
                                         <tr>
                                             <td align="center" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 30px;" class="padding">Activate Account</td>
                                         </tr>
@@ -164,7 +170,19 @@
                                                 <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
                                                     <tr>
                                                         <td align="center" style="border-radius: 3px;" bgcolor="#256F9C">
-                                                            <a href="#" target="_blank" style="font-size: 16px; font-family: Helvetica, Arial, sans-serif; color: #ffffff; text-decoration: none; color: #ffffff; text-decoration: none; border-radius: 3px; padding: 15px 25px; border: 1px solid #256F9C; display: inline-block;" class="mobile-button">Activate Account &rarr;</a>
+                                                            <a href="#" target="_blank" 
+                                                            style="font-size: 16px;
+                                                                    font-family: Helvetica,Arial,sans-serif;
+                                                                    color: #ffffff;
+                                                                    text-decoration: none;
+                                                                    color: #ffffff;
+                                                                    text-decoration: none;
+                                                                    border-radius: 3px;
+                                                                    padding: 15px 25px;
+                                                                    border-color: #ffb400;
+                                                                    background-color: #ffb400;
+                                                                    display: inline-block;" 
+                                                            class="mobile-button">Activate Account &rarr;</a>
                                                         </td>
                                                     </tr>
                                                 </table>
