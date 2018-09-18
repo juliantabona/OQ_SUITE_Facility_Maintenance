@@ -233,7 +233,7 @@
                                         </div>
                                     </div>
                                     <div class="action_box mt-5 clearfix">
-                                        <button type="button" class="btn next_btn btn-warning float-right pb-3 pl-5 pr-5 pt-3 ml-2">
+                                        <button type="button" class="btn next_btn btn-success float-right pb-3 pl-5 pr-5 pt-3 ml-2">
                                             Next
                                             <i class="icon-arrow-right icons"></i>
                                         </button>
@@ -270,7 +270,7 @@
                                         </div>
                                     </div>
                                     <div class="action_box mt-5 clearfix">
-                                        <button type="submit" class="btn next_btn submit_btn btn-warning float-right pb-3 pl-5 pr-5 pt-3 ml-2">
+                                        <button type="submit" class="btn next_btn submit_btn btn-success float-right pb-3 pl-5 pr-5 pt-3 ml-2">
                                             Done
                                             <i class="icon-arrow-right icons"></i>
                                         </button>

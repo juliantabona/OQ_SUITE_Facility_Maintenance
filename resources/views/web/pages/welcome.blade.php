@@ -19,8 +19,8 @@
                         <p class="text-white">Manage, monitor and accelerate facility management processes with the best tools on the cloud.
                             Manage all your jobs, projects, jobcards, assets, customers, contractors, staff members, documents, accounts,
                             quotations, invoices, receipts, contracts and reports all in one place! </p>
-                        <a href="{{ route('register') }}" class="btn btn-lg btn-pill btn-success mr-3 mb-3">Get Started</a>
-                        <a href="{{ route('features') }}" class="btn btn-lg btn-outline-white btn-pill mr-3 mb-3">Learn More</a>
+                        <a href="{{ route('register') }}" class="btn btn-lg btn-success mr-3 mb-3">Get Started</a>
+                        <a href="{{ route('features') }}" class="btn btn-lg btn-outline-white mr-3 mb-3">Learn More</a>
                     </div>
                     <div class="col-md-5 mb-5">
                         <img src="/images/samples/dashboard-overview-1.jpg" alt="Facility Maintenance Dashboard">
@@ -104,7 +104,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="{{ route('features') }}" class="btn btn-lg btn-pill btn-success more-features-btn">View All Features</a>
+                        <a href="{{ route('features') }}" class="btn btn-pill btn-lg btn-success more-features-btn">View All Features</a>
                     </div>
 
                 </div>
@@ -141,7 +141,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input class="btn btn-success btn-pill d-flex ml-auto mr-auto" type="submit" value="Send Your Message">
+                            <input class="btn btn-success d-flex ml-auto mr-auto" type="submit" value="Send Your Message">
                         </form>
                     </div>
                 </div>

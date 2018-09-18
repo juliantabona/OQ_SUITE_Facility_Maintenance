@@ -1,0 +1,16 @@
+.btn-success {
+    border-color: #ffb400;
+    background-color: #ffb400;
+    color: #fff;
+}
+
+.btn-success:hover {
+    background-color: #e6a200 !important;
+    border-color: #e6a200 !important;
+}
+
+.btn-success:active {
+    background-color: #e6a200 !important;
+    border-color: #cc9000 !important;
+    box-shadow: inset 0 3px 5px rgba(0,0,0,.125)!important;
+}

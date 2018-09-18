@@ -32,6 +32,7 @@
 
         <!-- Dashboard Styles -->
         <link href="{{ asset('css/themes/victory/style.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="{{ URL::asset('css/main.css') }}">
 
         <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />
 

@@ -33,13 +33,10 @@ Route::get('/features', function () {
 
 Auth::routes();
 
-/*  Company    create
-    Only during registration allow the user to create a company
-    If they do not already have one
-*/
-Route::get('/activate-account', function () {
-    return view('auth.activate-account');
-})->name('activate-account')->middleware('auth');
+Route::group(['prefix' => 'activate-account',  'middleware' => 'auth'], function () {
+    Route::get('/', 'AccountActivation@index')->name('activate-show');
+    Route::post('/resend', 'AccountActivation@resend')->name('activate-resend');
+});
 
 Route::get('/overview', function () {
     return view('dashboard.pages.overview');
