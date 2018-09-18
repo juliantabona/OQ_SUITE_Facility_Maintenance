@@ -92,12 +92,12 @@
             display: block !important;
         }
 
-        .bg-overlay{
+        #bg_overlay{
             background-size: cover;
             position: relative;
         }
 
-        .bg-overlay:before{
+        #bg_overlay:before{
             position: absolute;
             z-index: 0;
             content: '';
@@ -148,7 +148,7 @@
         </td>
     </tr> 
     <tr>
-        <td align="center" style="background-image: url('{{ URL::to("/") }}/images/backgrounds/handshake.jpg');" class="bg-overlay section-padding">
+        <td id="bg_overlay" align="center" style="background-image: url('{{ URL::to("/") }}/images/backgrounds/handshake.jpg');" class="section-padding">
             <!--[if (gte mso 9)|(IE)]>
             <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
             <tr>
