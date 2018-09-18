@@ -36,8 +36,6 @@ class AccountActivation extends Controller
         $email = Input::get('email', false);    //  Users email
         $token = Input::get('token', false);    //  VerifyToken
 
-        return dd($email.' - '.$token);
-
         if (!empty($email) && !empty($token)) {
             /*
              *  Lets get the requested user trying to verify their account.
