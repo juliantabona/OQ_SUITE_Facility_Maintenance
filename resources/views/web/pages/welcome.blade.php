@@ -20,7 +20,7 @@
                             Manage all your jobs, projects, jobcards, assets, customers, contractors, staff members, documents, accounts,
                             quotations, invoices, receipts, contracts and reports all in one place! </p>
                         <a href="{{ route('register') }}" class="btn btn-lg btn-pill btn-success mr-3 mb-3">Get Started</a>
-                        <a href="{{ route('features') }}" class="btn btn-lg btn-outline-white btn-pill mr-3 mb-3">Login</a>
+                        <a href="{{ route('features') }}" class="btn btn-lg btn-outline-white btn-pill mr-3 mb-3">Learn More</a>
                     </div>
                     <div class="col-md-5 mb-5">
                         <img src="/images/samples/dashboard-overview-1.jpg" alt="Facility Maintenance Dashboard">
@@ -48,7 +48,7 @@
                                             <h5>Job Management</h5>
                                             <p>Receive jobs from new and exsiting customers stored on your customer management dashboard. Assign contractors
                                             to ongoing jobs and manage job lifecycles from start to finish
-                                            <br><a href="#" class="btn pl-0">Learn More</a></p>
+                                            <br><a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -64,7 +64,7 @@
                                             <p>Create projects and assign team members, budgets, jobcards, timelines and performance trackers to effectively
                                             manage project resources and deliverables with ease
                                             <br>
-                                            <a href="#" class="btn pl-0">Learn More</a></p>
+                                            <a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@
                                         <p>Manage jobcards efficiently with record of job details, assigned staff, used assets, contractors selected
                                         and timelines. Receive a complete history of recent changes or activities committed to all jobcards
                                         <br>
-                                        <a href="#" class="btn pl-0">Learn More</a></p>
+                                        <a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>
                                     </div>
                                     </div>
                                 </div>
@@ -98,13 +98,13 @@
                                             <p>Stay in touch with your assets, knowing how much stock you have and how your assets are allocated as per
                                             workdone. Understand your in-demand assets and cut costs from assets not in use
                                             <br>
-                                            <a href="#" class="btn pl-0">Learn More</a></p>
+                                            <a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <a href="#" class="btn btn-lg btn-pill btn-primary more-features-btn">View All Features</a>
+                        <a href="{{ route('features') }}" class="btn btn-lg btn-pill btn-success more-features-btn">View All Features</a>
                     </div>
 
                 </div>
@@ -141,7 +141,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <input class="btn btn-primary btn-pill d-flex ml-auto mr-auto" type="submit" value="Send Your Message">
+                            <input class="btn btn-success btn-pill d-flex ml-auto mr-auto" type="submit" value="Send Your Message">
                         </form>
                     </div>
                 </div>
