@@ -35,7 +35,7 @@ Auth::routes();
 
 Route::group(['prefix' => 'activate-account',  'middleware' => 'auth'], function () {
     Route::get('/', 'AccountActivation@index')->name('activate-show');
-    Route::post('/', 'AccountActivation@activate')->name('activate-account');
+    Route::get('/activate', 'AccountActivation@activate')->name('activate-account');
     Route::post('/resend', 'AccountActivation@resend')->name('activate-resend');
 });
 
