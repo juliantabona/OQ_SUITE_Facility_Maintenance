@@ -79,33 +79,36 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
 
-        //  Create the company
-        $company = Company::create([
-            'name' => $data['company_name'],
-        ]);
-
-        //  If company created successfully
-        if ($company) {
-            //  Create the branch
-            $branch = CompanyBranch::create([
-                'name' => $data['company_branch_name'],
-                'destination' => $data['company_destination'],
-                'company_id' => $company->id,
+        //  If the user was created successfully
+        if ($user) {
+            //  Create the company
+            $company = Company::create([
+                'name' => $data['company_name'],
             ]);
 
-            //  If company branch was created successfully
-            if ($branch) {
-                //  Assign the created branch to the user
-                User::find($user->id)->update([
-                    'company_branch_id' => $branch->id,
+            //  If company was created successfully
+            if ($company) {
+                //  Create the branch
+                $branch = CompanyBranch::create([
+                    'name' => $data['company_branch_name'],
+                    'destination' => $data['company_destination'],
+                    'company_id' => $company->id,
                 ]);
 
-                //  Send email to the user
-                Mail::to($data['email'])->send(new ActivateAccount($user));
+                //  If company branch was created successfully
+                if ($branch) {
+                    //  Assign the created branch to the user
+                    User::find($user->id)->update([
+                        'company_branch_id' => $branch->id,
+                    ]);
 
-                //  Notify the user that account was created successfully
-                Session::forget('alert');
-                Session::flash('alert', array('Account created successfully!', 'icon-check icons', 'success'));
+                    //  Send email to the user to activate account
+                    Mail::to($data['email'])->send(new ActivateAccount($user));
+
+                    //  Notify the user that account was created successfully
+                    Session::forget('alert');
+                    Session::flash('alert', array('Account created successfully!', 'icon-check icons', 'success'));
+                }
             }
         }
 

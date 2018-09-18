@@ -29,14 +29,19 @@
             <li class="nav-item">
                 <a class="nav-link" href="#"><i class="icon-social-facebook icons"></i></a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mr-4">
                 <a class="nav-link" href="#"><i class="icon-social-twitter icons"></i></a>
             </li>
-            <li class="nav-item ml-4">
+            @guest
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('register') }}">Register</a>
+                </li>
+            @endguest
+            <li class="nav-item">
                 @auth
                     <a class="nav-link" href="{{ route('overview') }}">Dashboard</a>
                 @else
-                    <a class="nav-link" href="#">Sign In</a>
+                    <a class="nav-link" href="{{ route('login') }}">Sign In</a>
                 @endauth
             </li>
             </ul>

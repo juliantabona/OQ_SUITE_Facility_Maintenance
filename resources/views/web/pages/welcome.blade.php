@@ -1,7 +1,11 @@
 @extends('web.layouts.app')
 
 @section('style')
-
+    <style>
+        .card{
+            height:100% !important;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -15,8 +19,8 @@
                         <p class="text-white">Manage, monitor and accelerate facility management processes with the best tools on the cloud.
                             Manage all your jobs, projects, jobcards, assets, customers, contractors, staff members, documents, accounts,
                             quotations, invoices, receipts, contracts and reports all in one place! </p>
-                        <a href="#" class="btn btn-lg btn-pill btn-success mr-3 mb-3">Get Started</a>
-                        <a href="#" class="btn btn-lg btn-outline-white btn-pill mr-3 mb-3">Learn More</a>
+                        <a href="{{ route('register') }}" class="btn btn-lg btn-pill btn-success mr-3 mb-3">Get Started</a>
+                        <a href="{{ route('features') }}" class="btn btn-lg btn-outline-white btn-pill mr-3 mb-3">Login</a>
                     </div>
                     <div class="col-md-5 mb-5">
                         <img src="/images/samples/dashboard-overview-1.jpg" alt="Facility Maintenance Dashboard">
@@ -32,7 +36,7 @@
             <h3 class="section-title text-center">Overview</h3>
             <div class="features py-4 mb-4">
                 <div class="container">
-                    <div class="row">
+                    <div class="row row-eq-height mb-5">
                         <div class="col-12 col-lg-6 mb-4">
                             <div class="card">
                                 <div class="card-body pb-0">
@@ -68,7 +72,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-5">
+                    <div class="row row-eq-height mb-5">
                         <div class="col-12 col-lg-6 mb-4">
                             <div class="card">
                                 <div class="card-body pb-0"><div class="feature d-flex pb-0">

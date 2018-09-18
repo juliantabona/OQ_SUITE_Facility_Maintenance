@@ -22,7 +22,7 @@
             right: 0;
             bottom: 0;
             opacity: .9;
-            background: #007bff;
+            background: #0e1c3a;
         }
 
         .landing-page .overlay:nth-child(2):before {
@@ -44,8 +44,8 @@
                         <br>
                         <span class="" style="font-size: 0.6em;">In One Package. On The Cloud</span></h1>
                         <p class="text-white">We bring you all the best tools on the cloud so that you can worry less and deliver more without doing any of the heavy lifting. Our solution helps you do more with less so that you can focus on what really matters, Managing Costs and Maximizing Profits</p>
-                        <a href="#" class="btn btn-lg btn-pill btn-success mr-3 mb-3">Get Started</a>
-                        <a href="#" class="btn btn-lg btn-outline-white btn-pill mr-3 mb-3">Learn More</a>
+                        <a href="{{ route('register') }}" class="btn btn-lg btn-pill btn-success mr-3 mb-3">Get Started</a>
+                        <a href="{{ route('login') }}" class="btn btn-lg btn-outline-white btn-pill mr-3 mb-3">Login</a>
                     </div>
                     <div class="col-md-6 mb-5">
                         <img src="/images/backgrounds/jobcard-search.png" class="w-100">
