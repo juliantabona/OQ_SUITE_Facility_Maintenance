@@ -39,7 +39,7 @@ Auth::routes();
 */
 Route::get('/activate-account', function () {
     return view('auth.activate-account');
-})->name('activate-account');
+})->name('activate-account')->middleware('auth');
 
 Route::get('/overview', function () {
     return view('dashboard.pages.overview');

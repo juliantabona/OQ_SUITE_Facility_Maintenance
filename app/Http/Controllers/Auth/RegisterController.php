@@ -105,7 +105,7 @@ class RegisterController extends Controller
 
                 //  Notify the user that account was created successfully
                 Session::forget('alert');
-                Session::flash('alert', array('Account created successfully! Welcome Home', 'icon-check icons', 'success'));
+                Session::flash('alert', array('Account created successfully!', 'icon-check icons', 'success'));
             }
         }
 
