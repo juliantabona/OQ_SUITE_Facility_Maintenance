@@ -149,14 +149,26 @@
                                             
                                             <tr>
                                                 <td align="center" class="padding">
-                                                    <img  alt="Logo" src="{{ URL::to('/') }}/images/assets/icons/unlocked-padlock.png" style="max-width: 80px;padding-top: 40px;">
+                                                    <img  alt="Logo" src="{{ URL::to('/') }}/images/backgrounds/handshake.jpg" style="max-width: 80px;padding-top: 40px;">
                                                 </td>
                                             </tr>
                                         <tr>
-                                            <td align="center" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 15px;" class="padding">Activate Account</td>
+                                            <td align="center" style="font-size: 25px; font-family: Helvetica, Arial, sans-serif; color: #333333; padding-top: 15px;" class="padding">Account Activated!</td>
                                         </tr>
                                         <tr>
-                                            <td align="center" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">Hello {{ $user->first_name }}, thank you for taking your time to be a part of our great platform. Go ahead and activate your account and lets get started!</td>
+                                            <td align="center" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">Hello {{ $user->first_name }}, we managed to verify your account. Now you are a valued part of our platform, welcome home!</td>
+                                        </tr>
+                                        <tr>
+                                            <td align="center" style="padding: 20px 0 0 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
+                                                <p>You can always login using your Username and Password</p>
+                                                <br>
+                                                <p><strong>Username: {{ $user->username }}</strong></p>
+                                                <p><strong>Password: *********</strong></p>
+                                                <br>
+                                                <p>Incase you forget your password use the link below</p>
+                                                <br>
+                                                <a href="{{ route('password.request') }}">Forgot password?</a>
+                                            </td>
                                         </tr>
                                     </table>
                                 </td>
