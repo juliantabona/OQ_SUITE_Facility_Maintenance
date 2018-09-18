@@ -131,7 +131,7 @@
         </td>
     </tr>
     <tr>
-        <td bgcolor="#0e1c3a1c" align="center" style="30px 15px 40px 15px" class="section-padding">
+        <td bgcolor="#eeeeef" align="center" style="30px 15px 40px 15px" class="section-padding">
             <!--[if (gte mso 9)|(IE)]>
             <table align="center" border="0" cellspacing="0" cellpadding="0" width="500">
             <tr>
