@@ -161,8 +161,7 @@
                                                             <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
                                                                 <tr>
                                                                     <td align="center" style="border-radius: 3px;">
-                                                                        <a href="{{ route('overview') }}" target="_blank" 
-                                                                        style=" font-size: 16px; font-family: Helvetica,Arial,sans-serif;color: #ffffff;text-decoration: none;border-radius: 3px;padding: 15px 25px;border-color: #ffb400;background-color: #ffb400;display: inline-block;margin-bottom: 60px;" 
+                                                                        <a href="{{ route('overview') }}" target="_blank" style=" font-size: 16px; font-family: Helvetica,Arial,sans-serif;color: #ffffff;text-decoration: none;border-radius: 3px;padding: 15px 25px;border-color: #ffb400;background-color: #ffb400;display: inline-block;margin-bottom: 0px;" 
                                                                         class="mobile-button">Get Started &rarr;</a>
                                                                     </td>
                                                                 </tr>
@@ -173,14 +172,14 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 20px 0 0 40px; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
-                                                <p>You can always login using your Username and Password</p>
+                                            <td style="padding: 0 0 40px 0; font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="padding">
+                                                <p style="font-size: 16px;line-height: 25px;font-family: Helvetica,Arial,sans-serif;color: #666666;">You can always login using your Username and Password</p>
                                                 <div style="border-radius: 2px;background: #ffb400;padding: 18px;color: #fff;">
                                                     <strong>Username: {{ $user->username }}</strong>
                                                     <br>
                                                     <strong>Password: *********</strong>
                                                 </div>
-                                                <p>Incase you forget your password use the following link: <a href="{{ route('password.request') }}">Forgot password?</a></p>
+                                                <p style="font-size: 16px;line-height: 25px;font-family: Helvetica,Arial,sans-serif;color: #666666;">Incase you forget your password use the following link: <a href="{{ route('password.request') }}">Forgot password?</a></p>
                                             </td>
                                         </tr>
                                     </table>
