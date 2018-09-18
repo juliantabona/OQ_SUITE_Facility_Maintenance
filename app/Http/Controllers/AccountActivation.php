@@ -33,6 +33,7 @@ class AccountActivation extends Controller
 
     public function activate()
     {
+        return dd('Lets activate!');
         $email = Input::get('email', false);    //  Users email
         $token = Input::get('token', false);    //  VerifyToken
 
