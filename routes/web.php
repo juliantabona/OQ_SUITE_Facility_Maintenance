@@ -12,13 +12,95 @@
 */
 
 /*
- *  WEBSITE ROUTES
+ *  START TESTS
  */
 
-Route::get('/email', function () {
-    return view('dashboard.emails.activate_account');
-})->name('welcome');
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\File;
 
+Route::get('/form', function () {
+    $processForm = App\ProcessForm::where('company_id', Auth::user()->companyBranch->company->id)
+                                ->where('type', 'jobcard')
+                                ->where('selected', 1)
+                                ->first();
+
+    return view('dashboard.pages.process-form.create', compact('processForm'));
+})->name('form');
+
+Route::get('/sendfile', function () {
+    return view('test.sendfile');
+})->name('sendfile');
+
+Route::post('/sendfile', function (Request $request) {
+    //  If the user uploaded an image
+    if ($request->hasFile('image')) {
+        //  Lets get the image file
+        $imageFile = $request->only('image')['image'];
+    } else {
+        //  Otherwise set the image file and URL to nothing
+        $imageFile = [];
+        $image_url = null;
+    }
+
+    // Add all uploads for validation
+    $fileArray = array_merge(array('image' => $imageFile), $request->all());
+    $rules = [];
+    //  If the user uploaded an image then validate it
+    if ($request->hasFile('image')) {
+        //  Rules for image data
+        $rules = array_merge($rules, [
+            /* General validation
+                *
+                * We only except the following formats "jpeg,jpg,png,gif"
+                * and a maximum image size of 2MB(Megabytes)
+                */
+                'image' => 'mimes:jpeg,jpg,png,gif|max:2000', // max 2000Kb/2Mb
+            ]
+        );
+    }
+
+    //  Customized error messages
+    $messages = [
+        //  Image related
+        'image.mimes' => 'Image must be an image format e.g) jpeg,jpg,png,gif',
+        'image.max' => 'Image should not be more than 2MB in size',
+        ];
+
+    // Now pass the input and rules into the validator
+    $validator = Validator::make($fileArray, $rules, $messages);
+
+    // Check to see if validation fails or passes
+    if ($validator->fails()) {
+        //  Notify the user that validation failed
+        Session::forget('alert');
+        Session::flash('alert', array('Couldn\'t create jobcard, check your information!', 'icon-exclamation icons', 'danger'));
+
+        return Redirect::back()->withErrors($validator)->withInput();
+    } else {
+        //  If we have the image and has been approved, then save it to Amazon S3 bucket
+        if ($request->hasFile('image')) {
+            //  Get the image
+            $image_file = Input::file('image');
+
+            //  Store the image file to Amazon s3 and retrieve the new image name
+            $image_file_name = Storage::disk('s3')->putFile('jobcard_images', $image_file, 'public');
+
+            //  Construct the URL to the new uploaded file
+            $image_url = env('AWS_URL').$image_file_name;
+        }
+    }
+
+    return $image_url;
+})->name('sendfile-store');
+
+/*
+ *  END TESTS
+ */
+
+/*
+ *  WEBSITE ROUTES
+ */
 Route::get('/', function () {
     return view('web.pages.welcome');
 })->name('welcome');

@@ -35,7 +35,7 @@ class CreateUsersTable extends Migration
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('accessibility')->nullable();
-            $table->string('who_created_id')->nullable();
+            $table->integer('who_created_id')->unsigned()->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

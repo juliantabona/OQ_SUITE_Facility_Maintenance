@@ -1,4 +1,4 @@
-@extends('layouts.app') 
+@extends('dashboard.layouts.app')
 
 @section('style')
     
@@ -13,17 +13,17 @@
     <div class="row">
         <div class="col-lg-12 d-flex flex-column">
             <div class="row flex-grow">
-                <div class="col-12 col-lg-8 col-md-8 grid-margin offset-1 stretch-card mb-2">
+                <div class="col-12 col-md-10 col-lg-9 grid-margin offset-md-1 stretch-card mb-2">
                     <div class="card">
                         <div class="card-body">
                             <div class="form-group mt-0">
-                                <h3 class="float-left">New Jobcard</h3>
+                                <h3 class="float-left">Create Jobcard</h3>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-12 col-lg-8 col-md-8 grid-margin offset-1 stretch-card">
+                <div class="col-12 col-md-10 col-lg-9 grid-margin offset-md-1 stretch-card">
                     <div class="card card-hoverable">
                         <div class="card-body p-3 pt-4">
                             <form method="POST" action="{{ route('jobcard-store') }}" enctype="multipart/form-data">
@@ -57,7 +57,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-12 col-sm-6">
                                                 <div class="form-group">
                                                     <p class="m-0 mb-1">Start Date</p>
                                                     <div class="input-group date datepicker p-0" 
@@ -80,7 +80,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-12 col-sm-6">
                                                 <div class="form-group">
                                                     <p class="m-0 mb-1">End Date</p>
                                                     <div class="input-group date datepicker p-0" data-toggle="tooltip" data-placement="top" title="Date expected to end work">
@@ -102,14 +102,14 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-12 col-sm-6">
                                                 @if(Auth::user()->companyBranch->company->priorities)
                                                     <div class="form-group">
                                                         <label for="priority">Priority:</label>
                                                         <div class="input-group mb-2">
                                                             <select data-toggle="tooltip" data-placement="top" title="Priority/Urgency of this work"
                                                                     id="priority" class="form-control{{ $errors->has('priority') ? '  is-invalid' : '' }} custom-select" name="priority">
-                                                                @foreach(Auth::user()->companyBranch->company->priorities as $priority)
+                                                                @foreach(Auth::user()->companyBranch->company->priorities()->orderBy('name', 'asc')->get() as $priority)
                                                                     <option value = "{{ $priority->id }}" {{ old('priority') == "$priority->id" ? 'selected':'' }}>{{ $priority->name }}</option>
                                                                 @endforeach
                                                             </select>
@@ -131,14 +131,14 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-12 col-sm-6">
                                                 @if(Auth::user()->companyBranch->company->costCenters)
                                                     <div class="form-group">
                                                             <label for="cost_center" class="m-0 p-0 w-100">Cost Center</label>
                                                         <div class="input-group mb-2">
                                                             <select data-toggle="tooltip" data-placement="top" title="Departments/Facilities being costed doing this work"
                                                                     id="cost_center" class="form-control{{ $errors->has('cost_center') ? '  is-invalid' : '' }} custom-select" name="cost_center">
-                                                                @foreach(Auth::user()->companyBranch->company->costCenters as $cost_center)
+                                                                @foreach(Auth::user()->companyBranch->company->costCenters()->orderBy('name', 'asc')->get() as $cost_center)
                                                                     <option value = "{{ $cost_center->id }}" {{ old('cost_center') == "$cost_center->id" ? 'selected':'' }}>{{ $cost_center->name }}</option>
                                                                 @endforeach
                                                             </select>
@@ -160,14 +160,14 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-12 col-sm-6">
                                                 @if(Auth::user()->companyBranch->company->categories)
                                                     <div class="form-group">
                                                         <label for="category" class="m-0 p-0 w-100">Job Category</label>
                                                         <div class="input-group mb-2">
                                                             <select data-toggle="tooltip" data-placement="top" title="Category that this job belongs to"
                                                                     id="category" class="form-control{{ $errors->has('category') ? '  is-invalid' : '' }} custom-select" name="category">
-                                                                @foreach(Auth::user()->companyBranch->company->categories as $category)
+                                                                @foreach(Auth::user()->companyBranch->company->categories()->orderBy('name', 'asc')->get() as $category)
                                                                     <option value = "{{ $category->id }}" {{ old('category') == "$category->id" ? 'selected':'' }}>{{ $category->name }}</option>
                                                                 @endforeach
                                                             </select>
@@ -189,16 +189,16 @@
                                                 @endif
                                             </div>
 
-                                            <div class="col-6">
+                                            <div class="col-12 col-sm-6">
                                                 @if(Auth::user()->companyBranch->company->branches)
                                                     <div class="form-group">
                                                         <label for="branch" class="m-0 p-0 w-100">Company Branch</label>
                                                         <div class="input-group mb-2">
                                                             <select data-toggle="tooltip" data-placement="top" title="Company branch/destination to do this work"
                                                                     id="branch" class="form-control{{ $errors->has('branch') ? '  is-invalid' : '' }} custom-select" name="branch">
-                                                                @foreach(Auth::user()->companyBranch->company->branches as $branch)
+                                                                @foreach(Auth::user()->companyBranch->company->branches()->orderBy('name', 'asc')->get() as $branch)
                                                                     <option value = "{{ $branch->id }}" 
-                                                                        {{ old('branch') == "$branch->id" ? 'selected':'' }}>{{ $branch->destination }}</option>
+                                                                        {{ old('branch') == "$branch->id" ? 'selected':'' }}>{{ $branch->name }} ({{ $branch->destination }})</option>
                                                                 @endforeach
                                                             </select>
                                                             <div class="input-group-prepend">
@@ -259,9 +259,8 @@
                                                         class="dropify form-control {{ $errors->has('image') ? ' is-invalid' : '' }}" name="image">                                      
                                                 </div>
 
-                                                <button type="submit" class="btn btn-primary mr-2 float-right">
-                                                    Submit Jobcard
-                                                    <i class="icon-paper-plane icons"></i>
+                                                <button type="submit" class="btn btn-success float-right pb-3 pl-5 pr-5 pt-3 ml-2">
+                                                    Create Jobcard
                                                 </button>
                                             </div>
                                         </div>

@@ -106,7 +106,7 @@ class Company extends Model
     public function clients()
     {
         return $this->belongsToMany('App\Company', 'company_clients', 'company_id', 'client_id')
-                    ->withPivot('client_id', 'company_id', 'created_by')
+                    ->withPivot('client_id', 'company_id', 'who_created_id')
                     ->withTimestamps();
     }
 
@@ -118,7 +118,7 @@ class Company extends Model
     public function contractors()
     {
         return $this->belongsToMany('App\Company', 'company_contractors', 'company_id', 'contractor_id')
-                    ->withPivot('contractor_id', 'company_id', 'created_by')
+                    ->withPivot('contractor_id', 'company_id', 'who_created_id')
                     ->withTimestamps();
     }
 
@@ -159,7 +159,7 @@ class Company extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo('App\User', 'created_by');
+        return $this->belongsTo('App\User', 'who_created_id');
     }
 
     /*

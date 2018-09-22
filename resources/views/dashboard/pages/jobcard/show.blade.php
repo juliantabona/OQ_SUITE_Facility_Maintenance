@@ -1,4 +1,4 @@
-@extends('layouts.app') 
+@extends('dashboard.layouts.app')
 
 @section('style')
 
@@ -90,51 +90,42 @@
                                         <i class="icon-exclamation icons"></i>
                                         <a href="#" class="text-warning">Authorize</a>
                                     </span>
-                                    @if(COUNT($jobcard->processInstructions))
-                                        <nav aria-label="breadcrumb" role="navigation">
-                                            <ol class="breadcrumb breadcrumb-custom pt-2">
-                                                    @foreach($jobcard->processInstructions->first()->process_form as $instruction)
-                                                        <li data-toggle="tooltip" data-placement="top" title="{{ $instruction['description'] }}"
-                                                            class="breadcrumb-item progress-status-tabs{{ ($instruction['active'] || $instruction['updated']) ? ' active': '' }}" 
-                                                            data-toggle="modal" data-target="#exampleModal-{{ $instruction->id }}">
-                                                            <span>
-                                                                    {{ $instruction['name'] }}
-                                                                    @if($instruction['updated'])
-                                                                        <i class="icon-check icons"></i>
-                                                                    @endif
-                                                            </span>
-                                                            <input type="hidden" class="process_step_id" value="{{ $instruction->id }}">
-                                                            <input type="hidden" class="plugin" value="{{ json_encode( $instruction['plugin'] ) }}">
-                                                        </li>
-                                                    @endforeach
-                                                    
-                                                    <input type="hidden" id="processInstructions" value="{{ json_encode( $jobcard->processInstructions ) }}">
-                                            </ol>
-                                            @if( $jobcardProgressPercentage !== null )
-                                                <div class="progress" data-toggle="tooltip" data-placement="top" title="{{ $jobcardProgressPercentage }}% completed">
-                                                    <div class="progress-bar" role="progressbar" style="width: {{ $jobcardProgressPercentage }}%" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            @endif
-                                        </nav>
-                                    @endif
+                                    <div id="jobcard_lifecycle">
+                                        <input type="hidden" value="{{ $processForm->form_structure }}">
+                                    </div>
                                 </div>
                                 <div class="col-12">
-                                    <h3 class="card-title mb-3 mt-4 border-bottom pb-3">{{ $jobcard->title ? $jobcard->title:'____' }}</h3>
-                                    <b>Description: </b>
-                                    <p class="mt-2">{{ $jobcard->description ? $jobcard->description:'____' }}</p>
-                                    <span class="lower-font mr-4">
-                                        <b>Start Date: </b>{{ $jobcard->start_date ? Carbon\Carbon::parse($jobcard->start_date)->format('d M Y'):'____' }}</span>
-                                    <span class="lower-font">
-                                        <b>End Date: </b>{{ $jobcard->end_date ? Carbon\Carbon::parse($jobcard->end_date)->format('d M Y'):'____' }}</span>
-                                    <br/>
-                                    <span data-toggle="tooltip" data-placement="top" title="{{ $jobcard->category ? $jobcard->category->description:'____' }}"
-                                          class="lower-font mr-4">
-                                          <b>Catergory: </b>{{ $jobcard->category ? $jobcard->category->name:'____' }}</span>
-                                    <br/>
-                                    <span class="lower-font" data-toggle="tooltip" data-placement="top" title="{{ $jobcard->costCenter ? $jobcard->costCenter->description:'' }}">
-                                        <b>Cost Center: </b>{{ $jobcard->costCenter ? $jobcard->costCenter->name:'____' }}
-                                    </span>
-                                    <br/>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h3 class="card-title mb-3 mt-4 border-bottom pb-3">{{ $jobcard->title ? $jobcard->title:'____' }}</h3>
+                                            <b>Description: </b>
+                                            <p class="mt-2">{{ $jobcard->description ? $jobcard->description:'____' }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span class="lower-font mr-4">
+                                                <b>Start Date: </b>{{ $jobcard->start_date ? Carbon\Carbon::parse($jobcard->start_date)->format('d M Y'):'____' }}
+                                            </span>
+                                        </div>        
+                                        <div class="col-6">    
+                                            <span class="lower-font">
+                                                <b>End Date: </b>{{ $jobcard->end_date ? Carbon\Carbon::parse($jobcard->end_date)->format('d M Y'):'____' }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span data-toggle="tooltip" data-placement="top" title="{{ $jobcard->category ? $jobcard->category->description:'____' }}" class="lower-font mr-4">
+                                                <b>Catergory: </b>{{ $jobcard->category ? $jobcard->category->name:'____' }}
+                                            </span>
+                                        </div>
+                                        <div class="col-6">
+                                            <span class="lower-font" data-toggle="tooltip" data-placement="top" title="{{ $jobcard->costCenter ? $jobcard->costCenter->description:'' }}">
+                                                <b>Cost Center: </b>{{ $jobcard->costCenter ? $jobcard->costCenter->name:'____' }}
+                                            </span>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col-6">
                                             <span class="lower-font">
@@ -144,7 +135,7 @@
                                                     <a href="/jobcards/1/views/1"> 
                                                         - viewed({{ 
                                                                 $jobcard->views()
-                                                                        ->where('viewed_by', $jobcard->createdBy->id)
+                                                                        ->where('who_viewed_id', $jobcard->createdBy->id)
                                                                         ->get()->count() 
                                                                 }})
                                                     </a>
@@ -184,7 +175,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group mt-0">
-                                        <a class="btn btn-primary mr-2 float-right" href="{{ route('jobcard-download-pdf', [$jobcard->id]) }}" target="_blank" class="btn btn-primary">
+                                        <a class="btn btn-primary mr-2 float-right" href="#" target="_blank" class="btn btn-primary">
                                             <i class="icon-cloud-download icons"></i>
                                             Download Jobcard
                                         </a>
@@ -455,22 +446,26 @@
         </div>
     </div>
 
-    @include('jobcard.modals.update_process_status')
-    @include('jobcard.modals.add_client')
-    @include('jobcard.modals.add_contact')
-    @include('jobcard.modals.add_contractor')
-    @include('jobcard.modals.show_contractor')
-
 @endsection @section('js') 
 
+    <script src="{{ asset('js/plugins/jquery-sortable/jquery-sortable.js') }}"></script>
     <script src="{{ asset('js/plugins/dropify/dist/js/dropify.min.js') }}"></script>
     <script src="{{ asset('js/custom/dropify.js') }}"></script>
-    <script src="{{ asset('js/plugins/lightgallery/dist/js/lightgallery-all.min.js') }}"></script>
     <script src="{{ asset('js/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-    <script src="{{ asset('js/plugins/icheck/icheck.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/jquery-asColor/dist/jquery-asColor.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/jquery-asColorPicker/dist/jquery-asColorPicker.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/lightgallery/dist/js/lightgallery-all.min.js') }}"></script>
+    <script src="{{ asset('/js/custom/oq-process-forms/jquery.oq-process-forms.js') }}"></script>
 
     <script type="text/javascript">
+
+        $(document).ready(function(){
+            $('#jobcard_lifecycle').processForm();
+        });
+
         $(document).ready(function() {
+
+
 
             $('input.icheck').iCheck({
                 checkboxClass: 'icheckbox_square-blue',

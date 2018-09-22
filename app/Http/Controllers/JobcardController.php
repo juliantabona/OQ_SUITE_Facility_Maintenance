@@ -6,6 +6,7 @@ use DB;
 use PDF;
 use Auth;
 use Image;
+use Session;
 use Storage;
 use Redirect;
 use Validator;
@@ -31,104 +32,79 @@ class JobcardController extends Controller
 
     public function create()
     {
-        //return Auth::user()->company->costCenter;
-        return view('jobcard/create');
+        //  Show the jobcard creation page
+        return view('dashboard.pages.jobcard.create');
     }
 
     public function show($jobcard_id)
     {
+        //  Get the jobcard
         $jobcard = Jobcard::find($jobcard_id);
 
-        // I
+        // If we have the jobcard
         if (count($jobcard)) {
+            //  If the jobcard has been assigned a client
             if ($jobcard->client()->count()) {
+                //  Get the associated client contacts
                 $contacts = $jobcard->client->contacts()->paginate(3, ['*'], 'contacts');
             } else {
+                //  Otherwise we don't have clients
                 $contacts = null;
             }
 
+            //  Get the potential contractors list
             $contractors = $jobcard->contractorsList()->paginate(5, ['*'], 'contractors');
 
-            // Calculate how many days until deadline
-            $deadline = round((strtotime($jobcard->end_date)   // Deadline time in seconds
-                            - strtotime(\Carbon\Carbon::now()->toDateTimeString()))  // Minus current time in seconds
-                            / (60 * 60 * 24)); //Divide 24hrs for days left till deadline
+            /*  Calculate how many days until deadline
+             *  Get the deadline time in seconds then
+             *  Minus current time in seconds and
+             *  Divide by 24hrs for days left till deadline
+             */
+            $deadline = round((strtotime($jobcard->end_date)
+                            - strtotime(\Carbon\Carbon::now()->toDateTimeString()))
+                            / (60 * 60 * 24));
+
+            /*  By first assuming the user has not already seen this jobcard before
+             *  Lets now actually confirm if the user has viewwed this jobcard before
+             */
+
+            $last_viewed = null;
 
             if (count($jobcard->views)) {
                 // Get the users last time of viewing this jobcard
                 $last_viewed = $jobcard->views()
-                                ->where('viewed_by', $jobcard->createdBy->id)
+                                ->where('who_viewed_id', $jobcard->createdBy->id)
                                 ->where('viewable_id', $jobcard->id)
+                                ->where('viewable_type', 'jobcard')
                                 ->orderBy('created_at', 'desc')
                                 ->first()
                                 ->created_at;
 
-                // Calculate how long ago they viewed from now
-                $last_viewed = (strtotime(\Carbon\Carbon::now()->toDateTimeString() // Current time in seconds
-                                ) - strtotime($last_viewed))  // Minus time last viewed in seconds
-                                / 60; //Divide by 60 to give number of minutes since last view
+                /*  Calculate how long ago they viewed from now
+                 *  Get the current time in seconds and
+                 *  Divide by 60 to give number of minutes since last view
+                 */
+                $last_viewed = (strtotime(\Carbon\Carbon::now()->toDateTimeString()
+                                ) - strtotime($last_viewed))
+                                / 60;
 
                 // If the user last viewed this atleast 60mins ago (1hour) then record their new view
                 if ($last_viewed > 60) {
+                    //  Record this moment as a new view
                     $jobcardView = $jobcard->views()->create([
-                        'viewed_by' => Auth::id(),
+                        'who_viewed_id' => Auth::id(),
                     ]);
                 }
-            } else {
-                $deadline = null;
             }
 
-            // Calculate how long ago they viewed from now
-            $jobcardProgress = [];
+            $processForm = \App\ProcessForm::where('company_id', Auth::user()->companyBranch->company->id)
+                            ->where('type', 'jobcard')
+                            ->where('selected', 1)
+                            ->first();
 
-            if (count($jobcard->processInstructions)) {
-                //Get the Jobcard process steps
-                $jobcardProgress = array_count_values(collect($jobcard->processInstructions[0]['process_form'])->map(function ($status) use ($jobcardProgress) {
-                    //Find out if the the step has any plugin information
-                    if (count($status['plugin'])) {
-                        //Foreach plugin component/field
-                        return collect($status['plugin'])->map(function ($plugin) use ($jobcardProgress) {
-                            //Check if this component/field is fillable (means the user can add content to it) AND
-                            //Check if the user has actually filled that compnent/field
-                            if ($plugin['fillable']) {
-                                if ($plugin['update']['done']) {
-                                    //Record that the user filled this component/field
-                                    return collect($jobcardProgress)->push(1);
-                                } else {
-                                    //Record that the user did not fill this component/field
-                                    return collect($jobcardProgress)->push(0);
-                                }
-                            } else {
-                                return '';  // return nothing if not fillable
-                            }
-                        });
-                    } else {
-                        return '';  // return nothing if no plugin data
-                    }
-                    //flatten and group results
-                    //  $jobcardProgress[0] = Number of fillable fields that were not completed
-                    //  $jobcardProgress[1] = Number of fillable fields that were completed
-                    //  $jobcardProgress[''] = Number of non-fillable components e.g( alerts )
-                })->flatten()->toArray());
-
-                //  If the number of fillable fields that were not completed don't exist, then set the value to zero
-                if (!array_key_exists(0, $jobcardProgress)) {
-                    $jobcardProgress[0] = 0;
-                }
-
-                //  If the number of fillable fields that were completed don't exist, then set the value to zero
-                if (!array_key_exists(1, $jobcardProgress)) {
-                    $jobcardProgress[1] = 0;
-                }
-
-                $jobcardProgressPercentage = round(($jobcardProgress[1] / ($jobcardProgress[0] + $jobcardProgress[1])) * 100);
-            } else {
-                $jobcardProgressPercentage = null;
-            }
-
-            return view('jobcard/show', compact('jobcard', 'deadline', 'jobcardProgressPercentage', 'contacts', 'contractors'));
+            return view('dashboard.pages.jobcard.show', compact('jobcard', 'deadline', 'contacts', 'contractors', 'processForm'));
         } else {
-            return view('jobcard/no_jobcard');
+            return view('dashboard.pages.jobcard.no_jobcard');
         }
     }
 
@@ -138,34 +114,53 @@ class JobcardController extends Controller
 
     public function store(Request $request)
     {
+        //  If the user uploaded an image
         if ($request->hasFile('image')) {
+            //  Lets get the image file
             $imageFile = $request->only('image')['image'];
         } else {
+            //  Otherwise set the image file and URL to nothing
             $imageFile = [];
             $image_url = null;
         }
 
+        /*  Lets get the priority, cost centers, categories and branches
+         *  for this new jobcard. At this point we don't know if the user
+         *  is using stored entries from the database or creating new
+         *  values. So for now we will store these values in the
+         *  following variables for later checking
+         */
         $priority_raw = $request->input('priority');
         $cost_center_raw = $request->input('cost_center');
         $category_raw = $request->input('category');
         $branch_raw = $request->input('branch');
 
+        /*  Lets check if the priority, cost centers, categories and branches
+         *  values are custom values.This means they were created using a modal.
+         *  values created using a modal contain "_&_" as a separator.
+         *  Since strpos may return TRUE (substring present), then we
+         *  can check and then extract those values.
+         */
         if (strpos($priority_raw, '_&_') !== false) {
+            //  Extract the new priority level and replace the current request value
             $priority = explode('_&_', $priority_raw);
             $request->merge(['priority' => $priority[0]]);
         }
 
         if (strpos($cost_center_raw, '_&_') !== false) {
+            //  Extract the cost center and replace the current request value
             $cost_center = explode('_&_', $cost_center_raw);
             $request->merge(['cost_center' => $cost_center[0]]);
         }
 
         if (strpos($category_raw, '_&_') !== false) {
+            //  Extract the new category and replace the current request value
             $category = explode('_&_', $category_raw);
             $request->merge(['category' => $category[0]]);
         }
 
         if (strpos($branch_raw, '_&_') !== false) {
+            //  Extract the new company branch and replace the current request value
             $branch = explode('_&_', $branch_raw);
             $request->merge(['branch' => $branch[0]]);
         }
@@ -175,33 +170,51 @@ class JobcardController extends Controller
 
         // Rules for form data
         $rules = array(
-            //General Validation
+            /*  General Validation
+             *
+             *  Simple and strainght forward form validation
+             */
             'title' => 'required|max:255|min:3',
             'description' => 'required|max:255|min:3',
             'start_date' => 'date_format:"Y-m-d"|required',
             'end_date' => 'date_format:"Y-m-d"|required|after:today',
-            //The priority (name & company_id) must be unique per row
-            'priority' => 'required|unique:priorities,name,null,created_by,priority_id,'.Auth::user()->companyBranch->company->id.',priority_type,company',
-            //The cost center (name & company_id) must be unique per row
-            'cost_center' => 'required|unique:cost_centers,name,null,created_by,costcenter_id,'.Auth::user()->companyBranch->company->id.',costcenter_type,company',
-            //The category (name & company_id) must be unique per row
-            'category' => 'required|unique:categories,name,null,created_by,category_id,'.Auth::user()->companyBranch->company->id.',category_type,company',
-            //The branch (name & company_id) must be unique per row
-            'branch' => 'required|unique:company_branches,destination,null,created_by,company_id,'.Auth::user()->companyBranch->company->id,
+
+            /*  Advanced Validation
+             *
+             *  Note that when creating new priorities, cost centers, categories and branches,
+             *  we want to make sure we do not make any repeated values since they will confuse
+             *  users e.g) having priority Low, Medium, Medium, High. The "medium" values is duplicated
+             *  and undesirable outcome. To prevent this we must first check and confirm that for the
+             *  current company the user does not already have records using the same names.
+             */
+
+            //  The priority (name & company_id) must be unique per row
+            'priority' => 'required|unique:priorities,name,null,who_created_id,priority_id,'.Auth::user()->companyBranch->company->id.',priority_type,company',
+            //  The cost center (name & company_id) must be unique per row
+            'cost_center' => 'required|unique:costcenters,name,null,who_created_id,costcenter_id,'.Auth::user()->companyBranch->company->id.',costcenter_type,company',
+            //  The category (name & company_id) must be unique per row
+            'category' => 'required|unique:categories,name,null,who_created_id,category_id,'.Auth::user()->companyBranch->company->id.',category_type,company',
+            //  The branch (name & company_id) must be unique per row
+            'branch' => 'required|unique:company_branches,destination,null,who_created_id,company_id,'.Auth::user()->companyBranch->company->id,
         );
 
-        //If we have the image then validate it
+        //  If the user uploaded an image then validate it
         if ($request->hasFile('image')) {
+            //  Rules for image data
             $rules = array_merge($rules, [
-                    // Rules for image data
+                /* General validation
+                 *
+                 * We only except the following formats "jpeg,jpg,png,gif"
+                 * and a maximum image size of 2MB(Megabytes)
+                 */
                     'image' => 'mimes:jpeg,jpg,png,gif|max:2000', // max 2000Kb/2Mb
                 ]
             );
         }
 
-        //Customized error messages
+        //  Customized error messages
         $messages = [
-            //General Validation
+            //  Form field related
             'title.required' => 'Enter your title',
             'title.max' => 'Title name cannot be more than 255 characters',
             'title.min' => 'Title name must be atleast 3 characters',
@@ -222,7 +235,7 @@ class JobcardController extends Controller
             'branch.required' => 'Select or create a new company branch',
             'branch.unique' => 'The new company branch ('.$request->input('branch').') you tried to create already exists',
 
-            //image Validation
+            //  Image related
             'image.mimes' => 'Image must be an image format e.g) jpeg,jpg,png,gif',
             'image.max' => 'Image should not be more than 2MB in size',
           ];
@@ -232,77 +245,75 @@ class JobcardController extends Controller
 
         // Check to see if validation fails or passes
         if ($validator->fails()) {
-            //Alert update error
-            $request->session()->flash('alert', array('Couldn\'t create jobcard, check your information!', 'icon-exclamation icons', 'danger'));
+            //  Notify the user that validation failed
+            Session::forget('alert');
+            Session::flash('alert', array('Couldn\'t create jobcard, check your information!', 'icon-exclamation icons', 'danger'));
 
             return Redirect::back()->withErrors($validator)->withInput();
-        } else {
-            //If we have the image and has been approved, then save it to Amazon S3 bucket
-            if ($request->hasFile('image')) {
-                $image = Input::file('image');
-
-                $image_resized = Image::make($image->getRealPath()) /*  ->resize(250, 250 , function ($constraint) {
-                    $constraint->aspectRatio();
-                })  */ ;
-
-                $image_url = 'jobcards/jb_'.time().uniqid().'.'.$image->guessClientExtension();
-
-                Storage::disk('s3')->put($image_url, $image_resized->stream()->detach(), 'public');
-
-                $image_url = env('AWS_URL').$image_url;
-            }
         }
 
-        //Check if we have any new priority
+        //  If we have the image and has been approved, then save it to Amazon S3 bucket
+        if ($request->hasFile('image')) {
+            //  Get the image
+            $image_file = Input::file('image');
+
+            //  Store the image file to Amazon s3 and retrieve the new image name
+            $image_file_name = Storage::disk('s3')->putFile('jobcard_images', $image_file, 'public');
+
+            //  Construct the URL to the new uploaded file
+            $image_url = env('AWS_URL').$image_file_name;
+        }
+
+        //  If we have a new custom priority, lets save it
         if (strpos($priority_raw, '_&_') !== false) {
-            //Save the new priority and assign it back to the request input value
+            //  Save the new priority and assign it back to the request input value
             $request->merge([
                     'priority' => Auth::user()->companyBranch->company->priorities()->create([
                             'name' => $priority[0],
                             'description' => $priority[1],
                             'color_code' => $priority[2],
-                            'created_by' => Auth::id(),
+                            'who_created_id' => Auth::id(),
                         ])->id,
             ]);
         }
 
-        //Check if we have any new cost center
+        //  If we have a new custom cost center, lets save it
         if (strpos($cost_center_raw, '_&_') !== false) {
-            //Save the new cost center and assign it back to the request input value
+            //  Save the new cost center and assign it back to the request input value
             $request->merge([
                     'cost_center' => Auth::user()->companyBranch->company->costCenters()->create([
                             'name' => $cost_center[0],
                             'description' => $cost_center[1],
-                            'created_by' => Auth::id(),
+                            'who_created_id' => Auth::id(),
                         ])->id,
             ]);
         }
 
-        //Check if we have any new category
+        //  If we have a new custom category, lets save it
         if (strpos($category_raw, '_&_') !== false) {
-            //Save the new category and assign it back to the request input value
+            //  Save the new category and assign it back to the request input value
             $request->merge([
                     'category' => Auth::user()->companyBranch->company->categories()->create([
                             'name' => $category[0],
                             'description' => $category[1],
-                            'created_by' => Auth::id(),
+                            'who_created_id' => Auth::id(),
                         ])->id,
             ]);
         }
 
-        //Check if we have any new company branch
+        //  If we have a new custom company branch, lets save it
         if (strpos($branch_raw, '_&_') !== false) {
-            //Save the new branch and assign it back to the request input value
+            //  Save the new company branch and assign it back to the request input value
             $request->merge([
                     'branch' => CompanyBranch::create([
-                            'destination' => $branch[0],
+                            'name' => $branch[0],
                             'company_id' => Auth::user()->companyBranch->company->id,
-                            'created_by' => Auth::id(),
+                            'who_created_id' => Auth::id(),
                         ])->id,
             ]);
         }
 
-        //Create the jobcard
+        //  Create the jobcard
         $jobcard = Jobcard::create([
             'title' => $request->input('title'),
             'description' => $request->input('description'),
@@ -314,30 +325,33 @@ class JobcardController extends Controller
             'company_branch_id' => $request->input('branch'),
             'category_id' => $request->input('category'),
             'img_url' => $image_url,
-            'created_by' => Auth::id(),
+            'who_created_id' => Auth::id(),
         ]);
 
         if ($jobcard) {
-            //Allocate the process form for tracking status
+            //  Allocate the process form for tracking status
             $process = $jobcard->processInstructions()->create([
                 'process_form' => Auth::user()->companyBranch->company->processForms()->where('selected', 1)->first()->instructions,
             ]);
-            //  Recoord the creator of the jobcard as the first viewer
+
+            //  Record the creator of the jobcard as the first viewer
             $jobcardView = $jobcard->views()->create([
-                'viewed_by' => Auth::id(),
+                'who_viewed_id' => Auth::id(),
             ]);
 
+            //  Record this activity
             $jobcardActivity = $jobcard->recentActivities()->create([
                 'activity' => [
                                 'type' => 'created',
                             ],
-                'created_by' => Auth::id(),
+                'who_created_id' => Auth::id(),
                 'company_branch_id' => Auth::user()->company_branch_id,
             ]);
         }
 
-        //Alert update success
-        $request->session()->flash('alert', array('Jobcard created successfully!', 'icon-check icons', 'success'));
+        //  Notify the user that the jobcard was created successfully
+        Session::forget('alert');
+        Session::flash('alert', array('Jobcard created successfully!', 'icon-check icons', 'success'));
 
         return redirect()->route('jobcard-show', $jobcard->id);
     }
@@ -376,7 +390,7 @@ class JobcardController extends Controller
                     'type' => 'client_removed',
                     'company' => $company,
                 ],
-                'created_by' => Auth::id(),
+                'who_created_id' => Auth::id(),
                 'company_branch_id' => Auth::user()->company_branch_id,
             ]);
         }
@@ -406,7 +420,7 @@ class JobcardController extends Controller
                                 'jobcard' => $jobcard,
                                 'company' => $company,
                             ],
-                'created_by' => Auth::id(),
+                'who_created_id' => Auth::id(),
                 'company_branch_id' => Auth::user()->company_branch_id,
             ]);
 
@@ -435,7 +449,7 @@ class JobcardController extends Controller
                     'type' => 'contractor_removed',
                     'company' => $company,
                 ],
-                'created_by' => Auth::id(),
+                'who_created_id' => Auth::id(),
                 'company_branch_id' => Auth::user()->company_branch_id,
             ]);
         }
@@ -491,7 +505,7 @@ class JobcardController extends Controller
                 'old_status' => $request->input('old_step_name'),
                 'new_status' => $request->input('new_step_name'),
             ],
-            'created_by' => Auth::id(),
+            'who_created_id' => Auth::id(),
             'company_branch_id' => Auth::user()->company_branch_id,
         ]);
 

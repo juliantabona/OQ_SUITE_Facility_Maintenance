@@ -13,7 +13,7 @@ class Jobcard extends Model
      */
     protected $fillable = [
         'title', 'description', 'start_date', 'end_date', 'step_id', 'priority_id', 'cost_center_id', 'company_branch_id',
-        'category_id', 'client_id', 'select_contractor_id', 'img_url', 'created_by',
+        'category_id', 'client_id', 'select_contractor_id', 'img_url', 'who_created_id',
     ];
 
     public function views()
@@ -29,7 +29,7 @@ class Jobcard extends Model
 
     public function createdBy()
     {
-        return $this->belongsTo('App\User', 'created_by');
+        return $this->belongsTo('App\User', 'who_created_id');
     }
 
     public function category()

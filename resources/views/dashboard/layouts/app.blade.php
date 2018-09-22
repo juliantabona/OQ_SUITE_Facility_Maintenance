@@ -22,11 +22,6 @@
         <link rel="stylesheet" href="{{ asset('css/plugins/pace/themes/custom/custom-pace.css') }}">
         <!-- endinject -->
 
-        <!-- plugin css for this page -->
-        <link rel="stylesheet" href="{{ asset('css/plugins/font-awesome/css/font-awesome.min.css') }}" />
-        <link rel="stylesheet" href="{{ asset('css/plugins/jquery-bar-rating/dist/themes/fontawesome-stars.css') }}">
-        <!-- End plugin css for this page -->
-
         <!-- App Compilled Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 

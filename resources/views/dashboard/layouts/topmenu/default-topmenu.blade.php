@@ -84,7 +84,7 @@
                         <a class="p-0 m-0">
     
                             <div class=" d-flex align-items-center border-bottom p-2">
-                                <img class="img-sm rounded-circle" src="/assets/placeholders/profile_placeholder.png" alt="">
+                                <img class="img-sm rounded-circle" src="/images/assets/placeholders/profile_placeholder.png" alt="">
                                 <div class="wrapper w-100 ml-3">
                                     <p class="mb-0" style="font-size:  12px;">
                                         <a href="#">Keletso Sesiane</a> assigned you to inspect
@@ -96,7 +96,7 @@
                                 </div>
                             </div>
                             <div class=" d-flex align-items-center border-bottom p-2">
-                                <img class="img-sm rounded-circle" src="/assets/placeholders/profile_placeholder.png" alt="">
+                                <img class="img-sm rounded-circle" src="/images/assets/placeholders/profile_placeholder.png" alt="">
                                 <div class="wrapper w-100 ml-3">
                                     <p class="mb-0" style="font-size:  12px;">
                                         <a href="#">Mpho Mosinyi</a> requested your authorization for publishing
@@ -108,7 +108,7 @@
                                 </div>
                             </div>
                             <div class=" d-flex align-items-center border-bottom p-2">
-                                <img class="img-sm rounded-circle" src="/assets/placeholders/profile_placeholder.png" alt="">
+                                <img class="img-sm rounded-circle" src="/images/assets/placeholders/profile_placeholder.png" alt="">
                                 <div class="wrapper w-100 ml-3">
                                     <p class="mb-0" style="font-size:  12px;">
                                         <a href="#">Tumisang Mooketsi</a> requested your authorization for adding 
