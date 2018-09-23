@@ -57,6 +57,11 @@ class Jobcard extends Model
         return $this->belongsTo('App\CompanyBranch', 'company_branch_id');
     }
 
+    public function documents()
+    {
+        return $this->morphMany('App\Document', 'documentable');
+    }
+
     public function client()
     {
         return $this->belongsTo('App\Company', 'client_id');

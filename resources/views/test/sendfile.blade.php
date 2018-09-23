@@ -26,7 +26,7 @@
                 <div class="col-12 col-md-10 col-lg-9 grid-margin offset-md-1 stretch-card">
                     <div class="card card-hoverable">
                         <div class="card-body p-3 pt-4">
-                            <form method="POST" action="{{ route('sendfile-store') }}" enctype="multipart/form-data">
+                            <form id="uploadForm" action="" enctype="multipart/form-data">
                                 @csrf
                                 <div class="row">
                                     <div class="col-12">
@@ -44,7 +44,7 @@
                                                             </span>
                                                         @endif  
                                                         <input type="file" data-max-file-size="2mb" data-default-file="{{ old('image') }}"
-                                                        class="dropify form-control {{ $errors->has('image') ? ' is-invalid' : '' }}" name="image">                                      
+                                                        class="dropify form-control {{ $errors->has('image') ? ' is-invalid' : '' }}" name="image[]" multiple>                                      
                                                 </div>
 
                                                 <button type="submit" class="btn btn-success float-right pb-3 pl-5 pr-5 pt-3 ml-2">
@@ -62,71 +62,6 @@
         </div>
     </div>
 
-    <!-- Modal starts -->
-    <div class="modal fade" id="select-option-creation-box" tabindex="-1" role="dialog" aria-labelledby="select-option-creation-box-label" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="select-option-creation-box-label">Update to "Open"</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body pt-3">
-                    <div class="row">
-                        <div class="col-12" id="select-option-name-box">
-                            <div class="form-group">
-                                <label for="select-option-creation-name">Name</label>
-                                <input id="select-option-creation-name" 
-                                        data-toggle="tooltip" data-placement="top" title=""
-                                        type="text" placeholder="" class="form-control"></input>
-                                <span id = "select-option-creation-name-error" class="help-block invalid-feedback d-none">
-                                    <span class="badge badge-danger text-white mr-2">Error : </span>
-                                    <strong></strong>
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="col-12" id="select-option-desc-box">
-                            <div class="form-group">
-                                <label for="select-option-creation-desc">Description</label>
-                                <textarea data-toggle="tooltip" data-placement="top" title=""
-                                            id="select-option-creation-desc" placeholder="" class="form-control" ></textarea>
-                                <span id = "select-option-creation-desc-error" class="help-block invalid-feedback d-none">
-                                    <span class="badge badge-danger text-white mr-2">Error : </span>
-                                    <strong></strong>
-                                </span>            
-                            </div>
-                        </div>
-
-                        <div class="col-12" id="select-option-color-box">
-                            <div class="form-group">
-                                <label for="select-option-creation-color">Pick Color</label>
-                                <input id="select-option-creation-color" type="text" data-toggle="tooltip" 
-                                        data-placement="top" title=""
-                                       class="color-picker form-control" value="#00aeff" />
-                                <span id = "select-option-creation-color-error" class="help-block invalid-feedback d-none">
-                                    <span class="badge badge-danger text-white mr-2">Error : </span>
-                                    <strong></strong>
-                                </span>                             
-                            </div>
-                        </div>
-
-                        <input type="hidden" value="">
-
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="select-option-creation-add-btn" type="button" class="btn btn-primary">
-                            <i class="icon-plus icons m-0 mr-1"></i>
-                        Add
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal Ends -->
-
 @endsection 
 
 @section('js') 
@@ -141,102 +76,27 @@
 
     $(document).ready(function(){
 
-        (function($) {
-            'use strict';
+        var form = $('#uploadForm');
+        var request = new XMLHttpRequest();
 
-            if ($(".date-picker").length) {
-              $('.date-picker').datepicker({
-                format: "yyyy-mm-dd",
-                enableOnReadonly: true,
-                todayHighlight: true,
-              });
-            }
+        $(form).submit(function(e){
+            e.preventDefault();
 
-            if(('.color-picker').length){
-                $('.color-picker').asColorPicker();
-            }
+            var formData = new FormData(form);
 
-          })(jQuery);
-          
-            
-
-        $('.select-option-creation-btn').click(function(){
-            var selectBox = $(this).closest('.form-group').find('select');
-            //Grab the select box field name
-            var name_field = $(selectBox).attr('name');
-            var name_field_formatted = $(selectBox).attr('name').split('_').join(' ');
-            //Capitalize first letter
-            var name_field_uppercase = name_field_formatted.charAt(0).toUpperCase() + name_field_formatted.slice(1);
-            var modalTitle = 'Create New ' + name_field_uppercase;
-            var modalInputNameToolTip = 'Enter the ' + name_field_formatted + ' name';
-            var modalInputDescToolTip = 'Describe this ' + name_field_formatted + ' for other users';
-
-            $('#select-option-creation-box .modal-title').text(modalTitle);
-
-            if(name_field == 'branch'){
-                $('#select-option-desc-box').hide();
-            }else{
-                $('#select-option-desc-box').show();
-            }
-
-            if(name_field == 'priority'){
-                $('#select-option-color-box').show();
-            }else{
-                $('#select-option-color-box').hide();
-            }
-
-            $('#select-option-creation-name').attr('data-original-title', modalInputNameToolTip).attr('placeholder', name_field_uppercase+' name...');
-            $('#select-option-creation-desc').attr('data-original-title', modalInputDescToolTip).attr('placeholder', name_field_uppercase+' description...');
-
-            $('#select-option-creation-box .modal-body input[type="hidden"]').val(name_field);
-            
-            $('#select-option-creation-box').modal('show');
-            $('.tooltips').tooltip()
-
-        });
-
-        $('#select-option-creation-add-btn').click(function(){
-            var selectBox = $(this).closest('.form-group').find('select');
-            var title = $('#select-option-creation-name').val();
-            var desc = $('#select-option-creation-desc').val();
-            var color = $('#select-option-creation-color').val();
-            var type = $('#select-option-creation-box .modal-body input[type="hidden"]').val();
-            var new_option = '<option value = "'+title+'_&_'+desc+'_&_'+color+'" selected>'+title+'</option>';
-            
-            //Check if we have what we need
-            if( (title != '' && desc != '' && type != 'branch') ||
-                (title != '' && desc != '' && color != '' && type == 'priority') ||
-                (title != '' && type == 'branch')
-            ){
-                //Append the new option
-                $('select[name='+type+']').append(new_option);
-                //Hide the modal
-                $('#select-option-creation-box').modal('hide');
-            }else{
-
-                if( title == '' ){
-                    $('#select-option-creation-name-error').removeClass('d-none').addClass('d-block').find('strong').text('Enter '+type+' name');
-                }
-
-                if( desc == '' ){
-                    $('#select-option-creation-desc-error').removeClass('d-none').addClass('d-block').find('strong').text('Enter '+type+' description');
-                }
-
-                if( color == '' ){
-                    $('#select-option-creation-color-error').removeClass('d-none').addClass('d-block').find('strong').text('Enter '+type+' color');
-                }
-            }
-        });
-
-        $('.modal').on('hidden.bs.modal', function (e) {
-            //Empty the input fields
-            $('#select-option-creation-name').val('');
-            $('#select-option-creation-desc').val('');
-            //Restore error modal errors
-            $('#select-option-creation-name-error').removeClass('d-block').addClass('d-none').find('strong').text('');
-            $('#select-option-creation-desc-error').removeClass('d-block').addClass('d-none').find('strong').text('');
+            request.open('post', '{{ route('sendfile-store') }}');
+            request.send(formData);
         });
         
+        request.addEventListener('load', function(e){
+            console.log( JSON.parse(e.target.responseText) );
+
+        }, false);
+
+        request.upload.addEventListener('progress', function(e){
+            console.log(e.loaded/e.total*100 +'%');
+        }, false);
+
     });
 
 </script>

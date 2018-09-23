@@ -69,7 +69,7 @@
         </a>
         <a href="/jobcards/1/viewers" class="btn btn-inverse-light mt-3 ml-2 mb-2">
             <i class="icon-eye icons"></i>
-            1 viewer
+            {{ $jobcard->views()->distinct('who_viewed_id')->count('who_viewed_id') }} viewer(s)
         </a>
 
         <div class="col-lg-12 d-flex flex-column">
@@ -424,7 +424,7 @@
                                     <div class="timeline">
                                         @foreach($jobcard->recentActivities as $position => $recentActivity)
                                             
-                                            @include('layouts.recentActivity.default-activity-layout')
+                                            @include('dashboard.layouts.recentActivity.default-activity-layout')
 
                                         @endforeach
                                     </div>

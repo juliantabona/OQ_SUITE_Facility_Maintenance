@@ -33,6 +33,12 @@ Route::get('/sendfile', function () {
 })->name('sendfile');
 
 Route::post('/sendfile', function (Request $request) {
+    $image_file = Input::file('image');
+
+    //return getimagesize($image_file);
+
+    return $image_file->getClientSize();
+
     //  If the user uploaded an image
     if ($request->hasFile('image')) {
         //  Lets get the image file
@@ -125,6 +131,15 @@ Route::get('/overview', function () {
     return view('dashboard.pages.overview');
 })->name('overview')->middleware('auth');
 
+Route::group(['prefix' => 'profiles',  'middleware' => 'auth'], function () {
+    Route::get('/', 'UserController@index')->name('profiles');
+    Route::post('/', 'UserController@store')->name('profile-store');
+    Route::get('/{profile_id}', 'UserController@show')->name('profile-show');
+    Route::put('/{profile_id}', 'UserController@update')->name('profile-update');
+    Route::get('/{profile_id}/edit', 'UserController@edit')->name('profile-edit');
+    Route::delete('/{profile_id}/docs/{doc_id}', 'UserController@deleteDocument')->name('profile-doc-delete');
+});
+
 /*  JOBCARDS    list, create, show, edit, save, delete */
 Route::group(['prefix' => 'jobcards',  'middleware' => 'auth'], function () {
     Route::get('/', 'JobcardController@index')->name('jobcards');
@@ -132,5 +147,6 @@ Route::group(['prefix' => 'jobcards',  'middleware' => 'auth'], function () {
     Route::get('/create', 'JobcardController@create')->name('jobcard-create');
     Route::get('/{jobcard_id}', 'JobcardController@show')->name('jobcard-show');
     Route::put('/{jobcard_id}', 'JobcardController@update')->name('jobcard-update');
+    Route::put('/{jobcard_id}/edit', 'JobcardController@edit')->name('jobcard-edit');
     Route::delete('/{jobcard_id}', 'JobcardController@delete')->name('jobcard-delete');
 });

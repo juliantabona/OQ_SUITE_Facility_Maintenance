@@ -14,6 +14,8 @@ Relation::morphMap([
 
 class RecentActivity extends Model
 {
+    protected $table = 'recent_activities';
+
     protected $casts = [
         'activity' => 'collection',
     ];
@@ -23,7 +25,7 @@ class RecentActivity extends Model
      * @var array
      */
     protected $fillable = [
-        'activity', 'company_branch_id', 'who_created_id',
+        'activity', 'company_id', 'who_created_id',
     ];
 
     /**

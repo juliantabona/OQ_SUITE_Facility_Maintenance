@@ -12,6 +12,7 @@ return array(
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\CostCenter' => $baseDir . '/app/CostCenter.php',
     'App\\Creator' => $baseDir . '/app/Creator.php',
+    'App\\Document' => $baseDir . '/app/Document.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\AccountActivation' => $baseDir . '/app/Http/Controllers/AccountActivation.php',
     'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => $baseDir . '/app/Http/Controllers/Auth/ForgotPasswordController.php',

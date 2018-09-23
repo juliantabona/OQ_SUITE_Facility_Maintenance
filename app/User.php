@@ -50,6 +50,11 @@ class User extends Authenticatable
         return $this->belongsTo('App\CompanyBranch', 'company_branch_id');
     }
 
+    public function documents()
+    {
+        return $this->morphMany('App\Document', 'documentable');
+    }
+
     /**
      *   Incase the user does not have a profile image, use the default placeholder.
      */

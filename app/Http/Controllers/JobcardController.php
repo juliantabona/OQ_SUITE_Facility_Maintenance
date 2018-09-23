@@ -252,18 +252,6 @@ class JobcardController extends Controller
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
-        //  If we have the image and has been approved, then save it to Amazon S3 bucket
-        if ($request->hasFile('image')) {
-            //  Get the image
-            $image_file = Input::file('image');
-
-            //  Store the image file to Amazon s3 and retrieve the new image name
-            $image_file_name = Storage::disk('s3')->putFile('jobcard_images', $image_file, 'public');
-
-            //  Construct the URL to the new uploaded file
-            $image_url = env('AWS_URL').$image_file_name;
-        }
-
         //  If we have a new custom priority, lets save it
         if (strpos($priority_raw, '_&_') !== false) {
             //  Save the new priority and assign it back to the request input value
@@ -324,16 +312,18 @@ class JobcardController extends Controller
             'cost_center_id' => $request->input('cost_center'),
             'company_branch_id' => $request->input('branch'),
             'category_id' => $request->input('category'),
-            'img_url' => $image_url,
             'who_created_id' => Auth::id(),
         ]);
 
         if ($jobcard) {
-            //  Allocate the process form for tracking status
-            $process = $jobcard->processInstructions()->create([
-                'process_form' => Auth::user()->companyBranch->company->processForms()->where('selected', 1)->first()->instructions,
-            ]);
+            /*  Allocate the process form for tracking status
+            *
 
+                $process = $jobcard->processInstructions()->create([
+                    'process_form' => Auth::user()->companyBranch->company->processForms()->where('selected', 1)->first()->instructions,
+                ]);
+
+             */
             //  Record the creator of the jobcard as the first viewer
             $jobcardView = $jobcard->views()->create([
                 'who_viewed_id' => Auth::id(),
@@ -345,8 +335,39 @@ class JobcardController extends Controller
                                 'type' => 'created',
                             ],
                 'who_created_id' => Auth::id(),
-                'company_branch_id' => Auth::user()->company_branch_id,
+                'company_id' => Auth::user()->companyBranch->company->id,
             ]);
+
+            //  If we have the image and has been approved, then save it to Amazon S3 bucket
+            if ($request->hasFile('image')) {
+                //  Get the image
+                $image_file = Input::file('image');
+
+                //  Store the image file to Amazon s3 and retrieve the new image name
+                $image_file_name = Storage::disk('s3')->putFile('jobcard_images', $image_file, 'public');
+
+                //  Construct the URL to the new uploaded file
+                $image_url = env('AWS_URL').$image_file_name;
+
+                //  Record the uploaded file
+                $document = $jobcard->documents()->create([
+                                'name' => $image_file->getClientOriginalName(),     //  e.g) aircon picture
+                                'mime' => getimagesize($image_file)['mime'],        //  e.g) "mime": "image/jpeg"
+                                'size' => $image_file->getClientSize(),             //  e.g) 101936
+                                'url' => $image_url,
+                                'who_created_id' => Auth::user()->id,
+                            ]);
+
+                if ($document) {
+                    $documentActivity = $document->recentActivities()->create([
+                        'activity' => [
+                                        'type' => 'created',
+                                    ],
+                        'who_created_id' => Auth::id(),
+                        'company_id' => Auth::user()->companyBranch->company->id,
+                    ]);
+                }
+            }
         }
 
         //  Notify the user that the jobcard was created successfully

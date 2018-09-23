@@ -198,7 +198,11 @@
                                                                     id="branch" class="form-control{{ $errors->has('branch') ? '  is-invalid' : '' }} custom-select" name="branch">
                                                                 @foreach(Auth::user()->companyBranch->company->branches()->orderBy('name', 'asc')->get() as $branch)
                                                                     <option value = "{{ $branch->id }}" 
-                                                                        {{ old('branch') == "$branch->id" ? 'selected':'' }}>{{ $branch->name }} ({{ $branch->destination }})</option>
+                                                                        {{  
+                                                                            old('branch') == $branch->id ? 'selected' :
+                                                                                (Auth::user()->companyBranch->id == $branch->id ? 'selected' : '')
+                                                                        }}>
+                                                                        {{ $branch->name }} ({{ $branch->destination }})</option>
                                                                 @endforeach
                                                             </select>
                                                             <div class="input-group-prepend">
