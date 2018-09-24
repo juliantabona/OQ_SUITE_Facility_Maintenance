@@ -38,71 +38,73 @@ class JobcardController extends Controller
 
     public function show($jobcard_id)
     {
-        //  Get the jobcard
-        $jobcard = Jobcard::find($jobcard_id);
+        /*  Get the jobcard along with its relations including
+         *  the jobcard client, contractors, docuemtns and recent activity which
+         *  holds information about all views, downloads, authourizations, assigns,
+         *  updates, deletes, emails sent, and requests.
+         */
 
-        // If we have the jobcard
-        if (count($jobcard)) {
-            //  If the jobcard has been assigned a client
-            if ($jobcard->client()->count()) {
-                //  Get the associated client contacts
-                $contacts = $jobcard->client->contacts()->paginate(3, ['*'], 'contacts');
-            } else {
-                //  Otherwise we don't have clients
-                $contacts = null;
-            }
+        $jobcard = Jobcard::with(array(
+                                'documents',
+                                'recentActivities',
+                                'client' => function ($query) {
+                                    $query->with('contacts');
+                                },
+                                'contractorsList' => function ($query) {
+                                    $query->paginate(5, ['*'], 'contractors');
+                                },
+                            ))->where('id', $jobcard_id)
+                            ->first();
 
-            //  Get the potential contractors list
-            $contractors = $jobcard->contractorsList()->paginate(5, ['*'], 'contractors');
-
+        //  If we have a jobcard
+        if ($jobcard) {
             /*  Calculate how many days until deadline
-             *  Get the deadline time in seconds then
-             *  Minus current time in seconds and
-             *  Divide by 24hrs for days left till deadline
-             */
+            *  Get the deadline time in seconds then
+            *  Minus current time in seconds and
+            *  Divide by 24hrs for days left till deadline
+            */
             $deadline = round((strtotime($jobcard->end_date)
                             - strtotime(\Carbon\Carbon::now()->toDateTimeString()))
                             / (60 * 60 * 24));
 
-            /*  By first assuming the user has not already seen this jobcard before
-             *  Lets now actually confirm if the user has viewwed this jobcard before
-             */
+            collect($jobcard->recentActivities)->map(function ($activity) use ($jobcard) {
+                //  If this is a viewing activity
+                if ($activity->type == 'viewing') {
+                    //  And the view belongs to the current authenticated user
+                    if ($activity->detail['viewer'] == Auth::id()) {
+                        /*  Calculate how long ago they viewed from now
+                        *  Get the current time in seconds and
+                        *  Divide by 60 to give number of minutes since last view
+                        */
+                        $last_viewed = (strtotime(\Carbon\Carbon::now()->toDateTimeString()
+                                        ) - strtotime($activity->created_at))
+                                        / 60;
 
-            $last_viewed = null;
+                        // If the user last viewed this atleast 1minute ago then record their new view
+                        if ($last_viewed > 1) {
+                            //  Record activity of a new view
+                            $jobcardViewedActivity = $jobcard->recentActivities()->create([
+                                'type' => 'viewing',
+                                'detail' => [
+                                                'viewer' => Auth::id(),
+                                            ],
+                                'who_created_id' => Auth::id(),
+                                'company_id' => Auth::user()->companyBranch->company->id,
+                            ]);
 
-            if (count($jobcard->views)) {
-                // Get the users last time of viewing this jobcard
-                $last_viewed = $jobcard->views()
-                                ->where('who_viewed_id', $jobcard->createdBy->id)
-                                ->where('viewable_id', $jobcard->id)
-                                ->where('viewable_type', 'jobcard')
-                                ->orderBy('created_at', 'desc')
-                                ->first()
-                                ->created_at;
-
-                /*  Calculate how long ago they viewed from now
-                 *  Get the current time in seconds and
-                 *  Divide by 60 to give number of minutes since last view
-                 */
-                $last_viewed = (strtotime(\Carbon\Carbon::now()->toDateTimeString()
-                                ) - strtotime($last_viewed))
-                                / 60;
-
-                // If the user last viewed this atleast 60mins ago (1hour) then record their new view
-                if ($last_viewed > 60) {
-                    //  Record this moment as a new view
-                    $jobcardView = $jobcard->views()->create([
-                        'who_viewed_id' => Auth::id(),
-                    ]);
+                            //  Break the loop
+                            return false;
+                        }
+                    }
                 }
-            }
+            });
 
             $processForm = \App\ProcessForm::where('company_id', Auth::user()->companyBranch->company->id)
                             ->where('type', 'jobcard')
                             ->where('selected', 1)
                             ->first();
 
-            return view('dashboard.pages.jobcard.show', compact('jobcard', 'deadline', 'contacts', 'contractors', 'processForm'));
+            return view('dashboard.pages.jobcard.show', compact('jobcard', 'deadline', 'processForm'));
         } else {
             return view('dashboard.pages.jobcard.no_jobcard');
         }
@@ -315,6 +317,7 @@ class JobcardController extends Controller
             'who_created_id' => Auth::id(),
         ]);
 
+        //  If the jobcard was created successfully
         if ($jobcard) {
             /*  Allocate the process form for tracking status
             *
@@ -324,15 +327,12 @@ class JobcardController extends Controller
                 ]);
 
              */
-            //  Record the creator of the jobcard as the first viewer
-            $jobcardView = $jobcard->views()->create([
-                'who_viewed_id' => Auth::id(),
-            ]);
 
-            //  Record this activity
-            $jobcardActivity = $jobcard->recentActivities()->create([
-                'activity' => [
-                                'type' => 'created',
+            //  Record activity of jobcard created
+            $jobcardCreatedActivity = $jobcard->recentActivities()->create([
+                'type' => 'created',
+                'detail' => [
+                                'jobcard' => $jobcard,
                             ],
                 'who_created_id' => Auth::id(),
                 'company_id' => Auth::user()->companyBranch->company->id,
@@ -358,16 +358,29 @@ class JobcardController extends Controller
                                 'who_created_id' => Auth::user()->id,
                             ]);
 
+                //  If the document was created successfully
                 if ($document) {
+                    //  Record activity of document created
                     $documentActivity = $document->recentActivities()->create([
-                        'activity' => [
-                                        'type' => 'created',
+                        'type' => 'created',
+                        'detail' => [
+                                        'document' => $document,
                                     ],
                         'who_created_id' => Auth::id(),
                         'company_id' => Auth::user()->companyBranch->company->id,
                     ]);
                 }
             }
+
+            //  Record activity of creator as the first viewer
+            $jobcardViewedActivity = $jobcard->recentActivities()->create([
+                'type' => 'viewing',
+                'detail' => [
+                                'viewer' => Auth::id(),
+                            ],
+                'who_created_id' => Auth::id(),
+                'company_id' => Auth::user()->companyBranch->company->id,
+            ]);
         }
 
         //  Notify the user that the jobcard was created successfully

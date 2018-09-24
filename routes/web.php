@@ -150,3 +150,14 @@ Route::group(['prefix' => 'jobcards',  'middleware' => 'auth'], function () {
     Route::put('/{jobcard_id}/edit', 'JobcardController@edit')->name('jobcard-edit');
     Route::delete('/{jobcard_id}', 'JobcardController@delete')->name('jobcard-delete');
 });
+
+/*  COMPANIES    list, create, show, edit, save, delete */
+Route::group(['prefix' => 'companies',  'middleware' => 'auth'], function () {
+    Route::get('/', 'CompanyController@index')->name('companies');
+    Route::post('/', 'CompanyController@store')->name('company-store');
+    Route::get('/create', 'CompanyController@create')->name('company-create');
+    Route::get('/{company_id}', 'CompanyController@show')->name('company-show');
+    Route::put('/{company_id}', 'CompanyController@update')->name('company-update');
+    Route::get('/{company_id}/edit', 'CompanyController@edit')->name('company-edit');
+    Route::delete('/{company_id}', 'CompanyController@delete')->name('company-delete');
+});

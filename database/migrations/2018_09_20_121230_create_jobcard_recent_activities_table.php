@@ -13,7 +13,8 @@ class CreateJobcardRecentActivitiesTable extends Migration
     {
         Schema::create('recent_activities', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('activity')->nullable();
+            $table->string('type')->nullable();
+            $table->text('detail')->nullable();
             $table->integer('trackable_id')->unsigned();
             $table->string('trackable_type');
             $table->integer('who_created_id')->unsigned()->nullable();

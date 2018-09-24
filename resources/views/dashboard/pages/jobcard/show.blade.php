@@ -314,9 +314,9 @@
                     <div class="card card-hoverable">
                         <div class="card-body p-3 pt-4">
                             <div class="row">
-                                @if($contractors->total())
+                                @if(!empty($jobcard->contractors_list))
                                     <div class="col-12 clearfix">
-                                        <h4 class="card-title mb-3 mt-4 ml-2">Potential Contractors ({{ $contractors->total() }})</h4>
+                                        <h4 class="card-title mb-3 mt-4 ml-2">Potential Contractors ({{ $jobcard->contractors_list->total() }})</h4>
                                         <div class="table-responsive table-hover">
                                             <table class="table mt-3 border-top">
                                                 <thead>
@@ -332,7 +332,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($contractors as $contractor)
+                                                    @foreach($jobcard->contractors_list as $contractor)
                                                         <tr class="clickable-row show-contractor-modal-btn" data-toggle="modal" data-target="#show-contractor-modal">
                                                             <td>
                                                                 <form method="POST" action="{{ route('jobcard-select-contractor', [$jobcard->id, $contractor->id]) }}">
@@ -445,6 +445,11 @@
             </div>
         </div>
     </div>
+
+    @include('dashboard.layouts.modals.add_client')
+    @include('dashboard.layouts.modals.add_contact')
+    @include('dashboard.layouts.modals.add_contractor')
+    @include('dashboard.layouts.modals.show_contractor')
 
 @endsection @section('js') 
 
