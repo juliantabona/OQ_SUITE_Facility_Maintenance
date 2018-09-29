@@ -40,15 +40,15 @@
                         <div class="col-12 col-lg-6 mb-4">
                             <div class="card">
                                 <div class="card-body pb-0">
-                                    <div class="feature d-flex pb-0">
-                                        <div class="icon text-primary mr-3">
+                                    <div class="feature d-block d-sm-flex pb-0">
+                                        <div class="mb-3 ml-auto mr-auto icon text-primary mr-3">
                                             <i class="icon-briefcase icons"></i>
                                         </div>
                                         <div class="px-4">
-                                            <h5>Job Management</h5>
-                                            <p>Receive jobs from new and exsiting customers stored on your customer management dashboard. Assign contractors
+                                            <h5 class="text-center text-sm-left">Job Management</h5>
+                                            <p class="text-center text-sm-left">Receive jobs from new and exsiting customers stored on your customer management dashboard. Assign contractors
                                             to ongoing jobs and manage job lifecycles from start to finish
-                                            <br><a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>
+                                            <br><a href="{{ route('features') }}" class="text-center text-sm-left btn pl-0">Learn More</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -57,14 +57,17 @@
 
                         <div class="col-12 col-lg-6 mb-4">
                             <div class="card">
-                                <div class="card-body pb-0"><div class="feature d-flex pb-0">
-                                    <div class="icon text-primary mr-3"><i class="icon-organization icons"></i></div>
+                                <div class="card-body pb-0">
+                                    <div class="feature d-block d-sm-flex pb-0">
+                                        <div class="mb-3 ml-auto mr-auto icon text-primary mr-3">
+                                            <i class="icon-organization icons"></i>
+                                        </div>
                                         <div class="px-4">
-                                            <h5>Project Management</h5>
-                                            <p>Create projects and assign team members, budgets, jobcards, timelines and performance trackers to effectively
+                                            <h5 class="text-center text-sm-left">Project Management</h5>
+                                            <p class="text-center text-sm-left">Create projects and assign team members, budgets, jobcards, timelines and performance trackers to effectively
                                             manage project resources and deliverables with ease
                                             <br>
-                                            <a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>
+                                            <a href="{{ route('features') }}" class="text-center text-sm-left btn pl-0">Learn More</a></p>
                                         </div>
                                     </div>
                                 </div>
@@ -75,15 +78,18 @@
                     <div class="row row-eq-height mb-5">
                         <div class="col-12 col-lg-6 mb-4">
                             <div class="card">
-                                <div class="card-body pb-0"><div class="feature d-flex pb-0">
-                                    <div class="icon text-primary mr-3"><i class="icon-docs icons"></i></div>
-                                    <div class="px-4">
-                                        <h5>Jobcard Management</h5>
-                                        <p>Manage jobcards efficiently with record of job details, assigned staff, used assets, contractors selected
-                                        and timelines. Receive a complete history of recent changes or activities committed to all jobcards
-                                        <br>
-                                        <a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>
-                                    </div>
+                                <div class="card-body pb-0">
+                                    <div class="feature d-block d-sm-flex pb-0">
+                                        <div class="mb-3 ml-auto mr-auto icon text-primary mr-3">
+                                            <i class="icon-docs icons"></i>
+                                        </div>
+                                        <div class="px-4">
+                                            <h5 class="text-center text-sm-left">Jobcard Management</h5>
+                                            <p class="text-center text-sm-left">Manage jobcards efficiently with record of job details, assigned staff, used assets, contractors selected
+                                            and timelines. Receive a complete history of recent changes or activities committed to all jobcards
+                                            <br>
+                                            <a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -91,11 +97,14 @@
 
                         <div class="col-12 col-lg-6 mb-4">
                             <div class="card">
-                                <div class="card-body pb-0"><div class="feature d-flex pb-0">
-                                    <div class="icon text-primary mr-3"><i class="icon-wrench icons"></i></div>
+                                <div class="card-body pb-0">
+                                    <div class="feature d-block d-sm-flex pb-0">
+                                        <div class="mb-3 ml-auto mr-auto icon text-primary mr-3">
+                                            <i class="icon-wrench icons"></i>
+                                        </div>
                                         <div class="px-4">
-                                            <h5>Asset Management</h5>
-                                            <p>Stay in touch with your assets, knowing how much stock you have and how your assets are allocated as per
+                                            <h5 class="text-center text-sm-left">Asset Management</h5>
+                                            <p class="text-center text-sm-left">Stay in touch with your assets, knowing how much stock you have and how your assets are allocated as per
                                             workdone. Understand your in-demand assets and cut costs from assets not in use
                                             <br>
                                             <a href="{{ route('features') }}" class="btn pl-0">Learn More</a></p>

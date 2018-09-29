@@ -34,6 +34,7 @@ body {
     position: relative;
     height: 100vh;
     min-height: 700px;
+    overflow: hidden;
     background: url(../../images/backgrounds/welcome-cover.jpg) no-repeat center center fixed;
     background-size: cover;
 }
@@ -117,6 +118,7 @@ body {
 
 #our-services .features .feature .icon {
     border-radius: 50%;
+    width: 65px;
     min-width: 65px;
     height: 65px;
     line-height: 65px;
