@@ -13,23 +13,18 @@ class Jobcard extends Model
      */
     protected $fillable = [
         'title', 'description', 'start_date', 'end_date', 'step_id', 'priority_id', 'cost_center_id', 'company_branch_id',
-        'category_id', 'client_id', 'select_contractor_id', 'img_url', 'who_created_id',
+        'category_id', 'client_id', 'select_contractor_id', 'img_url',
     ];
 
-    public function views()
+    public function creator()
     {
-        return $this->morphMany('App\View', 'viewable');
+        return $this->morphMany('App\Creator', 'creatable');
     }
 
     public function recentActivities()
     {
         return $this->morphMany('App\RecentActivity', 'trackable')
                     ->orderBy('created_at', 'desc');
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'who_created_id');
     }
 
     public function category()
@@ -75,13 +70,21 @@ class Jobcard extends Model
     public function contractorsList()
     {
         return $this->belongsToMany('App\Company', 'jobcard_contractors', 'jobcard_id', 'contractor_id')
-                    ->withPivot('id', 'jobcard_id', 'contractor_id', 'amount', 'quotation_doc_url')
+                    ->withPivot('id', 'jobcard_id', 'contractor_id', 'amount', 'quotation_doc_id')
                     ->withTimestamps();
     }
 
     public function processFormStep()
     {
         return $this->belongsTo('App\ProcessFormSteps', 'step_id');
+    }
+
+    /*  Get the total count of all the people who viewed this jobcard. Make sure that
+     *  we have distinct viewers meaning that we are not counting repeated records.
+    */
+    public function distinctViewersCount()
+    {
+        return $this->recentActivities()->distinct('who_created_id')->count('who_created_id');
     }
 
     /*

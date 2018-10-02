@@ -23,8 +23,13 @@ class ProcessForm extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'form_structure', 'doc_structure', 'type', 'selected', 'deletable', 'company_id', 'who_created_id',
+        'name', 'description', 'form_structure', 'doc_structure', 'type', 'selected', 'deletable', 'company_id',
     ];
+
+    public function creator()
+    {
+        return $this->morphMany('App\Creator', 'creatable');
+    }
 
     public function recentActivities()
     {

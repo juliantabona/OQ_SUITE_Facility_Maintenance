@@ -16,7 +16,6 @@ class CreateCompanyBranchesTable extends Migration
             $table->string('name')->nullable();
             $table->string('destination')->nullable();
             $table->integer('company_id')->unsigned()->nullable();
-            $table->integer('who_created_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

@@ -22,10 +22,8 @@ class CreateCompaniesTable extends Migration
             $table->string('type')->nullable();
             $table->string('website_link')->nullable();
             $table->string('profile_doc_url')->nullable();
-            $table->string('logo_url')->nullable();
             $table->integer('phone_id')->unsigned()->nullable();
             $table->string('email')->nullable();
-            $table->integer('who_created_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

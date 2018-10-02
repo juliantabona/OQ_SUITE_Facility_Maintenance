@@ -18,7 +18,6 @@ class CreatePrioritiesTable extends Migration
             $table->string('color_code')->nullable();
             $table->integer('priority_id')->unsigned();
             $table->string('priority_type');
-            $table->integer('who_created_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

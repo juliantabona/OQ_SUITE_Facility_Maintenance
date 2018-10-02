@@ -4,17 +4,19 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateContractorsTable extends Migration
+class CreateCompanyDirectoriesTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create('contractors', function (Blueprint $table) {
+        Schema::create('company_directories', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id')->unsigned();
-            $table->integer('contractor_id')->unsigned();
+            $table->string('type')->nullable();
+            $table->integer('directable_id')->unsigned();
+            $table->string('directable_type');
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ class CreateContractorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contractors');
+        Schema::dropIfExists('company_directories');
     }
 }

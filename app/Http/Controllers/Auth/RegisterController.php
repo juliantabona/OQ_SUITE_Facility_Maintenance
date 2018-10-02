@@ -104,6 +104,38 @@ class RegisterController extends Controller
                         'company_branch_id' => $branch->id,
                     ]);
 
+                    //  Fetch the updated user and details
+                    $user = User::find($user->id);
+
+                    //  Record activity of user created
+                    $userCreatedActivity = $user->recentActivities()->create([
+                        'type' => 'created',
+                        'detail' => [
+                                        'user' => $user,
+                                    ],
+                        'who_created_id' => $user->id,
+                        'company_branch_id' => $user->company_branch_id,
+                    ]);
+
+                    //  Record activity of a new company created
+                    $companyCreatedActivity = $company->recentActivities()->create([
+                        'type' => 'created',
+                        'detail' => [
+                                        'company' => $company,
+                                    ],
+                        'who_created_id' => $user->id,
+                    ]);
+
+                    //  Record activity of a new branch created
+                    $branchCreatedActivity = $branch->recentActivities()->create([
+                        'type' => 'created',
+                        'detail' => [
+                                        'branch' => $branch,
+                                    ],
+                        'who_created_id' => $user->id,
+                        'company_branch_id' => $user->company_branch_id,
+                    ]);
+
                     //  Send email to the user to activate account
                     Mail::to($data['email'])->send(new ActivateAccount($user));
 

@@ -16,8 +16,8 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name', 'last_name', 'gender', 'date_of_birth', 'bio', 'address', 'phone_ext', 'phone_num', 'email',
-        'additional_email', 'username', 'password', 'avatar', 'status', 'verifyToken', 'settings', 'tutorial_status',
-        'company_branch_id', 'position', 'country', 'city', 'accessibility', 'who_created_id',
+        'additional_email', 'username', 'password', 'status', 'verifyToken', 'settings', 'tutorial_status',
+        'company_branch_id', 'position', 'country', 'city', 'accessibility',
     ];
 
     /**
@@ -53,6 +53,15 @@ class User extends Authenticatable
     public function documents()
     {
         return $this->morphMany('App\Document', 'documentable');
+    }
+
+    /**
+     *   Get the recent activities that belong to the user.
+     */
+    public function recentActivities()
+    {
+        return $this->morphMany('App\RecentActivity', 'trackable')
+                    ->orderBy('created_at', 'desc');
     }
 
     /**

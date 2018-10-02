@@ -69,7 +69,7 @@
         </a>
         <a href="/jobcards/1/viewers" class="btn btn-inverse-light mt-3 ml-2 mb-2">
             <i class="icon-eye icons"></i>
-            {{ $jobcard->views()->distinct('who_viewed_id')->count('who_viewed_id') }} viewer(s)
+            {{ $jobcard->distinctViewersCount() }} viewer(s)
         </a>
 
         <div class="col-lg-12 d-flex flex-column">
@@ -200,10 +200,10 @@
                                             <h6 class="card-title mb-0 ml-2 text-white">Client Details</h6>
                                         </div>
                                         <div class="mt-3 ml-3 reference-details">
-                                            @if($jobcard->client->logo_url)
+                                            @if($jobcard->client->logo->first()->url)
                                                 <div class="lightgallery">
-                                                    <a href="{{ $jobcard->client->logo_url }}">
-                                                        <img class="company-logo img-thumbnail mb-2 p-2 rounded rounded-circle w-50" src="{{ $jobcard->client->logo_url }}" />
+                                                    <a href="{{$jobcard->client->logo->first()->url }}">
+                                                        <img class="company-logo img-thumbnail mb-2 p-2 rounded rounded-circle w-50" src="{{ $jobcard->client->logo->first()->url }}" />
                                                     </a>
                                                 </div>
                                             @endif
@@ -222,7 +222,7 @@
                                                 <b>Email: </b>{{ $jobcard->client->city ? $jobcard->client->email:'____' }}
                                             </span>
                                             <span class="lower-font clearfix mb-3">
-                                                <form method="POST" action="{{ route('jobcard-remove-client', [$jobcard->id, $jobcard->client_id]) }}" class="d-inline">
+                                                <form method="POST" action="#" class="d-inline">
                                                     {{ method_field('DELETE') }}
                                                     @csrf
                                                     <button type="submit" style="font-size:  12px;" class="btn-link float-right mr-1">
@@ -230,14 +230,14 @@
                                                         Remove
                                                     </button>
                                                 </form>
-                                                <a href="{{ route('company-edit', $jobcard->client_id) }}" style="font-size:  12px;" class="float-right mr-1"><i class="icon-pencil"></i> Edit</a>   
+                                                <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-pencil"></i> Edit</a>   
                                                 <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-refresh"></i> Change Client</a>
-                                                <a href="{{ route('client-show', [$jobcard->client_id]) }}" style="font-size:  12px;" class="float-right mr-1"><i class="icon-eye"></i> View</a>
+                                                <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-eye"></i> View</a>
                                             </span> 
                                         </div>
                                     </div>
 
-                                    @if($contacts->total())
+                                    @if(!empty($contacts))
                                         <div class="col-12 mb-2">
                                             <div class="bg-primary p-2 text-white">
                                                 <i class="float-left icon-user icon-sm icons ml-3 mr-2"></i>
@@ -314,9 +314,9 @@
                     <div class="card card-hoverable">
                         <div class="card-body p-3 pt-4">
                             <div class="row">
-                                @if(!empty($jobcard->contractors_list))
+                                @if(!empty($contractorsList))
                                     <div class="col-12 clearfix">
-                                        <h4 class="card-title mb-3 mt-4 ml-2">Potential Contractors ({{ $jobcard->contractors_list->total() }})</h4>
+                                        <h4 class="card-title mb-3 mt-4 ml-2">Potential Contractors ({{ $contractorsList->total() }})</h4>
                                         <div class="table-responsive table-hover">
                                             <table class="table mt-3 border-top">
                                                 <thead>
@@ -332,10 +332,10 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach($jobcard->contractors_list as $contractor)
+                                                    @foreach($contractorsList as $contractor)
                                                         <tr class="clickable-row show-contractor-modal-btn" data-toggle="modal" data-target="#show-contractor-modal">
                                                             <td>
-                                                                <form method="POST" action="{{ route('jobcard-select-contractor', [$jobcard->id, $contractor->id]) }}">
+                                                                <form method="POST" action="#">
                                                                     {{ method_field('PUT') }}
                                                                     @csrf
 
@@ -363,7 +363,7 @@
                                                             <td class="company-price">{{ $contractor->pivot->amount ? $contractor->pivot->amount:'____' }}</td>
                                                             <td>
                                                                 <div>
-                                                                    <form method="POST" action="{{ route('jobcard-remove-contractor', [$jobcard->id, $contractor->id, $contractor->pivot->id]) }}" class="d-inline">
+                                                                    <form method="POST" action="#" class="d-inline">
                                                                         {{ method_field('DELETE') }}
                                                                         @csrf
                                                                         <button type="submit" style="font-size:  12px;" class="btn-link float-right mr-1">
@@ -386,7 +386,7 @@
                                         <div class="row">
                                             <div class="col-12 mt-2">
                                                 <nav class="float-right">
-                                                    {{ $contractors->links() }}
+                                                    {{ $contractorsList->links() }}
                                                 </nav>
                                             </div>
                                             <div class="col-12 mt-2">
@@ -422,10 +422,11 @@
                                 <div>
                                     <p class="mt-3 p-2 text-center">Today</p>
                                     <div class="timeline">
+                                        
                                         @foreach($jobcard->recentActivities as $position => $recentActivity)
-                                            
-                                            @include('dashboard.layouts.recentActivity.default-activity-layout')
-
+                                            @if(!in_array($recentActivity->type, ['viewing']))
+                                                @include('dashboard.layouts.recentActivity.default-activity-layout')
+                                            @endif
                                         @endforeach
                                     </div>
                                     <p class="mt-3 p-2 text-center">Start</p>

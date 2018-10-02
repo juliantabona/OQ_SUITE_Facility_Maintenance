@@ -24,8 +24,6 @@ class CreateJobcardsTable extends Migration
             $table->integer('category_id')->unsigned()->nullable();
             $table->integer('client_id')->unsigned()->nullable();
             $table->integer('select_contractor_id')->unsigned()->nullable();
-            $table->string('img_url')->nullable();
-            $table->integer('who_created_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

@@ -17,7 +17,6 @@ class CreateCostcentersTable extends Migration
             $table->text('description')->nullable();
             $table->integer('costcenter_id')->unsigned();
             $table->string('costcenter_type');
-            $table->integer('who_created_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

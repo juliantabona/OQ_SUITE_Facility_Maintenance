@@ -25,7 +25,6 @@ class CreateUsersTable extends Migration
             $table->string('additional_email')->nullable();
             $table->string('username')->nullable();
             $table->string('password')->nullable();
-            $table->string('avatar')->nullable();
             $table->boolean('status')->default(0);
             $table->string('verifyToken')->nullable();
             $table->text('settings')->nullable();
@@ -35,7 +34,6 @@ class CreateUsersTable extends Migration
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('accessibility')->nullable();
-            $table->integer('who_created_id')->unsigned()->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

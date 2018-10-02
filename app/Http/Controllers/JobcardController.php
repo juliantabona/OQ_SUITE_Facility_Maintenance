@@ -47,14 +47,12 @@ class JobcardController extends Controller
         $jobcard = Jobcard::with(array(
                                 'documents',
                                 'recentActivities',
-                                'client' => function ($query) {
-                                    $query->with('contacts');
-                                },
-                                'contractorsList' => function ($query) {
-                                    $query->paginate(5, ['*'], 'contractors');
-                                },
+                                'client',
                             ))->where('id', $jobcard_id)
                             ->first();
+
+        $contacts = $jobcard->client->contacts()->paginate(5, ['*'], 'contacts');
+        $contractorsList = $jobcard->contractorsList()->paginate(5, ['*'], 'contractors');
 
         //  If we have a jobcard
         if ($jobcard) {
@@ -67,44 +65,59 @@ class JobcardController extends Controller
                             - strtotime(\Carbon\Carbon::now()->toDateTimeString()))
                             / (60 * 60 * 24));
 
-            collect($jobcard->recentActivities)->map(function ($activity) use ($jobcard) {
+            /*  Lets go through the last viewing activity and add a viewing status if necessary
+            */
+            $recentViews = $jobcard->recentActivities->filter(function ($activity) {
                 //  If this is a viewing activity
                 if ($activity->type == 'viewing') {
                     //  And the view belongs to the current authenticated user
                     if ($activity->detail['viewer'] == Auth::id()) {
-                        /*  Calculate how long ago they viewed from now
-                        *  Get the current time in seconds and
-                        *  Divide by 60 to give number of minutes since last view
-                        */
-                        $last_viewed = (strtotime(\Carbon\Carbon::now()->toDateTimeString()
-                                        ) - strtotime($activity->created_at))
-                                        / 60;
-
-                        // If the user last viewed this atleast 1minute ago then record their new view
-                        if ($last_viewed > 1) {
-                            //  Record activity of a new view
-                            $jobcardViewedActivity = $jobcard->recentActivities()->create([
-                                'type' => 'viewing',
-                                'detail' => [
-                                                'viewer' => Auth::id(),
-                                            ],
-                                'who_created_id' => Auth::id(),
-                                'company_id' => Auth::user()->companyBranch->company->id,
-                            ]);
-
-                            //  Break the loop
-                            return false;
-                        }
+                        return $activity;
                     }
                 }
             });
+
+            if ($recentViews->count()) {
+                collect([$recentViews->first()])->map(function ($activity) use ($jobcard) {
+                    /*  Calculate how long ago they viewed from now
+                    *  Get the current time in seconds and
+                    *  Divide by 60 to give number of minutes since last view
+                    */
+                    $last_viewed = (strtotime(\Carbon\Carbon::now()->toDateTimeString()
+                                            ) - strtotime($activity->created_at))
+                                            / 60;
+
+                    // If the user last viewed this atleast 1minute ago then record their new view
+                    if ($last_viewed > 1) {
+                        //  Record activity of a new view
+                        $jobcardViewedActivity = $jobcard->recentActivities()->create([
+                                    'type' => 'viewing',
+                                    'detail' => [
+                                                    'viewer' => Auth::id(),
+                                                ],
+                                    'who_created_id' => Auth::id(),
+                                    'company_branch_id' => Auth::user()->company_branch_id,
+                                ]);
+                    }
+                });
+            } else {
+                //  Record activity of a new view
+                $jobcardViewedActivity = $jobcard->recentActivities()->create([
+                    'type' => 'viewing',
+                    'detail' => [
+                                    'viewer' => Auth::id(),
+                                ],
+                    'who_created_id' => Auth::id(),
+                    'company_branch_id' => Auth::user()->company_branch_id,
+                ]);
+            }
 
             $processForm = \App\ProcessForm::where('company_id', Auth::user()->companyBranch->company->id)
                             ->where('type', 'jobcard')
                             ->where('selected', 1)
                             ->first();
 
-            return view('dashboard.pages.jobcard.show', compact('jobcard', 'deadline', 'processForm'));
+            return view('dashboard.pages.jobcard.show', compact('jobcard', 'contractorsList', '$contacts', 'deadline', 'processForm'));
         } else {
             return view('dashboard.pages.jobcard.no_jobcard');
         }
@@ -174,7 +187,7 @@ class JobcardController extends Controller
         $rules = array(
             /*  General Validation
              *
-             *  Simple and strainght forward form validation
+             *  Simple and straight forward form validation
              */
             'title' => 'required|max:255|min:3',
             'description' => 'required|max:255|min:3',
@@ -257,50 +270,106 @@ class JobcardController extends Controller
         //  If we have a new custom priority, lets save it
         if (strpos($priority_raw, '_&_') !== false) {
             //  Save the new priority and assign it back to the request input value
+            $priorityCreated = Auth::user()->companyBranch->company->priorities()->create([
+                                    'name' => $priority[0],
+                                    'description' => $priority[1],
+                                    'color_code' => $priority[2],
+                                    'who_created_id' => Auth::id(),
+                                ]);
+            //  Update request parameter
             $request->merge([
-                    'priority' => Auth::user()->companyBranch->company->priorities()->create([
-                            'name' => $priority[0],
-                            'description' => $priority[1],
-                            'color_code' => $priority[2],
-                            'who_created_id' => Auth::id(),
-                        ])->id,
+                    'priority' => $priorityCreated->id,
             ]);
+
+            if ($priorityCreated) {
+                //  Record activity of a new priority created
+                $priorityCreatedActivity = $priorityCreated->recentActivities()->create([
+                    'type' => 'created',
+                    'detail' => [
+                                    'priority' => $priorityCreated,
+                                ],
+                    'who_created_id' => Auth::id(),
+                    'company_branch_id' => Auth::user()->company_branch_id,
+                ]);
+            }
         }
 
         //  If we have a new custom cost center, lets save it
         if (strpos($cost_center_raw, '_&_') !== false) {
             //  Save the new cost center and assign it back to the request input value
+            $costcenterCreated = Auth::user()->companyBranch->company->costCenters()->create([
+                                    'name' => $cost_center[0],
+                                    'description' => $cost_center[1],
+                                    'who_created_id' => Auth::id(),
+                                ]);
+            //  Update request parameter
             $request->merge([
-                    'cost_center' => Auth::user()->companyBranch->company->costCenters()->create([
-                            'name' => $cost_center[0],
-                            'description' => $cost_center[1],
-                            'who_created_id' => Auth::id(),
-                        ])->id,
+                    'cost_center' => $costcenterCreated->id,
             ]);
+
+            if ($costcenterCreated) {
+                //  Record activity of a new cost center created
+                $costcenterCreatedActivity = $costcenterCreated->recentActivities()->create([
+                    'type' => 'created',
+                    'detail' => [
+                                    'costcenter' => $costcenterCreated,
+                                ],
+                    'who_created_id' => Auth::id(),
+                    'company_branch_id' => Auth::user()->company_branch_id,
+                ]);
+            }
         }
 
         //  If we have a new custom category, lets save it
         if (strpos($category_raw, '_&_') !== false) {
             //  Save the new category and assign it back to the request input value
+            $categoryCreated = Auth::user()->companyBranch->company->categories()->create([
+                                    'name' => $category[0],
+                                    'description' => $category[1],
+                                    'who_created_id' => Auth::id(),
+                                ]);
+            //  Update request parameter
             $request->merge([
-                    'category' => Auth::user()->companyBranch->company->categories()->create([
-                            'name' => $category[0],
-                            'description' => $category[1],
-                            'who_created_id' => Auth::id(),
-                        ])->id,
+                    'category' => $categoryCreated->id,
             ]);
+
+            if ($categoryCreated) {
+                //  Record activity of a new category created
+                $categoryCreatedActivity = $categoryCreated->recentActivities()->create([
+                    'type' => 'created',
+                    'detail' => [
+                                    'category' => $categoryCreated,
+                                ],
+                    'who_created_id' => Auth::id(),
+                    'company_branch_id' => Auth::user()->company_branch_id,
+                ]);
+            }
         }
 
         //  If we have a new custom company branch, lets save it
         if (strpos($branch_raw, '_&_') !== false) {
-            //  Save the new company branch and assign it back to the request input value
+            //  Save the new branch and assign it back to the request input value
+            $branchCreated = CompanyBranch::create([
+                                'name' => $branch[0],
+                                'company_id' => Auth::user()->companyBranch->company->id,
+                                'who_created_id' => Auth::id(),
+                            ]);
+            //  Update request parameter
             $request->merge([
-                    'branch' => CompanyBranch::create([
-                            'name' => $branch[0],
-                            'company_id' => Auth::user()->companyBranch->company->id,
-                            'who_created_id' => Auth::id(),
-                        ])->id,
+                    'branch' => $branchCreated->id,
             ]);
+
+            if ($branchCreated) {
+                //  Record activity of a new category created
+                $branchCreatedActivity = $branchCreated->recentActivities()->create([
+                    'type' => 'created',
+                    'detail' => [
+                                    'branch' => $branchCreated,
+                                ],
+                    'who_created_id' => Auth::id(),
+                    'company_branch_id' => $branchCreated->id,
+                ]);
+            }
         }
 
         //  Create the jobcard
@@ -335,7 +404,7 @@ class JobcardController extends Controller
                                 'jobcard' => $jobcard,
                             ],
                 'who_created_id' => Auth::id(),
-                'company_id' => Auth::user()->companyBranch->company->id,
+                'company_branch_id' => Auth::user()->company_branch_id,
             ]);
 
             //  If we have the image and has been approved, then save it to Amazon S3 bucket
@@ -351,6 +420,7 @@ class JobcardController extends Controller
 
                 //  Record the uploaded file
                 $document = $jobcard->documents()->create([
+                                'type' => 'samples',                                //  Used to identify from other documents
                                 'name' => $image_file->getClientOriginalName(),     //  e.g) aircon picture
                                 'mime' => getimagesize($image_file)['mime'],        //  e.g) "mime": "image/jpeg"
                                 'size' => $image_file->getClientSize(),             //  e.g) 101936
@@ -367,7 +437,7 @@ class JobcardController extends Controller
                                         'document' => $document,
                                     ],
                         'who_created_id' => Auth::id(),
-                        'company_id' => Auth::user()->companyBranch->company->id,
+                        'company_branch_id' => Auth::user()->company_branch_id,
                     ]);
                 }
             }
@@ -379,7 +449,7 @@ class JobcardController extends Controller
                                 'viewer' => Auth::id(),
                             ],
                 'who_created_id' => Auth::id(),
-                'company_id' => Auth::user()->companyBranch->company->id,
+                'company_branch_id' => Auth::user()->company_branch_id,
             ]);
         }
 

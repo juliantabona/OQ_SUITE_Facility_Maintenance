@@ -18,8 +18,13 @@ class CostCenter extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'who_created_id',
+        'name', 'description',
     ];
+
+    public function creator()
+    {
+        return $this->morphMany('App\Creator', 'creatable');
+    }
 
     /**
      * Get all of the owning cost center models.
@@ -27,5 +32,14 @@ class CostCenter extends Model
     public function costcenter()
     {
         return $this->morphTo();
+    }
+
+    /**
+     *   Get the recent activities that belong to the user.
+     */
+    public function recentActivities()
+    {
+        return $this->morphMany('App\RecentActivity', 'trackable')
+                    ->orderBy('created_at', 'desc');
     }
 }

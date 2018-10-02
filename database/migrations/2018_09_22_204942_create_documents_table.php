@@ -14,10 +14,11 @@ class CreateDocumentsTable extends Migration
         Schema::create('documents', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->nullable();
+            $table->string('type')->nullable();
             $table->text('description')->nullable();
             $table->string('mime')->nullable();
             $table->integer('size')->unsigned()->nullable();
-            $table->integer('who_created_id')->unsigned()->nullable();
+            $table->string('url')->nullable();
             $table->integer('documentable_id')->unsigned();
             $table->string('documentable_type');
             $table->timestamps();

@@ -14,7 +14,7 @@
     <b>{{ $recentActivity->activity["new_status"] ? $recentActivity->activity["new_status"]:'____' }}</b>
 
 
-@elseif($recentActivity->type == 'client_added')
+@elseif($recentActivity->type == 'created client')
     <a href="#">{{ $recentActivity->activity["company"]["name"] ? $recentActivity->activity["company"]["name"]:'____' }}</a>
     <b>added</b> as <b>client</b> for 
     <a href="{{ route('jobcard-show', [$recentActivity->trackable_id]) }}" data-toggle="tooltip" data-placement="top" title="{{ $recentActivity->jobcard ? $recentActivity->jobcard->title : '____' }}">Jobcard {{ '#' . $recentActivity->trackable_id }}</a>
@@ -24,7 +24,7 @@
     <a href="{{ route('jobcard-show', [$recentActivity->trackable_id]) }}" data-toggle="tooltip" data-placement="top" title="{{ $recentActivity->jobcard ? $recentActivity->jobcard->title : '____' }}">Jobcard {{ '#' . $recentActivity->trackable_id }}</a>
 
 
-@elseif($recentActivity->type == 'contractor_added')
+@elseif($recentActivity->type == 'created contractor')
     <a href="{{ route('contractor-show', [$recentActivity->activity["company"]["id"]]) }}">{{ $recentActivity->activity["company"]["name"] ? $recentActivity->activity["company"]["name"]:'____' }}</a>
     added to list of <b>contractors</b> for 
     <a href="{{ route('jobcard-show', [$recentActivity->trackable_id]) }}" data-toggle="tooltip" data-placement="top" title="{{ $recentActivity->jobcard ? $recentActivity->jobcard->title : '____' }}">Jobcard {{ '#' . $recentActivity->trackable_id }}</a>
@@ -46,7 +46,7 @@
 @endif
 
 by
-<a href="{{ route('profile-show', [$recentActivity->createdBy->id]) }}">
+<a href="{{ route('profile-show', [$recentActivity->who_created_id]) }}">
 {{ $recentActivity->createdBy->first_name ? $recentActivity->createdBy->first_name:'____' }}
 {{ $recentActivity->createdBy->last_name ? $recentActivity->createdBy->last_name:'____' }}
 </a>

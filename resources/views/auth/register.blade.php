@@ -175,7 +175,7 @@
                             <form method="POST" action="{{ route('register') }}" class="pt-4">
                                 @csrf
                                 <div class="slide active">
-                                    <div class="form-group row">
+                                    <div class="form-group row mb-sm-0">
                                         <div class="col-12 col-sm-6 mb-3">
                                             <input id="first_name" type="text" class="form-control{{ $errors->has('first_name') ? ' is-invalid' : '' }}" name="first_name" value="{{ old('first_name') }}" placeholder = "First name">
                                             @if ($errors->has('first_name'))

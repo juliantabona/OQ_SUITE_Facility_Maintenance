@@ -15,7 +15,6 @@ class CreateClientsTable extends Migration
             $table->increments('id');
             $table->integer('company_id')->unsigned();
             $table->integer('client_id')->unsigned();
-            $table->integer('who_created_id')->unsigned()->nullable();
             $table->timestamps();
         });
     }

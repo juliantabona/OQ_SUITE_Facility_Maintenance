@@ -14,8 +14,13 @@ class Company extends Model
      */
     protected $fillable = [
         'name', 'description', 'city', 'state_or_region', 'address', 'industry', 'type', 'website_link',
-        'profile_doc_url', 'logo_url', 'phone_ext', 'phone_num', 'email', 'who_created_id',
+        'profile_doc_url', 'phone_ext', 'phone_num', 'email',
     ];
+
+    public function creator()
+    {
+        return $this->morphMany('App\Creator', 'creatable');
+    }
 
     /*  Get the documents relating to this company. These are various files such as company profiles,
      *  scanned files, images and so on. Basically any file the user wants to save to this company is
@@ -93,27 +98,47 @@ class Company extends Model
      *  purposes. Examples are activities such as creating, updating, trashing, deleting reources that the company
      *  has a resource can be a user, client, contractor, jobcard, document, e.t.c
      */
+    public function recentActivities()
+    {
+        return $this->morphMany('App\RecentActivity', 'trackable')
+                    ->orderBy('created_at', 'desc');
+    }
 
+    /*
     public function recentActivities()
     {
         return $this->hasManyThrough('App\RecentActivity', 'App\CompanyBranch');
+    }
+    */
+
+    public function clients()
+    {
+        return $this->morphMany('App\CompanyDirectory', 'directable')
+                    ->where('type', 'client');
+    }
+
+    public function contractors()
+    {
+        return $this->morphMany('App\CompanyDirectory', 'directable')
+                    ->where('type', 'contractor');
     }
 
     /*  Get the clients for this company. A client is basically another company that this company is doing work for.
      *  A client can be stored without necessary having work to be done for them, but stored for profilling purposes.
      *  This could be useful in the case of prospective clients.
-    */
+
     public function clients()
     {
         return $this->belongsToMany('App\Company', 'company_clients', 'company_id', 'client_id')
                     ->withPivot('client_id', 'company_id', 'who_created_id')
                     ->withTimestamps();
     }
+    */
 
     /*  Get the contractors for this company. A contractor is basically another company that this company is
      *  subcontracting work. A contractor can be stored without necessary having work to be done by them, but stored
      *  for profilling purposes. This could be useful in the case of prospective contractors.
-     */
+
 
     public function contractors()
     {
@@ -121,6 +146,7 @@ class Company extends Model
                     ->withPivot('contractor_id', 'company_id', 'who_created_id')
                     ->withTimestamps();
     }
+    */
 
     /*  Get the contacts for this company. A contact is basically users that this company is linked to. This link may
      *  be that the contact is a staff member, a client contact, a contractor contact, or just an individual on their own
@@ -128,9 +154,8 @@ class Company extends Model
 
     public function contacts()
     {
-        return $this->belongsToMany('App\User', 'company_contacts', 'company_id', 'contact_id')
-                    ->withPivot('contact_id', 'company_id')
-                    ->withTimestamps();
+        return $this->morphMany('App\CompanyDirectory', 'directable')
+                    ->where('type', 'contact');
     }
 
     /*  Get the jobcards created by this company, get them in relation to the company branches that created them
@@ -157,10 +182,22 @@ class Company extends Model
                     ->withTimestamps();
     }
 
+    public function logo()
+    {
+        return $this->documents()->where('type', 'logo');
+    }
+
+    public function quotation()
+    {
+        return $this->documents()->where('type', 'quotation');
+    }
+
+    /*
     public function createdBy()
     {
         return $this->belongsTo('App\User', 'who_created_id');
     }
+    */
 
     /*
 

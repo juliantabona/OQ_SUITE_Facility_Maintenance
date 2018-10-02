@@ -9,6 +9,7 @@ return array(
     'App\\Category' => $baseDir . '/app/Category.php',
     'App\\Company' => $baseDir . '/app/Company.php',
     'App\\CompanyBranch' => $baseDir . '/app/CompanyBranch.php',
+    'App\\CompanyDirectory' => $baseDir . '/app/CompanyDirectory.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\CostCenter' => $baseDir . '/app/CostCenter.php',
     'App\\Creator' => $baseDir . '/app/Creator.php',

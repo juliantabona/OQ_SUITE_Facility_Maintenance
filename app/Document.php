@@ -19,8 +19,13 @@ class Document extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'mime', 'size', 'who_created_id',
+        'name', 'type', 'description', 'mime', 'size', 'url',
     ];
+
+    public function creator()
+    {
+        return $this->morphMany('App\Creator', 'creatable');
+    }
 
     /**
      * Get all of the owning documentable models.

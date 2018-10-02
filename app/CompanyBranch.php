@@ -12,8 +12,13 @@ class CompanyBranch extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'destination', 'company_id', 'who_created_id',
+        'name', 'destination', 'company_id',
     ];
+
+    public function creator()
+    {
+        return $this->morphMany('App\Creator', 'creatable');
+    }
 
     /**
      *   Get the company the branch belongs to. A branch must belong to a company

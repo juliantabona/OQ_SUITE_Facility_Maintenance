@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 Relation::morphMap([
-    'jobcard' => 'App\Jobcard',
-    'company_branch' => 'App\CompanyBranch',
     'user' => 'App\User',
+    'company' => 'App\Company',
+    'companybranch' => 'App\CompanyBranch',
+    'jobcard' => 'App\Jobcard',
+    'category' => 'App\Category',
+    'priority' => 'App\Priority',
+    'costcenter' => 'App\CostCenter',
     'document' => 'App\Document',
 ]);
 
@@ -25,8 +29,13 @@ class RecentActivity extends Model
      * @var array
      */
     protected $fillable = [
-        'type', 'detail', 'company_id', 'who_created_id',
+        'type', 'detail', 'who_created_id', 'company_branch_id',
     ];
+
+    public function creator()
+    {
+        return $this->morphMany('App\Creator', 'creatable');
+    }
 
     /**
      * Get all of the owning documentable models.
@@ -36,13 +45,13 @@ class RecentActivity extends Model
         return $this->morphTo();
     }
 
-    public function createdBy()
-    {
-        return $this->belongsTo('App\User', 'who_created_id');
-    }
-
     public function jobcard()
     {
         return $this->belongsTo('App\Jobcard', 'trackable_id');
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo('App\User', 'who_created_id');
     }
 }

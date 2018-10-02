@@ -4,20 +4,22 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateJobcardRecentActivitiesTable extends Migration
+class CreateProcessFormsTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create('recent_activities', function (Blueprint $table) {
+        Schema::create('process_forms', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name')->nullable();
+            $table->string('description')->nullable();
+            $table->text('form_structure')->nullable();
+            $table->text('doc_structure')->nullable();
             $table->string('type')->nullable();
-            $table->text('detail')->nullable();
-            $table->integer('trackable_id')->unsigned();
-            $table->string('trackable_type');
-            $table->integer('who_created_id')->unsigned()->nullable();
+            $table->boolean('selected')->default(0);
+            $table->boolean('deletable')->default(0);
             $table->integer('company_id')->unsigned();
             $table->timestamps();
         });
@@ -28,6 +30,6 @@ class CreateJobcardRecentActivitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('recent_activities');
+        Schema::dropIfExists('process_forms');
     }
 }
