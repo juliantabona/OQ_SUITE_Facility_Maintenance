@@ -111,22 +111,30 @@ class Company extends Model
     }
     */
 
-    public function directories()
+    public function companyDirectory()
     {
-        //return $this->morphMany('App\CompanyDirectory', 'directable');
-        return $this->hasMany('App\CompanyDirectory', 'company_id');
+        return $this->belongsToMany('App\Company', 'company_directory', 'belongs_to_id', 'company_id')
+                    ->withPivot('id', 'type')
+                    ->withTimestamps();
     }
 
     public function clients()
     {
-        return $this->morphMany('App\CompanyDirectory', 'directable')
-                    ->where('type', 'client');
+        return $this->companyDirectory()
+                    ->where('company_directory.type', 'client');
     }
 
     public function contractors()
     {
-        return $this->morphMany('App\CompanyDirectory', 'directable')
-                    ->where('type', 'contractor');
+        return $this->companyDirectory()
+                    ->where('company_directory.type', 'contractor');
+    }
+
+    public function contactDirectory()
+    {
+        return $this->belongsToMany('App\User', 'contact_directory', 'belongs_to_id', 'user_id')
+                    ->withPivot('id')
+                    ->withTimestamps();
     }
 
     /*  Get the clients for this company. A client is basically another company that this company is doing work for.
@@ -157,12 +165,6 @@ class Company extends Model
     /*  Get the contacts for this company. A contact is basically users that this company is linked to. This link may
      *  be that the contact is a staff member, a client contact, a contractor contact, or just an individual on their own
      */
-
-    public function contacts()
-    {
-        return $this->morphMany('App\CompanyDirectory', 'directable')
-                    ->where('type', 'contact');
-    }
 
     /*  Get the jobcards created by this company, get them in relation to the company branches that created them
      *  A jobcard is a documentation of work to be done for a client. This documentation is made up of details

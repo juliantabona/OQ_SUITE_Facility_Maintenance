@@ -4,19 +4,18 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCompanyDirectoriesTable extends Migration
+class CreateCompanyDirectoryTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create('company_directories', function (Blueprint $table) {
+        Schema::create('company_directory', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id')->unsigned();
+            $table->integer('belongs_to_id')->unsigned();
             $table->string('type')->nullable();
-            $table->integer('directable_id')->unsigned();
-            $table->string('directable_type');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ class CreateCompanyDirectoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('company_directories');
+        Schema::dropIfExists('company_directory');
     }
 }

@@ -12,7 +12,6 @@ return array(
     'App\\CompanyDirectory' => $baseDir . '/app/CompanyDirectory.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\CostCenter' => $baseDir . '/app/CostCenter.php',
-    'App\\Creator' => $baseDir . '/app/Creator.php',
     'App\\Document' => $baseDir . '/app/Document.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\AccountActivation' => $baseDir . '/app/Http/Controllers/AccountActivation.php',

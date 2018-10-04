@@ -52,7 +52,7 @@ class JobcardController extends Controller
                             ->first();
 
         if ($jobcard->client) {
-            $contacts = $jobcard->client->contacts()->paginate(5, ['*'], 'contacts');
+            $contacts = $jobcard->client->contactDirectory()->paginate(5, ['*'], 'contacts');
         } else {
             $contacts = null;
         }

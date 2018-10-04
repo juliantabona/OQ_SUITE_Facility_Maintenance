@@ -379,7 +379,6 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         'App\\CompanyDirectory' => __DIR__ . '/../..' . '/app/CompanyDirectory.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\CostCenter' => __DIR__ . '/../..' . '/app/CostCenter.php',
-        'App\\Creator' => __DIR__ . '/../..' . '/app/Creator.php',
         'App\\Document' => __DIR__ . '/../..' . '/app/Document.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\AccountActivation' => __DIR__ . '/../..' . '/app/Http/Controllers/AccountActivation.php',

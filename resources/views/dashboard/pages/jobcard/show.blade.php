@@ -200,7 +200,7 @@
                                             <h6 class="card-title mb-0 ml-2 text-white">Client Details</h6>
                                         </div>
                                         <div class="mt-3 ml-3 reference-details">
-                                            @if($jobcard->client->logo->first()->url)
+                                            @if($jobcard->client->logo)
                                                 <div class="lightgallery">
                                                     <a href="{{$jobcard->client->logo->first()->url }}">
                                                         <img class="company-logo img-thumbnail mb-2 p-2 rounded rounded-circle w-50" src="{{ $jobcard->client->logo->first()->url }}" />
