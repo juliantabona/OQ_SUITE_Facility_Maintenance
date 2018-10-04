@@ -111,6 +111,12 @@ class Company extends Model
     }
     */
 
+    public function directories()
+    {
+        //return $this->morphMany('App\CompanyDirectory', 'directable');
+        return $this->hasMany('App\CompanyDirectory', 'company_id');
+    }
+
     public function clients()
     {
         return $this->morphMany('App\CompanyDirectory', 'directable')

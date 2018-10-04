@@ -19,6 +19,8 @@ class CompanyController extends Controller
 {
     public function store(Request $request)
     {
+        return Auth::user()->companyBranch->company->directories;
+
         //  If the company has a logo
         if ($request->hasFile('new_company_logo')) {
             //  Lets get the logo file
@@ -191,7 +193,7 @@ class CompanyController extends Controller
 
                     //  Save the company as part of the companies client directory
                     $clientDirectory = $company->clients()->create([
-                        'company_id' => $company->id,
+                        'company_id' => Auth::user()->companyBranch->company->id,
                         'type' => $request->input('new_company_type'),
                     ]);
                 } elseif ($request->input('new_company_type') == 'contractor') {

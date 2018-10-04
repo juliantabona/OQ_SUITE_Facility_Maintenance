@@ -51,7 +51,12 @@ class JobcardController extends Controller
                             ))->where('id', $jobcard_id)
                             ->first();
 
-        $contacts = $jobcard->client->contacts()->paginate(5, ['*'], 'contacts');
+        if ($jobcard->client) {
+            $contacts = $jobcard->client->contacts()->paginate(5, ['*'], 'contacts');
+        } else {
+            $contacts = null;
+        }
+
         $contractorsList = $jobcard->contractorsList()->paginate(5, ['*'], 'contractors');
 
         //  If we have a jobcard

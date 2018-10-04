@@ -348,9 +348,9 @@
                                                                 </form>
                                                             </td>
                                                             <td>
-                                                                @if($contractor->logo_url)
+                                                                @if($contractor->logo->first()->url)
                                                                     <img style="max-width:50px;max-height:50px;"
-                                                                            class="company-logo img-thumbnail p-0 rounded rounded-circle w-100" src="{{ $contractor->logo_url }}" />
+                                                                            class="company-logo img-thumbnail p-0 rounded rounded-circle w-100" src="{{ $contractor->logo->first()->url }}" />
                                                                 @endif
                                                             </td>
                                                             <td class="company-name">{{ $contractor->name ? $contractor->name:'___' }}</td>
