@@ -13,7 +13,7 @@ class CreateCompanyBranchesTable extends Migration
     {
         Schema::create('company_branches', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->nullable();
+            $table->string('name')->nullable()->default('Main');
             $table->string('destination')->nullable();
             $table->integer('company_id')->unsigned()->nullable();
             $table->timestamps();

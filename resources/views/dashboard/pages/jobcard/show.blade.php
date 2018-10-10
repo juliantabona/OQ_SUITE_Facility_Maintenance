@@ -80,10 +80,14 @@
                             <div class="row">
                                 <div class="col-12">
                                     @if( $deadline !== null )
-                                        @if($deadline >= 0)
-                                            <div class="badge badge-warning">{{ $deadline == 1 ? $deadline.' day': $deadline.' days' }} until deadline</div>
+                                        @if($deadline[2] == 1)
+                                            <div class="badge badge-warning">
+                                                {{ oq_jobcardDeadlineWords($deadline) }}
+                                            </div>
                                         @else
-                                        <div class="badge badge-danger">Deadline passed</div>
+                                            <div class="badge badge-danger">
+                                                {{ oq_jobcardDeadlineWords($deadline) }}
+                                            </div>
                                         @endif
                                     @endif
                                     <span class="process_notice">
@@ -130,15 +134,8 @@
                                         <div class="col-6">
                                             <span class="lower-font">
                                                 <b>Created By: </b>
-                                                @if($jobcard->createdBy)
-                                                    <a href="/staff/1">{{ $jobcard->createdBy->first_name.' '.$jobcard->createdBy->last_name }}</a> 
-                                                    <a href="/jobcards/1/views/1"> 
-                                                        - viewed({{ 
-                                                                $jobcard->views()
-                                                                        ->where('who_viewed_id', $jobcard->createdBy->id)
-                                                                        ->get()->count() 
-                                                                }})
-                                                    </a>
+                                                @if($createdBy)
+                                                    <a href="#">{{ $createdBy->first_name.' '.$createdBy->last_name }}</a> 
                                                 @else
                                                     ____
                                                 @endif
@@ -146,34 +143,74 @@
                                         </div>
                                         <div class="col-6">
                                             <span class="lower-font">
-                                                <b>Assigned: </b><a href="/staff/1">Tumisang Mogotsi</a> <a href="/jobcards/1/views/1"> - viewed(0)</a>
+                                                <b>Assigned: </b><a href="/staff/1">Tumisang Mogotsi</a> <a href="/jobcards/1/views/1"></a>
                                             </span>
                                         </div>
                                     </div>
-                                    <span class="lower-font mt-3 d-block">
-                                        <b>Priority: </b>
-                                        @if($jobcard->priority)
-                                            <div  data-toggle="tooltip" data-placement="top" title="{{ $jobcard->priority->description }}"
-                                                class="badge badge-success" style="background:{{ $jobcard->priority->color_code }};">{{ $jobcard->priority ? $jobcard->priority->name:'____' }}</div>
-                                        @else
-                                            ____
-                                        @endif
-                                    </span>
-                                    <div>
-                                        @if($jobcard->img_url)
-                                        <div class="lightgallery mt-3">
-                                            <a href="{{ $jobcard->img_url }}">
-                                                <img class = "w-50" src="{{ $jobcard->img_url }}" />
-                                            </a>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span class="lower-font mt-3 d-block">
+                                                <b>Priority: </b>
+                                                @if($jobcard->priority)
+                                                    <div  data-toggle="tooltip" data-placement="top" title="{{ $jobcard->priority->description }}"
+                                                        class="badge badge-success" style="background:{{ $jobcard->priority->color_code }};">{{ $jobcard->priority ? $jobcard->priority->name:'____' }}</div>
+                                                @else
+                                                    ____
+                                                @endif
+                                            </span>
                                         </div>
-                                        @endif
+                                    </div>
+                                    @if(!empty($jobcard->documents))
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="table-responsive table-hover">
+                                                    <table class="table mt-3 border-top">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="min-width: 100px">Image/File</th>
+                                                                <th>Name</th>
+                                                                <th>Type</th>
+                                                                <th>Size</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach($jobcard->documents as $document)
+                                                                <tr class="clickable-row show-contractor-modal-btn" data-toggle="modal" data-target="#show-contractor-modal">
+                                                                    <td>
+                                                                        <div class="lightgallery mt-3">
+                                                                            <a href="{{ $document->url }}">
+                                                                                <img src="{{ $document->url }}" />
+                                                                            </a>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td>{{ $document->name ? $document->name:'___' }}</td>
+                                                                    <td>{{ $document->mime ? $document->mime:'____' }}</td>
+                                                                    <td>{{ $document->size ? oq_formatSizeUnits($document->size):'____' }}</td>
+                                                                </tr>
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    <div class="row mt-3">
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer">
                             <div class="row">
-                                <div class="col-12">
+                                    <div class="col-4">
+                                            <div data-toggle="tooltip" data-placement="top" title="Add Image/File" >
+                                                <button type="button" class="animated-strips btn btn-success float-right pt-2 pb-2 pl-4 pr-4 w-100" data-toggle="modal" data-target="#add-reference-modal">                                            
+                                                    <i class="icon-sm icon-doc icons"></i>
+                                                    <span class="mt-4">Add Image/File</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                <div class="col-8">
                                     <div class="form-group mt-0">
                                         <a class="btn btn-primary mr-2 float-right" href="#" target="_blank" class="btn btn-primary">
                                             <i class="icon-cloud-download icons"></i>
@@ -200,9 +237,9 @@
                                             <h6 class="card-title mb-0 ml-2 text-white">Client Details</h6>
                                         </div>
                                         <div class="mt-3 ml-3 reference-details">
-                                            @if($jobcard->client->logo)
+                                            @if(COUNT($jobcard->client->logo))
                                                 <div class="lightgallery">
-                                                    <a href="{{$jobcard->client->logo->first()->url }}">
+                                                    <a href="{{ $jobcard->client->logo->first()->url }}">
                                                         <img class="company-logo img-thumbnail mb-2 p-2 rounded rounded-circle w-50" src="{{ $jobcard->client->logo->first()->url }}" />
                                                     </a>
                                                 </div>
@@ -232,20 +269,20 @@
                                                 </form>
                                                 <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-pencil"></i> Edit</a>   
                                                 <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-refresh"></i> Change Client</a>
-                                                <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-eye"></i> View</a>
+                                                <a href="{{ route('company-show', [$jobcard->client->id]) }}?type=client" style="font-size:  12px;" class="float-right mr-1"><i class="icon-eye"></i> View</a>
                                             </span> 
                                         </div>
                                     </div>
 
-                                    @if(!empty($contacts))
+                                    @if(!empty($contactsList))
                                         <div class="col-12 mb-2">
                                             <div class="bg-primary p-2 text-white">
                                                 <i class="float-left icon-user icon-sm icons ml-3 mr-2"></i>
-                                                <h6 class="card-title mb-0 ml-2 text-white d-inline">Contact Details ({{ $contacts->total() }})</h6>
+                                                <h6 class="card-title mb-0 ml-2 text-white d-inline">Contact Details ({{ $contactsList->total() }})</h6>
                                                 <a href="#" style="font-size:  12px;" class="float-right mr-1 mt-1 text-white"><i class="icon-eye"></i> View All</a>
                                             </div>
                                             
-                                            @foreach($contacts as $contact)
+                                            @foreach($contactsList as $contact)
                                                 <div class="mt-1 ml-2 reference-details">
                                                     <div class=" d-flex align-items-center border-bottom p-2">
                                                         <a class="p-0 m-0">
@@ -281,7 +318,7 @@
 
                                             <div class="float-right d-flex align-items-center justify-content-between flex-column flex-sm-row mt-4">
                                                 <nav>
-                                                    {{ $contacts->links() }}
+                                                    {{ $contactsList->links() }}
                                                 </nav>
                                             </div>
 

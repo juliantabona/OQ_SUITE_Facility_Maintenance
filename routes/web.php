@@ -156,8 +156,8 @@ Route::group(['prefix' => 'companies',  'middleware' => 'auth'], function () {
     Route::get('/', 'CompanyController@index')->name('companies');
     Route::post('/', 'CompanyController@store')->name('company-store');
     Route::get('/create', 'CompanyController@create')->name('company-create');
-    Route::get('/{company_id}', 'CompanyController@show')->name('company-show');
-    Route::put('/{company_id}', 'CompanyController@update')->name('company-update');
-    Route::get('/{company_id}/edit', 'CompanyController@edit')->name('company-edit');
-    Route::delete('/{company_id}', 'CompanyController@delete')->name('company-delete');
+    Route::get('/{company}', 'CompanyController@show')->name('company-show');
+    Route::put('/{company}', 'CompanyController@update')->name('company-update');
+    Route::get('/{company}/edit', 'CompanyController@edit')->name('company-edit');
+    Route::delete('/{company}', 'CompanyController@delete')->name('company-delete');
 });

@@ -10,7 +10,7 @@
             </div>
             <form method="POST" action="{{ route('profile-store') }}" enctype="multipart/form-data">
                 @csrf
-                @if( !empty($jobcard) ){
+                @if( !empty($jobcard) )
                     <input type="hidden" value="{{ $jobcard->id }}" name="jobcard_id">
                     <input type="hidden" value="{{ $jobcard->client_id }}" name="client_id">
                 @endif

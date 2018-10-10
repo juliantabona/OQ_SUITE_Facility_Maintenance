@@ -252,15 +252,15 @@
                                                     <span class="badge badge-warning text-white">Attach Image : </span><br/>
                                                     <p class="d-inline text-muted">Image size is limited to not greater than <b>2MB</b>. Only <b>jpeg, jpg, png and gif</b> are accepted.</p>
                                                 </div>
-                                                <div class="form-group{{ $errors->has('image') ? ' has-error' : '' }}">
-                                                        @if ($errors->has('image'))
+                                                <div class="form-group{{ $errors->has('new_jobcard_image') ? ' has-error' : '' }}">
+                                                        @if ($errors->has('new_jobcard_image'))
                                                             <span class="help-block invalid-feedback d-block">
                                                                 <span class="badge badge-danger text-white mr-2">Error : </span>
-                                                                <strong>{{ $errors->first('image') }}</strong>
+                                                                <strong>{{ $errors->first('new_jobcard_image') }}</strong>
                                                             </span>
                                                         @endif  
-                                                        <input type="file" data-max-file-size="2mb" data-default-file="{{ old('image') }}"
-                                                        class="dropify form-control {{ $errors->has('image') ? ' is-invalid' : '' }}" name="image">                                      
+                                                        <input type="file" data-max-file-size="2mb" data-default-file="{{ old('new_jobcard_image') }}"
+                                                        class="dropify form-control {{ $errors->has('new_jobcard_image') ? ' is-invalid' : '' }}" name="new_jobcard_image">                                      
                                                 </div>
 
                                                 <button type="submit" class="btn btn-success float-right pb-3 pl-5 pr-5 pt-3 ml-2">
@@ -413,24 +413,26 @@
 
         $('#select-option-creation-add-btn').click(function(){
             var selectBox = $(this).closest('.form-group').find('select');
-            var title = $('#select-option-creation-name').val();
+            var name = $('#select-option-creation-name').val();
             var desc = $('#select-option-creation-desc').val();
             var color = $('#select-option-creation-color').val();
             var type = $('#select-option-creation-box .modal-body input[type="hidden"]').val();
-            var new_option = '<option value = "'+title+'_&_'+desc+'_&_'+color+'" selected>'+title+'</option>';
+            var value = JSON.stringify(JSON.decycle([{'name': name, 'desc':desc, 'color':color}]));
+            console.log(value);
+            var new_option = $("<option/>").attr("value", value).attr("selected", "selected").text(name);
             
-            //Check if we have what we need
-            if( (title != '' && desc != '' && type != 'branch') ||
-                (title != '' && desc != '' && color != '' && type == 'priority') ||
-                (title != '' && type == 'branch')
+            //  Check if we have what we need
+            if( (name != '' && desc != '' && type != 'branch') ||
+                (name != '' && desc != '' && color != '' && type == 'priority') ||
+                (name != '' && type == 'branch')
             ){
-                //Append the new option
+                //  Append the new option
                 $('select[name='+type+']').append(new_option);
-                //Hide the modal
+                //  Hide the modal
                 $('#select-option-creation-box').modal('hide');
             }else{
 
-                if( title == '' ){
+                if( name == '' ){
                     $('#select-option-creation-name-error').removeClass('d-none').addClass('d-block').find('strong').text('Enter '+type+' name');
                 }
 
