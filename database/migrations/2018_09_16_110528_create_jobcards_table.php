@@ -15,8 +15,8 @@ class CreateJobcardsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->text('description')->nullable();
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->timestampTz('start_date')->nullable();
+            $table->timestampTz('end_date')->nullable();
             $table->integer('step_id')->unsigned()->nullable();
             $table->integer('priority_id')->unsigned();
             $table->integer('cost_center_id')->unsigned()->nullable();

@@ -161,3 +161,8 @@ Route::group(['prefix' => 'companies',  'middleware' => 'auth'], function () {
     Route::get('/{company}/edit', 'CompanyController@edit')->name('company-edit');
     Route::delete('/{company}', 'CompanyController@delete')->name('company-delete');
 });
+
+/*  COMPANIES    list, create, show, edit, save, delete */
+Route::group(['prefix' => 'documents',  'middleware' => 'auth'], function () {
+    Route::post('/', 'DocumentController@store')->name('document-store');
+});

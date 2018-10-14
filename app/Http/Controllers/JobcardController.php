@@ -39,11 +39,10 @@ class JobcardController extends Controller
          *  updates, deletes, emails sent, and requests.
          */
 
-        $jobcard = Jobcard::with(array('documents',
+        $jobcard = Jobcard::with(array('documents', 'category', 'priority', 'costCenter', 'client',
                                        'recentActivities' => function ($query) {
                                            $query->where('type', '!=', 'viewing');
-                                       },
-                                       'client', ))->where('id', $jobcard_id)->first();
+                                       }, ))->where('id', $jobcard_id)->first();
 
         $createdBy = oq_createdBy($jobcard);
 

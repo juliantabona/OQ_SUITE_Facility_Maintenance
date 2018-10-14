@@ -9,12 +9,20 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+//Imports Moment.js for use by vue components in formatting dates
+Vue.use(require('vue-moment'));
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.component('upload-test', require('./components/upload.vue'));
+
+Vue.component('loader', require('./components/loaderComponent.vue'));
+Vue.component('jobcard-body', require('./components/jobcard/body.vue'));
+Vue.component('document-list', require('./components/document/documentList.vue'));
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 const app = new Vue({

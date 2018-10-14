@@ -98,119 +98,12 @@
                                         <input type="hidden" value="{{ $processForm->form_structure }}">
                                     </div>
                                 </div>
-                                <div class="col-12">
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <h3 class="card-title mb-3 mt-4 border-bottom pb-3">{{ $jobcard->title ? $jobcard->title:'____' }}</h3>
-                                            <b>Description: </b>
-                                            <p class="mt-2">{{ $jobcard->description ? $jobcard->description:'____' }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <span class="lower-font mr-4">
-                                                <b>Start Date: </b>{{ $jobcard->start_date ? Carbon\Carbon::parse($jobcard->start_date)->format('d M Y'):'____' }}
-                                            </span>
-                                        </div>        
-                                        <div class="col-6">    
-                                            <span class="lower-font">
-                                                <b>End Date: </b>{{ $jobcard->end_date ? Carbon\Carbon::parse($jobcard->end_date)->format('d M Y'):'____' }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <span data-toggle="tooltip" data-placement="top" title="{{ $jobcard->category ? $jobcard->category->description:'____' }}" class="lower-font mr-4">
-                                                <b>Catergory: </b>{{ $jobcard->category ? $jobcard->category->name:'____' }}
-                                            </span>
-                                        </div>
-                                        <div class="col-6">
-                                            <span class="lower-font" data-toggle="tooltip" data-placement="top" title="{{ $jobcard->costCenter ? $jobcard->costCenter->description:'' }}">
-                                                <b>Cost Center: </b>{{ $jobcard->costCenter ? $jobcard->costCenter->name:'____' }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <span class="lower-font">
-                                                <b>Created By: </b>
-                                                @if($createdBy)
-                                                    <a href="#">{{ $createdBy->first_name.' '.$createdBy->last_name }}</a> 
-                                                @else
-                                                    ____
-                                                @endif
-                                            </span>
-                                        </div>
-                                        <div class="col-6">
-                                            <span class="lower-font">
-                                                <b>Assigned: </b><a href="/staff/1">Tumisang Mogotsi</a> <a href="/jobcards/1/views/1"></a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-12">
-                                            <span class="lower-font mt-3 d-block">
-                                                <b>Priority: </b>
-                                                @if($jobcard->priority)
-                                                    <div  data-toggle="tooltip" data-placement="top" title="{{ $jobcard->priority->description }}"
-                                                        class="badge badge-success" style="background:{{ $jobcard->priority->color_code }};">{{ $jobcard->priority ? $jobcard->priority->name:'____' }}</div>
-                                                @else
-                                                    ____
-                                                @endif
-                                            </span>
-                                        </div>
-                                    </div>
-                                    @if(!empty($jobcard->documents))
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="table-responsive table-hover">
-                                                    <table class="table mt-3 border-top">
-                                                        <thead>
-                                                            <tr>
-                                                                <th style="min-width: 100px">Image/File</th>
-                                                                <th>Name</th>
-                                                                <th>Type</th>
-                                                                <th>Size</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            @foreach($jobcard->documents as $document)
-                                                                <tr class="clickable-row show-contractor-modal-btn" data-toggle="modal" data-target="#show-contractor-modal">
-                                                                    <td>
-                                                                        <div class="lightgallery mt-3">
-                                                                            <a href="{{ $document->url }}">
-                                                                                <img src="{{ $document->url }}" />
-                                                                            </a>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>{{ $document->name ? $document->name:'___' }}</td>
-                                                                    <td>{{ $document->mime ? $document->mime:'____' }}</td>
-                                                                    <td>{{ $document->size ? oq_formatSizeUnits($document->size):'____' }}</td>
-                                                                </tr>
-                                                            @endforeach
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                    <div class="row mt-3">
-
-                                    </div>
-                                </div>
                             </div>
+                            <jobcard-body v-bind:jobcard="{{ $jobcard }}"  v-bind:created-by="{{ $createdBy }}"></jobcard-body>
                         </div>
                         <div class="card-footer">
                             <div class="row">
-                                    <div class="col-4">
-                                            <div data-toggle="tooltip" data-placement="top" title="Add Image/File" >
-                                                <button type="button" class="animated-strips btn btn-success float-right pt-2 pb-2 pl-4 pr-4 w-100" data-toggle="modal" data-target="#add-reference-modal">                                            
-                                                    <i class="icon-sm icon-doc icons"></i>
-                                                    <span class="mt-4">Add Image/File</span>
-                                                </button>
-                                            </div>
-                                        </div>
-                                <div class="col-8">
+                                <div class="col-12">
                                     <div class="form-group mt-0">
                                         <a class="btn btn-primary mr-2 float-right" href="#" target="_blank" class="btn btn-primary">
                                             <i class="icon-cloud-download icons"></i>

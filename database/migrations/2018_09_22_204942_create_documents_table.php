@@ -19,8 +19,7 @@ class CreateDocumentsTable extends Migration
             $table->string('mime')->nullable();
             $table->integer('size')->unsigned()->nullable();
             $table->string('url')->nullable();
-            $table->integer('documentable_id')->unsigned();
-            $table->string('documentable_type');
+            $table->morphs('documentable');
             $table->timestamps();
         });
     }
