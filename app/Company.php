@@ -190,9 +190,14 @@ class Company extends Model
                     ->withTimestamps();
     }
 
-    public function logo()
+    public function logos()
     {
         return $this->documents()->where('type', 'logo');
+    }
+
+    public function logo()
+    {
+        return $this->logos()->take(1);
     }
 
     public function quotation()

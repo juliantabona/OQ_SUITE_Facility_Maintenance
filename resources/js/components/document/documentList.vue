@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <upload-test v-bind:model-id="modelId" v-bind:model-type="modelType"  v-on:uploaded="updateDocuments"></upload-test>
+        <document-uploader v-bind:model-id="modelId" v-bind:model-type="modelType"  v-on:uploaded="updateDocuments"></document-uploader>
     </div>
 </template>
 

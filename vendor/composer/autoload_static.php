@@ -126,10 +126,12 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         'B' => 
         array (
             'BeyondCode\\DumpServer\\' => 22,
+            'Barryvdh\\Cors\\' => 14,
         ),
         'A' => 
         array (
             'Aws\\' => 4,
+            'Asm89\\Stack\\' => 12,
             'App\\' => 4,
         ),
     );
@@ -321,9 +323,17 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         array (
             0 => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src',
         ),
+        'Barryvdh\\Cors\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/barryvdh/laravel-cors/src',
+        ),
         'Aws\\' => 
         array (
             0 => __DIR__ . '/..' . '/aws/aws-sdk-php/src',
+        ),
+        'Asm89\\Stack\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack',
         ),
         'App\\' => 
         array (
@@ -384,6 +394,7 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         'App\\Document' => __DIR__ . '/../..' . '/app/Document.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\AccountActivation' => __DIR__ . '/../..' . '/app/Http/Controllers/AccountActivation.php',
+        'App\\Http\\Controllers\\Api\\CompanyController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/CompanyController.php',
         'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
         'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
@@ -391,6 +402,7 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         'App\\Http\\Controllers\\Auth\\VerificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/VerificationController.php',
         'App\\Http\\Controllers\\CompanyController' => __DIR__ . '/../..' . '/app/Http/Controllers/CompanyController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\DocumentController' => __DIR__ . '/../..' . '/app/Http/Controllers/DocumentController.php',
         'App\\Http\\Controllers\\JobcardController' => __DIR__ . '/../..' . '/app/Http/Controllers/JobcardController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
@@ -413,6 +425,8 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         'App\\RecentActivity' => __DIR__ . '/../..' . '/app/RecentActivity.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'App\\View' => __DIR__ . '/../..' . '/app/View.php',
+        'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/Cors.php',
+        'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/CorsService.php',
         'Aws\\ACMPCA\\ACMPCAClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ACMPCA/ACMPCAClient.php',
         'Aws\\ACMPCA\\Exception\\ACMPCAException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/ACMPCA/Exception/ACMPCAException.php',
         'Aws\\Acm\\AcmClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/Acm/AcmClient.php',
@@ -868,6 +882,10 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         'Aws\\XRay\\XRayClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/XRay/XRayClient.php',
         'Aws\\signer\\Exception\\signerException' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/signer/Exception/signerException.php',
         'Aws\\signer\\signerClient' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/signer/signerClient.php',
+        'Barryvdh\\Cors\\HandleCors' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandleCors.php',
+        'Barryvdh\\Cors\\HandlePreflight' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/HandlePreflight.php',
+        'Barryvdh\\Cors\\LumenServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/LumenServiceProvider.php',
+        'Barryvdh\\Cors\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-cors/src/ServiceProvider.php',
         'BeyondCode\\DumpServer\\DumpServerCommand' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerCommand.php',
         'BeyondCode\\DumpServer\\DumpServerServiceProvider' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/DumpServerServiceProvider.php',
         'BeyondCode\\DumpServer\\Dumper' => __DIR__ . '/..' . '/beyondcode/laravel-dump-server/src/Dumper.php',

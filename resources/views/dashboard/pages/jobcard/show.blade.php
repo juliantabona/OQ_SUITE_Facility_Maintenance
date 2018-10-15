@@ -119,126 +119,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-4 col-lg-4 grid-margin stretch-card">
-                    <div class="card card-hoverable">
-                        <div class="card-body p-3 pt-4">
-                            <div class="row">
-                                @if($jobcard->client)
-                                    <div class="col-12">
-                                        <div class="bg-primary p-2 text-white">
-                                            <i class="float-left icon-emotsmile icon-sm icons ml-3 mr-2"></i>
-                                            <h6 class="card-title mb-0 ml-2 text-white">Client Details</h6>
-                                        </div>
-                                        <div class="mt-3 ml-3 reference-details">
-                                            @if(COUNT($jobcard->client->logo))
-                                                <div class="lightgallery">
-                                                    <a href="{{ $jobcard->client->logo->first()->url }}">
-                                                        <img class="company-logo img-thumbnail mb-2 p-2 rounded rounded-circle w-50" src="{{ $jobcard->client->logo->first()->url }}" />
-                                                    </a>
-                                                </div>
-                                            @endif
-                                            <span class="lower-font">
-                                                <b>Client Name: </b>{{ $jobcard->client->name ? $jobcard->client->name:'____' }}<br/>
-                                                <b>City/Town: </b>{{ $jobcard->client->city ? $jobcard->client->city:'____' }}<br/>
-                                                <b>Address: </b>{{ $jobcard->client->address ? $jobcard->client->address:'____' }}
-                                            </span>
-                                            <br/>
-                                            <span class="lower-font">
-                                                <b>Phone: </b>
-                                                {{ $jobcard->client->phone_ext ? '+'.$jobcard->client->phone_ext.'-':'___-' }}
-                                                {{ $jobcard->client->phone_num ? $jobcard->client->phone_num:'____' }}
-                                            </span>
-                                            <span class="lower-font mb-3">
-                                                <b>Email: </b>{{ $jobcard->client->city ? $jobcard->client->email:'____' }}
-                                            </span>
-                                            <span class="lower-font clearfix mb-3">
-                                                <form method="POST" action="#" class="d-inline">
-                                                    {{ method_field('DELETE') }}
-                                                    @csrf
-                                                    <button type="submit" style="font-size:  12px;" class="btn-link float-right mr-1">
-                                                        <i class="icon-trash"></i> 
-                                                        Remove
-                                                    </button>
-                                                </form>
-                                                <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-pencil"></i> Edit</a>   
-                                                <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-refresh"></i> Change Client</a>
-                                                <a href="{{ route('company-show', [$jobcard->client->id]) }}?type=client" style="font-size:  12px;" class="float-right mr-1"><i class="icon-eye"></i> View</a>
-                                            </span> 
-                                        </div>
-                                    </div>
-
-                                    @if(!empty($contactsList))
-                                        <div class="col-12 mb-2">
-                                            <div class="bg-primary p-2 text-white">
-                                                <i class="float-left icon-user icon-sm icons ml-3 mr-2"></i>
-                                                <h6 class="card-title mb-0 ml-2 text-white d-inline">Contact Details ({{ $contactsList->total() }})</h6>
-                                                <a href="#" style="font-size:  12px;" class="float-right mr-1 mt-1 text-white"><i class="icon-eye"></i> View All</a>
-                                            </div>
-                                            
-                                            @foreach($contactsList as $contact)
-                                                <div class="mt-1 ml-2 reference-details">
-                                                    <div class=" d-flex align-items-center border-bottom p-2">
-                                                        <a class="p-0 m-0">
-                                                            <img class="img-sm rounded-circle" src="http://127.0.0.1:8000/images/profile_placeholder.svg" alt="">
-                                                        </a>
-                                                        <div class="wrapper w-100 ml-3">
-                                                            <p class="pt-2 mb-2" style="font-size:  12px;">
-                                                                <a href="#" class="mr-1">{{ $contact->first_name ? $contact->first_name:'____' }} {{ $contact->last_name ? $contact->last_name:'____' }}</a>
-                                                            </p>
-                                                            <div>
-                                                                @if($contact->position)
-                                                                    <div class="d-inline mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ $contact->position ? $contact->position:'____' }}">
-                                                                        <i class="icon-info text-dark"></i>
-                                                                    </div>
-                                                                @endif
-                                                                @if($contact->phone_num)
-                                                                    <div class="d-inline mr-2" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ $contact->phone_ext ? '+'.$contact->phone_ext.'-':'___-' }} {{ $contact->phone_num ? $contact->phone_num:'____' }}">
-                                                                        <i class="icon-phone text-dark"></i>
-                                                                    </div>
-                                                                @endif
-                                                                @if($contact->email)
-                                                                    <div class="d-inline" data-toggle="tooltip" data-placement="top" title="" data-original-title="{{ $contact->email ? $contact->email:'____' }}">
-                                                                        <i class="icon-envelope text-dark"></i>
-                                                                    </div>
-                                                                @endif
-                                                                <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-trash"></i> Remove</a>
-                                                                <a href="#" style="font-size:  12px;" class="float-right mr-1"><i class="icon-pencil"></i> Edit</a>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-
-                                            <div class="float-right d-flex align-items-center justify-content-between flex-column flex-sm-row mt-4">
-                                                <nav>
-                                                    {{ $contactsList->links() }}
-                                                </nav>
-                                            </div>
-
-                                        </div>
-                                    @endif
-                                    <div class="col-12">
-                                        <div data-toggle="tooltip" data-placement="top" title="Add another contact/reference working at this company or organisation" >
-                                            <button type="button" class="animated-strips btn btn-success float-right pt-3 pb-3 pl-4 pr-4 w-100" data-toggle="modal" data-target="#add-reference-modal">                                            
-                                                <i class="icon-sm icon-user icons"></i>
-                                                <span class="mt-4">Add Contact</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @else
-                                    <div class="col-12">
-                                        <div data-toggle="tooltip" data-placement="top" title="Add a company or organisation corresponding to this jobcard">
-                                            <button type="button" class="btn btn-success p-5 w-100 animated-strips" data-toggle="modal" data-target="#add-client-modal">                                            
-                                                <i class="d-block icon-sm icon-emotsmile icons" style="font-size: 25px;"></i>
-                                                <span class="d-block mt-4">Add Client</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
+                <company-side-widget :company-id="{{ json_encode($clientId) }}"></company-side-widget>
 
                 <div class="col-12 col-md-12 col-lg-12 grid-margin stretch-card">
                     <div class="card card-hoverable">
@@ -383,14 +265,16 @@
     @include('dashboard.layouts.modals.show_contractor')
 
 @endsection @section('js') 
-
-    <script src="{{ asset('js/plugins/jquery-sortable/jquery-sortable.js') }}"></script>
+ 
+    <script src="{{ asset('js/plugins/icheck/icheck.min.js') }}"></script>
     <script src="{{ asset('js/plugins/dropify/dist/js/dropify.min.js') }}"></script>
     <script src="{{ asset('js/custom/dropify.js') }}"></script>
     <script src="{{ asset('js/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('js/plugins/jquery-asColor/dist/jquery-asColor.min.js') }}"></script>
     <script src="{{ asset('js/plugins/jquery-asColorPicker/dist/jquery-asColorPicker.min.js') }}"></script>
     <script src="{{ asset('js/plugins/lightgallery/dist/js/lightgallery-all.min.js') }}"></script>
+
+    <script src="{{ asset('js/plugins/jquery-sortable/jquery-sortable.js') }}"></script>   
     <script src="{{ asset('/js/custom/oq-process-forms/jquery.oq-process-forms.js') }}"></script>
 
     <script type="text/javascript">

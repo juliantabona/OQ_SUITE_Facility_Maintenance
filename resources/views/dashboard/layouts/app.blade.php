@@ -66,6 +66,7 @@
     <!-- Scripts -->
 
     <!-- plugins:js -->
+    <script src="{{ asset('js/plugins/jquery/dist/jquery.min.js') }}"></script>
     <script src="{{ asset('js/plugins/popper.js/dist/umd/popper.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/plugins/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js') }}"></script>

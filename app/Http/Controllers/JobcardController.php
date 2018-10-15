@@ -39,18 +39,26 @@ class JobcardController extends Controller
          *  updates, deletes, emails sent, and requests.
          */
 
-        $jobcard = Jobcard::with(array('documents', 'category', 'priority', 'costCenter', 'client',
+        $jobcard = Jobcard::with(array('documents', 'category', 'priority', 'costCenter',
+                                       'client' => function ($query) {
+                                           $query->with('logo');
+                                       },
                                        'recentActivities' => function ($query) {
                                            $query->where('type', '!=', 'viewing');
                                        }, ))->where('id', $jobcard_id)->first();
 
         $createdBy = oq_createdBy($jobcard);
 
+        $clientId = ($jobcard->client) ? $jobcard->client->id : '';
+
         //  Get the pagination of the clients contacts
         $contactsList = oq_paginateClientContacts($jobcard->client);
 
         //  Get the pagination of the jobcard contractors
         $contractorsList = $jobcard->contractorsList()->paginate(5, ['*'], 'contractors');
+
+        //  Get the belonging client
+        $client = $jobcard->client;
 
         //  If we have a jobcard
         if ($jobcard) {
@@ -65,7 +73,7 @@ class JobcardController extends Controller
                             ->where('selected', 1)
                             ->first();
 
-            return view('dashboard.pages.jobcard.show', compact('jobcard', 'createdBy', 'contractorsList', '$contactsList', 'deadline', 'processForm'));
+            return view('dashboard.pages.jobcard.show', compact('jobcard', 'clientId', 'createdBy', 'contractorsList', '$contactsList', 'deadline', 'processForm'));
         } else {
             return view('dashboard.pages.jobcard.no_jobcard');
         }

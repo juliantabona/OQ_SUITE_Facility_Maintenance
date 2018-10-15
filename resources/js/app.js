@@ -18,11 +18,11 @@ Vue.use(require('vue-moment'));
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('upload-test', require('./components/upload.vue'));
-
 Vue.component('loader', require('./components/loaderComponent.vue'));
 Vue.component('jobcard-body', require('./components/jobcard/body.vue'));
 Vue.component('document-list', require('./components/document/documentList.vue'));
+Vue.component('document-uploader', require('./components/upload.vue'));
+Vue.component('company-side-widget', require('./components/company/sideWidget.vue'));
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 const app = new Vue({

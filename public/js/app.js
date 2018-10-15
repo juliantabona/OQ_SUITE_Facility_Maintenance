@@ -13906,11 +13906,11 @@ Vue.use(__webpack_require__(51));
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('upload-test', __webpack_require__(61));
-
 Vue.component('loader', __webpack_require__(52));
 Vue.component('jobcard-body', __webpack_require__(55));
 Vue.component('document-list', __webpack_require__(58));
+Vue.component('document-uploader', __webpack_require__(61));
+Vue.component('company-side-widget', __webpack_require__(68));
 Vue.component('example-component', __webpack_require__(39));
 
 var app = new Vue({
@@ -52886,7 +52886,7 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("upload-test", {
+      _c("document-uploader", {
         attrs: { "model-id": _vm.modelId, "model-type": _vm.modelType },
         on: { uploaded: _vm.updateDocuments }
       })
@@ -53747,6 +53747,680 @@ module.exports = function listToStyles (parentId, list) {
   return styles
 }
 
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(40)
+/* script */
+var __vue_script__ = __webpack_require__(69)
+/* template */
+var __vue_template__ = __webpack_require__(70)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/company/sideWidget.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-264f2a58", Component.options)
+  } else {
+    hotAPI.reload("data-v-264f2a58", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['companyId'],
+    data: function data() {
+        return {
+            company: null,
+            contacts: [],
+            isLoaded: false
+        };
+    },
+
+    methods: {
+        getLogoURL: function getLogoURL() {
+            if (this.company.logo.length) {
+                return this.company.logo[0].url;
+            }
+            return null;
+        }
+    },
+    created: function created() {
+        var self = this;
+        if (Number.isInteger(self.companyId)) {
+
+            axios.get('http://127.0.0.1:8000/api/companies/' + this.companyId + '?contacts=true').then(function (response) {
+                self.company = response.data;
+                self.contacts = response.data.contact_directory;
+                console.log(response.data);
+                console.log(self.contacts);
+                self.isLoaded = true;
+            }).catch(function (error) {
+                console.log(error);
+            });
+        } else {
+            self.isLoaded = true;
+        }
+    }
+});
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    { staticClass: "col-12 col-md-4 col-lg-4 grid-margin stretch-card" },
+    [
+      _c("div", { staticClass: "card card-hoverable" }, [
+        _c(
+          "div",
+          { staticClass: "card-body p-3 pt-4" },
+          [
+            _c("loader", { attrs: { isLoaded: _vm.isLoaded } }),
+            _vm._v(" "),
+            _vm.company
+              ? _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-12" }, [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "mt-3 ml-3 reference-details" }, [
+                      _vm.getLogoURL()
+                        ? _c("div", { staticClass: "lightgallery" }, [
+                            _c("a", { attrs: { href: _vm.getLogoURL() } }, [
+                              _c("img", {
+                                staticClass:
+                                  "company-logo img-thumbnail mb-2 p-2 rounded rounded-circle w-50",
+                                attrs: { src: _vm.getLogoURL() }
+                              })
+                            ])
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "lower-font" }, [
+                        _c("b", [_vm._v("Client Name: ")]),
+                        _vm._v(
+                          _vm._s(_vm.company.name ? _vm.company.name : "____")
+                        ),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("b", [_vm._v("City/Town: ")]),
+                        _vm._v(
+                          _vm._s(_vm.company.city ? _vm.company.city : "____")
+                        ),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("b", [_vm._v("Address: ")]),
+                        _vm._v(
+                          _vm._s(
+                            _vm.company.address ? _vm.company.address : "____"
+                          ) + "\n                        "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "lower-font" }, [
+                        _c("b", [_vm._v("Phone: ")]),
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(
+                              _vm.company.phone_ext
+                                ? "+" + _vm.company.phone_ext + "-"
+                                : "___-"
+                            ) +
+                            "\n                            " +
+                            _vm._s(
+                              _vm.company.phone_num
+                                ? _vm.company.phone_num
+                                : "____"
+                            ) +
+                            "\n                        "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _c("span", { staticClass: "lower-font mb-3" }, [
+                        _c("b", [_vm._v("Email: ")]),
+                        _vm._v(
+                          _vm._s(
+                            _vm.company.city ? _vm.company.email : "____"
+                          ) + "\n                        "
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _vm._m(1)
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _vm.contacts.length
+                    ? _c(
+                        "div",
+                        { staticClass: "col-12 mb-2" },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "bg-primary p-2 text-white" },
+                            [
+                              _c("i", {
+                                staticClass:
+                                  "float-left icon-user icon-sm icons ml-3 mr-2"
+                              }),
+                              _vm._v(" "),
+                              _c(
+                                "h6",
+                                {
+                                  staticClass:
+                                    "card-title mb-0 ml-2 text-white d-inline"
+                                },
+                                [
+                                  _vm._v(
+                                    "Contact Details (" +
+                                      _vm._s(_vm.contacts.length) +
+                                      ")"
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _vm._m(2)
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _vm._l(_vm.contacts, function(contact) {
+                            return _c(
+                              "div",
+                              { staticClass: "mt-1 ml-2 reference-details" },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      " d-flex align-items-center border-bottom p-2"
+                                  },
+                                  [
+                                    _vm._m(3, true),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "wrapper w-100 ml-3" },
+                                      [
+                                        _c(
+                                          "p",
+                                          {
+                                            staticClass: "pt-2 mb-2",
+                                            staticStyle: { "font-size": "12px" }
+                                          },
+                                          [
+                                            _c(
+                                              "a",
+                                              {
+                                                staticClass: "mr-1",
+                                                attrs: { href: "#" }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    contact.first_name
+                                                      ? contact.first_name
+                                                      : "____"
+                                                  ) +
+                                                    " " +
+                                                    _vm._s(
+                                                      contact.last_name
+                                                        ? contact.last_name
+                                                        : "____"
+                                                    )
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c("div", [
+                                          contact.position
+                                            ? _c(
+                                                "div",
+                                                {
+                                                  staticClass: "d-inline mr-2",
+                                                  attrs: {
+                                                    "data-toggle": "tooltip",
+                                                    "data-placement": "top",
+                                                    title: "",
+                                                    "data-original-title": contact.position
+                                                      ? contact.position
+                                                      : "____"
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass:
+                                                      "icon-info text-dark"
+                                                  })
+                                                ]
+                                              )
+                                            : _vm._e(),
+                                          _vm._v(" "),
+                                          contact.phone_num
+                                            ? _c(
+                                                "div",
+                                                {
+                                                  staticClass: "d-inline mr-2",
+                                                  attrs: {
+                                                    "data-toggle": "tooltip",
+                                                    "data-placement": "top",
+                                                    title: "",
+                                                    "data-original-title":
+                                                      (contact.phone_ext
+                                                        ? "+" +
+                                                          contact.phone_ext +
+                                                          "-"
+                                                        : "___-") +
+                                                      (contact.phone_num
+                                                        ? contact.phone_num
+                                                        : "____")
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass:
+                                                      "icon-phone text-dark"
+                                                  })
+                                                ]
+                                              )
+                                            : _vm._e(),
+                                          _vm._v(" "),
+                                          contact.email
+                                            ? _c(
+                                                "div",
+                                                {
+                                                  staticClass: "d-inline",
+                                                  attrs: {
+                                                    "data-toggle": "tooltip",
+                                                    "data-placement": "top",
+                                                    title: "",
+                                                    "data-original-title": contact.email
+                                                      ? contact.email
+                                                      : "____"
+                                                  }
+                                                },
+                                                [
+                                                  _c("i", {
+                                                    staticClass:
+                                                      "icon-envelope text-dark"
+                                                  })
+                                                ]
+                                              )
+                                            : _vm._e(),
+                                          _vm._v(" "),
+                                          _vm._m(4, true),
+                                          _vm._v(" "),
+                                          _vm._m(5, true)
+                                        ])
+                                      ]
+                                    )
+                                  ]
+                                )
+                              ]
+                            )
+                          })
+                        ],
+                        2
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm._m(6)
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.company
+              ? _c("div", { staticClass: "col-12" }, [_vm._m(7)])
+              : _vm._e()
+          ],
+          1
+        )
+      ])
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "bg-primary p-2 text-white" }, [
+      _c("i", {
+        staticClass: "float-left icon-emotsmile icon-sm icons ml-3 mr-2"
+      }),
+      _vm._v(" "),
+      _c("h6", { staticClass: "card-title mb-0 ml-2 text-white" }, [
+        _vm._v("Client Details")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "lower-font clearfix mb-3" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn-link float-right mr-1",
+          staticStyle: { "font-size": "12px" },
+          attrs: { type: "button" }
+        },
+        [
+          _c("i", { staticClass: "icon-trash" }),
+          _vm._v(
+            " \n                                Remove\n                            "
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "a",
+        {
+          staticClass: "float-right mr-1",
+          staticStyle: { "font-size": "12px" },
+          attrs: { href: "#" }
+        },
+        [_c("i", { staticClass: "icon-pencil" }), _vm._v(" Edit")]
+      ),
+      _vm._v(" "),
+      _c(
+        "a",
+        {
+          staticClass: "float-right mr-1",
+          staticStyle: { "font-size": "12px" },
+          attrs: { href: "#" }
+        },
+        [_c("i", { staticClass: "icon-refresh" }), _vm._v(" Change Client")]
+      ),
+      _vm._v(" "),
+      _c(
+        "a",
+        {
+          staticClass: "float-right mr-1",
+          staticStyle: { "font-size": "12px" },
+          attrs: { href: "#" }
+        },
+        [_c("i", { staticClass: "icon-eye" }), _vm._v(" View")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "float-right mr-1 mt-1 text-white",
+        staticStyle: { "font-size": "12px" },
+        attrs: { href: "#" }
+      },
+      [_c("i", { staticClass: "icon-eye" }), _vm._v(" View All")]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("a", { staticClass: "p-0 m-0" }, [
+      _c("img", {
+        staticClass: "img-sm rounded-circle",
+        attrs: {
+          src: "http://127.0.0.1:8000/images/profile_placeholder.svg",
+          alt: ""
+        }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "float-right mr-1",
+        staticStyle: { "font-size": "12px" },
+        attrs: { href: "#" }
+      },
+      [_c("i", { staticClass: "icon-trash" }), _vm._v(" Remove")]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "float-right mr-1",
+        staticStyle: { "font-size": "12px" },
+        attrs: { href: "#" }
+      },
+      [_c("i", { staticClass: "icon-pencil" }), _vm._v(" Edit")]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c(
+        "div",
+        {
+          attrs: {
+            "data-toggle": "tooltip",
+            "data-placement": "top",
+            title:
+              "Add another contact/reference working at this company or organisation"
+          }
+        },
+        [
+          _c(
+            "button",
+            {
+              staticClass:
+                "animated-strips btn btn-success float-right pt-3 pb-3 pl-4 pr-4 w-100",
+              attrs: {
+                type: "button",
+                "data-toggle": "modal",
+                "data-target": "#add-reference-modal"
+              }
+            },
+            [
+              _c("i", { staticClass: "icon-sm icon-user icons" }),
+              _vm._v(" "),
+              _c("span", { staticClass: "mt-4" }, [_vm._v("Add Contact")])
+            ]
+          )
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        attrs: {
+          "data-toggle": "tooltip",
+          "data-placement": "top",
+          title: "Add a company or organisation corresponding to this jobcard"
+        }
+      },
+      [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-success p-5 w-100 animated-strips",
+            attrs: {
+              type: "button",
+              "data-toggle": "modal",
+              "data-target": "#add-client-modal"
+            }
+          },
+          [
+            _c("i", {
+              staticClass: "d-block icon-sm icon-emotsmile icons",
+              staticStyle: { "font-size": "25px" }
+            }),
+            _vm._v(" "),
+            _c("span", { staticClass: "d-block mt-4" }, [_vm._v("Add Client")])
+          ]
+        )
+      ]
+    )
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-264f2a58", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);
