@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 Relation::morphMap([
     'company' => 'App\Company',
@@ -11,6 +12,8 @@ Relation::morphMap([
 
 class CostCenter extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'costcenters';
     /**
      * The attributes that are mass assignable.

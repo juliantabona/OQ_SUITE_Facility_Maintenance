@@ -15,6 +15,7 @@ class CreateContractorsTable extends Migration
             $table->increments('id');
             $table->integer('company_id')->unsigned();
             $table->integer('contractor_id')->unsigned();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

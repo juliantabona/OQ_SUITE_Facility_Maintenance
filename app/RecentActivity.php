@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 Relation::morphMap([
     'user' => 'App\User',
@@ -18,6 +19,8 @@ Relation::morphMap([
 
 class RecentActivity extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'recent_activities';
 
     protected $casts = [

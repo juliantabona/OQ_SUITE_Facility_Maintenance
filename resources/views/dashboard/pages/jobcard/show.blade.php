@@ -120,7 +120,7 @@
                     </div>
                 </div>
                 
-                <company-side-widget :company-id="{{ json_encode($clientId) }}"></company-side-widget>
+                <company-side-widget></company-side-widget>
 
                 <div class="col-12 col-md-12 col-lg-12 grid-margin stretch-card">
                     <div class="card card-hoverable">

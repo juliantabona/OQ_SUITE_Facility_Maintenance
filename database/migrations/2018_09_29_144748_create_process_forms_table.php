@@ -21,6 +21,7 @@ class CreateProcessFormsTable extends Migration
             $table->boolean('selected')->default(0);
             $table->boolean('deletable')->default(0);
             $table->integer('company_id')->unsigned();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

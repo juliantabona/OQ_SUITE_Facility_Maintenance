@@ -15,8 +15,10 @@ class CreateJobcardContractorsTable extends Migration
             $table->increments('id');
             $table->integer('jobcard_id')->unsigned();
             $table->integer('contractor_id')->unsigned();
-            $table->integer('quotation_doc_id')->unsigned();
+            $table->integer('quotation_doc_id')->unsigned()->nullable();
             $table->decimal('amount', 8, 2)->nullable();
+            $table->boolean('selected')->default(0);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

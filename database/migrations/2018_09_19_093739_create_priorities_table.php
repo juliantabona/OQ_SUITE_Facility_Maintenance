@@ -17,6 +17,7 @@ class CreatePrioritiesTable extends Migration
             $table->string('description')->nullable();
             $table->string('color_code')->nullable();
             $table->morphs('priority');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -49,7 +49,7 @@
                                         {{ $errors->has('email') ? ' has-error' : '' }}
                                         ">
                                 <input id="identity" type="text" class="form-control 
-                                                    {{ $errors->has('username') ? ' is-invali d' : '' }}
+                                                    {{ $errors->has('username') ? ' is-invalid' : '' }}
                                                     {{ $errors->has('email') ? ' is-invalid' : '' }}" 
                                                     name="identity" value="{{ old('identity') }}"
                                     placeholder="Email/Username" required autofocus>

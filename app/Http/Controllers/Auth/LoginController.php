@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Session;
 
 class LoginController extends Controller
 {
@@ -26,9 +26,24 @@ class LoginController extends Controller
 
     public function logout(Request $request)
     {
-        $this->performLogout($request);
+        //  API Request
+        if (oq_viaAPI($request)) {
+            $accessToken = auth()->user()->token();
+            $refreshToken = DB::table('oauth_refresh_tokens')
+                                ->where('access_token_id', $accessToken->id)
+                                ->update([
+                                    'revoked' => true,
+                                ]);
+            $accessToken->revoke();
 
-        return redirect()->route('login');
+            return response()->json(null, 204);
+
+        //  Non API Request
+        } else {
+            $this->performLogout($request);
+
+            return redirect()->route('login');
+        }
     }
 
     //  Allow for login using email and username
@@ -39,6 +54,20 @@ class LoginController extends Controller
         request()->merge([$field => $identity]);
 
         return $field;
+    }
+
+    /**
+     *  After the user is successfully logged In,
+     *  we hook into the authenticated() function from "AuthenticatesUsers"
+     *  and create the token used during authorization for API calls.
+     */
+    protected function authenticated(Request $request, $user)
+    {
+        if (oq_viaAPI($request)) {
+            return $user->generateToken($request);
+        } else {
+            return redirect()->intended($this->redirectPath());
+        }
     }
 
     /**
@@ -75,21 +104,36 @@ class LoginController extends Controller
 
             // Make sure the user is active
             if ($user->status == 0) {
-                //  Notify the user to activate their account
-                Session::forget('alert');
-                $request->session()->flash('alert', array('Activate your account first!', 'icon-envelope icons', 'warning'));
-
-                //  Go to login page
-                return redirect()->route('login');
-
-            // Check if the account is deativated
+                //  API Response
+                if (oq_viaAPI($request)) {
+                    return oq_api_notify(['data' => 'Activate account'], 200);
+                } else {
+                    //  Notify the user to activate their account
+                    oq_notify('Activate your account first!', 'warning');
+                    //  Go to login page
+                    return redirect()->route('login');
+                }
+                // Check if the account is deativated
             } elseif ($user->status == 2) {
-                //  Notify the user to activate their account
-                Session::forget('alert');
-                $request->session()->flash('alert', array('This account has been deactivated!', 'icon-exclamation icons', 'danger'));
-
-                //  Go to login page
-                return redirect()->route('login');
+                //  API Response
+                if (oq_viaAPI($request)) {
+                    return oq_api_notify(['data' => 'Account deactivated'], 200);
+                } else {
+                    //  Notify the user to activate their account
+                    oq_notify('This account has been deactivated!', 'danger');
+                    //  Go to login page
+                    return redirect()->route('login');
+                }
+            } elseif (!empty($user->deleted_at)) {
+                //  API Response
+                if (oq_viaAPI($request)) {
+                    return oq_api_notify(['data' => 'Account deleted'], 200);
+                } else {
+                    //  Notify the user to activate their account
+                    oq_notify('This account has been deleted!', 'danger');
+                    //  Go to login page
+                    return redirect()->route('login');
+                }
             } elseif ($this->attemptLogin($request)) {
                 // Send the normal successful login response
                 return $this->sendLoginResponse($request);

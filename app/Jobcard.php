@@ -3,9 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\AdvancedFilter\Dataviewer;
 
 class Jobcard extends Model
 {
+    use SoftDeletes;
+    use Dataviewer;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -16,9 +21,26 @@ class Jobcard extends Model
         'category_id', 'client_id', 'select_contractor_id', 'img_url',
     ];
 
-    public function creator()
+    protected $allowedFilters = [
+        'id', 'title', 'description', 'start_date', 'end_date', 'created_at',
+
+        // nested filters
+        'priority.id', 'priority.name',
+        'category.id', 'category.name',
+        'costCenter.id', 'costCenter.name',
+        'documents.count', 'documents.id', 'documents.name', 'documents.type', 'documents.mime', 'documents.size', 'documents.url', 'documents.created_at',
+        'client.id', 'client.name', 'client.city', 'client.state_or_region', 'client.address', 'client.industry', 'client.type', 'client.website_link', 'client.phone_ext', 'client.phone_num', 'client.email', 'client.created_at',
+        'contractorsList.count', 'contractorsList.id', 'contractorsList.name', 'contractorsList.city', 'contractorsList.state_or_region', 'contractorsList.address', 'contractorsList.industry', 'contractorsList.type', 'contractorsList.website_link', 'contractorsList.phone_ext', 'contractorsList.phone_num', 'contractorsList.email', 'contractorsList.created_at',
+        'selectedContractors.id', 'selectedContractors.name', 'selectedContractors.city', 'selectedContractors.state_or_region', 'selectedContractors.address', 'selectedContractors.industry', 'selectedContractors.type', 'selectedContractors.website_link', 'selectedContractors.phone_ext', 'selectedContractors.phone_num', 'selectedContractors.email', 'selectedContractors.created_at',
+    ];
+
+    protected $orderable = [
+        'id', 'title', 'description', 'start_date', 'end_date', 'created_at',
+    ];
+
+    public function createdBy()
     {
-        return $this->morphMany('App\Creator', 'creatable');
+        return $this->belongsTo('App\User', 'created_by');
     }
 
     public function recentActivities()
@@ -62,16 +84,16 @@ class Jobcard extends Model
         return $this->belongsTo('App\Company', 'client_id');
     }
 
-    public function selectedContractor()
-    {
-        return $this->belongsTo('App\Company', 'select_contractor_id');
-    }
-
     public function contractorsList()
     {
         return $this->belongsToMany('App\Company', 'jobcard_contractors', 'jobcard_id', 'contractor_id')
-                    ->withPivot('id', 'jobcard_id', 'contractor_id', 'amount', 'quotation_doc_id')
+                    ->withPivot('id', 'jobcard_id', 'contractor_id', 'amount', 'quotation_doc_id', 'selected')
                     ->withTimestamps();
+    }
+
+    public function selectedContractors()
+    {
+        return $this->contractorsList()->where('selected', 1);
     }
 
     public function processFormStep()

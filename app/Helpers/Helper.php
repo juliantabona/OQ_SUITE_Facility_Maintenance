@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Response;
 
 /**************************************************************
 ***************************************************************
@@ -50,7 +51,7 @@ function oq_checkContractorExists($user, $company_name_or_id)
 
 /*  Returns back with the old inputs and custom errors
  *  Error Format ['field_name', 'Associated Error Message']
- *  e.g) ['new_company_name' => 'A company with that name already exists.']
+ *  e.g) ['company_name' => 'A company with that name already exists.']
  *
  * @param $errors - The custom error
  *
@@ -85,6 +86,115 @@ function oq_notify($msg, $type = 'default')
     Session::flash('alert', array($msg, $icon, $type));
 }
 
+/*  Return a response back as an API response
+ *  Useful when we want to return data to the
+ *  user when they make an API call
+ *  @param $request - The API request sent
+ *  @param $msg - The message/data we want to return
+ *  @param $status - The status of the response (e.g 200, 201, 404)
+ *
+ * @return json
+ */
+function oq_api_notify($data, $status)
+{
+    return response()->json($data, $status);
+}
+
+function oq_api_notify_error($msg, $error, $status)
+{
+    return oq_api_notify([
+        //  Return the usual laravel error format
+        'message' => $msg,
+        'errors' => $error,
+    ], $status);
+}
+
+/*  Check if the request is an API request
+ *  @param $request - The API request sent
+ *
+ * @return boolean
+ */
+function oq_viaAPI($request)
+{
+    if ($request->expectsJson()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function oq_api_notify_no_resource()
+{
+    return oq_api_notify_error('Record not found', null, 404);
+}
+
+function oq_api_notify_no_page()
+{
+    return oq_api_notify_error('Page not found', null, 404);
+}
+
+function oq_url_to_array($url, $dimension = 0)
+{
+    return explode(',', $url);
+}
+
+function oq_getLimit()
+{
+    if (!empty(request('limit'))) {
+        return $limit = request('limit');
+    }
+}
+
+function oq_getOrder()
+{
+    $order_by = 'created_at';
+    $order_type = 'asc';
+
+    if (!empty(request('order_type'))) {
+        if (request('order_type') == 'asc' || request('order_type') == 'desc') {
+            $order_type = request('order_type');
+        }
+    }
+
+    if (!empty(request('order_by'))) {
+        $order_by = request('order_by');
+    }
+
+    return [$order_by, $order_type];
+}
+
+/**
+ * mb_stripos all occurences
+ * based on http://www.php.net/manual/en/function.strpos.php#87061.
+ *
+ * Find all occurrences of a needle in a haystack (case-insensitive, UTF8)
+ *
+ * @param string $haystack
+ * @param string $needle
+ *
+ * @return array or false
+ */
+function oq_stripos_all($haystack, $needle)
+{
+    $s = 0;
+    $i = 0;
+
+    while (is_integer($i)) {
+        $i = mb_stripos($haystack, $needle, $s);
+
+        if (is_integer($i)) {
+            $aStrPos[] = $i;
+            $s = $i + mb_strlen($needle);
+        }
+    }
+
+    if (isset($aStrPos)) {
+        return $aStrPos;
+    } else {
+        return false;
+    }
+}
+
 /*  Creates a recent activity for the associated model
  *  $model is the associated model that can generate recentActivity() such as User, Company, e.t.c.
  *  $type is the type of activity such as 'creating', 'updating', 'deleting', 'uploading', e.t.c.
@@ -105,7 +215,7 @@ function oq_saveActivity($model, $type, $user, $customDetails = null)
 
         if ($customDetails == null) {
             $details = [
-                '\''.strtolower(snake_case(class_basename($model_2))).'\'' => $model_2,    //  'document' => [Document Object]
+                strtolower(snake_case(class_basename($model_2))) => $model_2,    //  'document' => [Document Object]
             ];
         } else {
             $details = $customDetails;
@@ -114,15 +224,15 @@ function oq_saveActivity($model, $type, $user, $customDetails = null)
         $update = $model_1->recentActivities()->create([
             'type' => $type,
             'detail' => $details,
-            'who_created_id' => $user->id,
-            'company_branch_id' => $user->company_branch_id,
+            'who_created_id' => !empty($user) ? $user->id : null,
+            'company_branch_id' => !empty($user) ? $user->company_branch_id : null,
         ]);
     } else {
         $update = \App\RecentActivity::create([
             'type' => $type,
             'detail' => '',
-            'who_created_id' => $user->id,
-            'company_branch_id' => $user->company_branch_id,
+            'who_created_id' => !empty($user) ? $user->id : null,
+            'company_branch_id' => !empty($user) ? $user->company_branch_id : null,
         ]);
     }
 
@@ -145,8 +255,25 @@ function oq_saveActivity($model, $type, $user, $customDetails = null)
  *  @return $document  for upload success
  *  @return false for upload failed
  */
-function oq_saveDocument($model, $document, $location, $type, $user)
+function oq_saveDocument($request, $model, $document, $location, $type, $user = null)
 {
+    //  Get the rules for validating a document on upload
+    $rules = oq_document_create_v_rules();
+
+    //  Customized error messages for validating a document on creation
+    $messages = oq_document_create_v_msgs();
+
+    // Now pass the input and rules into the validator
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    // Check to see if validation fails or passes
+    if ($validator->fails()) {
+        //  Notify the user that validation failed
+        oq_notify('Couldn\'t upload image/document!', 'danger');
+        //  Return validation errors with an alert or json response if API request
+        return  ['failed_validation' => true, 'validator' => $validator];
+    }
+
     //  Get the document
     $doc_file = $document;
 
@@ -159,13 +286,13 @@ function oq_saveDocument($model, $document, $location, $type, $user)
 
         //  Record the uploaded doc
         $document = $model->documents()->create([
-                        'type' => $type,                                  //  Used to identify from other documents
-                        'name' => $doc_file->getClientOriginalName(),     //  e.g) aircon picture
-                        'mime' => getimagesize($doc_file)['mime'],        //  e.g) "mime": "image/jpeg"
-                        'size' => $doc_file->getClientSize(),             //  e.g) 101936
-                        'url' => $doc_url,
-                        'who_created_id' => $user->id,
-                    ]);
+            'type' => $type,                                                    //  Used to identify from other documents
+            'name' => $doc_file->getClientOriginalName(),                       //  e.g) aircon picture
+            'mime' => oq_get_mime_type($doc_file->getClientOriginalName()),     //  e.g) "mime": "image/jpeg"
+            'size' => $doc_file->getClientSize(),                               //  e.g) 101936
+            'url' => $doc_url,
+            'who_created_id' => !empty($user) ? $user->id : null,
+        ]);
 
         //  If the document was uploaded successfully
         if ($document) {
@@ -182,10 +309,125 @@ function oq_saveDocument($model, $document, $location, $type, $user)
     return false;
 }
 
+function oq_updateDocument($request, $currDocument, $user = null)
+{
+    //  Get the rules for validating a document on upload
+    $rules = oq_document_create_v_rules();
+
+    //  Customized error messages for validating a document on creation
+    $messages = oq_document_create_v_msgs();
+
+    // Now pass the input and rules into the validator
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    // Check to see if validation fails or passes
+    if ($validator->fails()) {
+        //  Notify the user that validation failed
+        oq_notify('Couldn\'t upload image/document!', 'danger');
+        //  Return validation errors with an alert or json response if API request
+        return  ['failed_validation' => true, 'validator' => $validator];
+    }
+
+    foreach ($request->all() as $key => $value) {
+        $request[str_replace('document_', '', $key)] = $value;
+        unset($request[$key]);
+    }
+
+    //  Update the existing document
+    $document = $currDocument->update($request->all());
+    $status = 'updated';
+
+    //  If the document was updated successfully
+    if ($document) {
+        $document = $currDocument->fresh();
+        //  Record activity of success document updated
+        $documentUpdatedActivity = oq_saveActivity($document, $status, $user);
+        //  Return the document instance
+        return $document;
+    } else {
+        //  Record activity of failed document update
+        $failType = 'update';
+        $documentUpdatedActivity = oq_saveActivity(null, $failType, $user);
+    }
+
+    return false;
+}
+
+function oq_get_mime_type($filename)
+{
+    $idx = explode('.', $filename);
+    $count_explode = count($idx);
+    $idx = strtolower($idx[$count_explode - 1]);
+
+    $mimet = array(
+        'txt' => 'text/plain',
+        'htm' => 'text/html',
+        'html' => 'text/html',
+        'php' => 'text/html',
+        'css' => 'text/css',
+        'js' => 'application/javascript',
+        'json' => 'application/json',
+        'xml' => 'application/xml',
+        'swf' => 'application/x-shockwave-flash',
+        'flv' => 'video/x-flv',
+
+        // images
+        'png' => 'image/png',
+        'jpe' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'jpg' => 'image/jpeg',
+        'gif' => 'image/gif',
+        'bmp' => 'image/bmp',
+        'ico' => 'image/vnd.microsoft.icon',
+        'tiff' => 'image/tiff',
+        'tif' => 'image/tiff',
+        'svg' => 'image/svg+xml',
+        'svgz' => 'image/svg+xml',
+
+        // archives
+        'zip' => 'application/zip',
+        'rar' => 'application/x-rar-compressed',
+        'exe' => 'application/x-msdownload',
+        'msi' => 'application/x-msdownload',
+        'cab' => 'application/vnd.ms-cab-compressed',
+
+        // audio/video
+        'mp3' => 'audio/mpeg',
+        'qt' => 'video/quicktime',
+        'mov' => 'video/quicktime',
+
+        // adobe
+        'pdf' => 'application/pdf',
+        'psd' => 'image/vnd.adobe.photoshop',
+        'ai' => 'application/postscript',
+        'eps' => 'application/postscript',
+        'ps' => 'application/postscript',
+
+        // ms office
+        'doc' => 'application/msword',
+        'rtf' => 'application/rtf',
+        'xls' => 'application/vnd.ms-excel',
+        'ppt' => 'application/vnd.ms-powerpoint',
+        'docx' => 'application/msword',
+        'xlsx' => 'application/vnd.ms-excel',
+        'pptx' => 'application/vnd.ms-powerpoint',
+
+        // open office
+        'odt' => 'application/vnd.oasis.opendocument.text',
+        'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
+    );
+
+    if (isset($mimet[$idx])) {
+        return $mimet[$idx];
+    } else {
+        return 'application/octet-stream';
+    }
+}
+
 /**
  *  Gets the file from the request.
  *
- * @param $file - Request Input of the file e.g) $request->only('new_company_logo')
+ * @param $file - Request Input of the file e.g) $request->only('company_logo')
  *
  * @return file for complete success, everything worked!
  */
@@ -205,13 +447,17 @@ function oq_getFile($file)
  * @return $company for complete success, everything worked!
  * @return false    for complete/partial fail during execution
  */
-function oq_createCompany($request, $user)
+function oq_createOrUpdateCompany($request, $currCompany, $user)
 {
-    //  Lets get the logo file if it exists
-    $logoFile = oq_getFile($request->only('new_company_logo'));
-
-    //  Add all uploads for validation
-    $fileArray = array_merge(array('new_company_logo' => $logoFile), $request->all());
+    //  Lets get the image file if it exists
+    if (!empty($request->only('company_logo'))) {
+        //  Grab image file
+        $imageFile = oq_getFile($request->only('company_logo'));
+        //  Add all uploads for validation
+        $fileArray = array_merge(array('company_logo' => $imageFile), $request->all());
+    } else {
+        $fileArray = $request->all();
+    }
 
     //  Get the rules for validating a company on creation
     $rules = oq_company_create_v_rules();
@@ -225,34 +471,44 @@ function oq_createCompany($request, $user)
     // Check to see if validation fails or passes
     if ($validator->fails()) {
         //  Notify the user that validation failed
-        oq_notify('Couldn\'t create '.$request->input('new_company_type').', check your information!', 'danger');
+        oq_notify('Couldn\'t create '.$request->input('company_type').', check your information!', 'danger');
         //  Return back with errors and old inputs
-        return  ['failed_validation' => Redirect::back()->withErrors($validator)->withInput()];
+        return  ['failed_validation' => true, 'validator' => $validator];
     }
 
-    //  Create the new company
-    $company = \App\Company::create([
-        'name' => $request->input('new_company_name'),
-        'city' => $request->input('new_company_city'),
-        'state_or_region' => $request->input('new_company_state_or_region'),
-        'address' => $request->input('new_company_address'),
-        'email' => $request->input('new_company_email'),
-    ]);
+    //return dd($request->all());
+
+    //  Lets get all instanes of the branch inputs and rename approprietly
+    $tempRequest = oq_replaceRequestInputNames($request, 'company_');
+
+    if ($currCompany == null) {
+        //  Create the company
+        $company = \App\Company::create($tempRequest->all());
+        $status = 'created';
+    } else {
+        //  Update the existing company
+        $company = $currCompany->update($tempRequest->all());
+        $status = 'updated';
+    }
 
     //  If the company was created successfully
     if ($company) {
-        // re-retrieve the instance to get all of the fields in the table.
-        $company = $company->fresh();
+        //  re-retrieve the instance to get all of the fields in the table.
+        if ($currCompany == null) {
+            $company = \App\Company::where('id', $company->id)->with('logo')->first();
+        } else {
+            $company = \App\Company::where('id', $currCompany->id)->with('logo')->first();
+        }
 
         //  Record activity of a new company created
-        $companyCreatedActivity = oq_saveActivity($company, 'created', $user);
+        $companyCreatedActivity = oq_saveActivity($company, $status, $user);
 
         //  Create the branch
-        $branch = oq_createBranch(null, $company, Auth::user());
+        $branch = oq_createOrUpdatebranch($request, null, $company, $user);
 
         //  If we have the logo and has been approved, then save it to Amazon S3 bucket
-        if ($request->hasFile('new_company_logo')) {
-            $document = oq_saveDocument($company, Input::file('new_company_logo'), 'company_logos', 'logo', $user);
+        if ($request->hasFile('company_logo')) {
+            $document = oq_saveDocument($request, $company, Input::file('company_logo'), 'company_logos', 'logo', $user);
         }
 
         return $company;
@@ -323,62 +579,74 @@ function oq_addClientToJobcard($jobcard_id, $company, $user)
  * @param $jobcard_id - The jobcard id
  * @param $company - The company we want to add
  * @param $user - The user running this activity
- * @param $quoteData - The quotation details in array format [$file, $amount]
+ * @param $request - The request with all the details about the contractor, quotation and amount
+ * @param $type - a string to indicate whether to create or update
  *
  * @return true  for complete success, everything worked!
  * @return false for complete/partial fail during execution
  */
-function oq_addContractorToJobcard($jobcard_id, $company, $user, $quoteData = null)
+function oq_addOrUpdateContractorToJobcard($jobcard_id, $company, $user, $request, $type)
 {
+    //  Lets get the file if it exists
+    if (!empty($request->only('company_quote'))) {
+        //  Grab file
+        $imageFile = oq_getFile($request->only('company_quote'));
+        //  Add all uploads for validation
+        $fileArray = array_merge(array('company_quote' => $imageFile), $request->all());
+    } else {
+        $fileArray = $request->all();
+    }
+
+    //  Get the rules for validating a document on creation
+    $rules = oq_document_create_v_rules();
+
+    //  Customized error messages for validating a document on creation
+    $messages = oq_document_create_v_msgs();
+
+    // Now pass the input and rules into the validator
+    $validator = Validator::make($fileArray, $rules, $messages);
+
+    // Check to see if validation fails or passes
+    if ($validator->fails()) {
+        //  Notify the user that validation failed
+        oq_notify('Couldn\'t create '.$request->input('company_relation').', check your information!', 'danger');
+        //  Return back with errors and old inputs
+        return  ['failed_validation' => true, 'validator' => $validator];
+    }
+
     //  Get the associated jobcard
     $jobcard = \App\Jobcard::find($jobcard_id);
 
     if ($jobcard) {
         //  If we have the quotation and has been approved, then save it to Amazon S3 bucket
-        if ($quoteData != null) {
-            //  Lets get the quotation file if it exists. It can exist if this is a contrator
-            $quoteFile = oq_getFile($quoteData[0]);
-
-            //  Add all quotaiton for validation
-            $fileArray = ['new_company_quote' => $quoteFile];
-
-            //  Get the rules for validating a document on creation
-            $rules = oq_document_create_v_rules();
-
-            //  Customized error messages for validating a document on creation
-            $messages = oq_document_create_v_msgs();
-
-            // Now pass the file and rules into the validator
-            $validator = Validator::make($fileArray, $rules, $messages);
-
-            // Check to see if validation fails or passes
-            if ($validator->fails()) {
-                //  Notify the user that validation failed
-                oq_notify('Something went wrong uploading quotation. Make sure you uploaded a proper file not exceeding upload limits!', 'danger');
-                //  Return back with errors and old inputs
-                return  ['failed_validation' => Redirect::back()->withErrors($validator)->withInput()];
-            }
-
-            $document = oq_saveDocument($company, $quoteFile, 'company_quotes', 'quotation', $user);
+        if ($request->hasFile('company_quote')) {
+            $document = oq_saveDocument($request, $company, Input::file('company_quote'), 'company_quotes', 'quotation', $user);
         } else {
             $document = null;
         }
 
         $doc_id = !empty($document) ? $document->id : null;
 
-        //  Add the company as part of the jobcards list of potential contractors
-        $jobcard->contractorsList()->attach([$company->id => [
-                'amount' => $quoteData[1],
+        if ($type == 'create') {
+            //  Add the company as part of the jobcards list of potential contractors
+            $addedToContractors = $jobcard->contractorsList()->attach([$company->id => [
+                    'amount' => $request->input('company_total_price'),
+                    'quotation_doc_id' => $doc_id,
+                ]]);
+        } else {
+            //  Add the company as part of the jobcards list of potential contractors
+            $addedToContractors = $jobcard->contractorsList()->updateExistingPivot($company->id, [
+                'amount' => $request->input('company_total_price'),
                 'quotation_doc_id' => $doc_id,
-            ]]);
-
-        //  Record activity of success client client/contractor added
-        $jobcardActivity = oq_saveActivity([$jobcard, $company], 'contractor added', $user);
-
-        //  If the activity was saved successfully
-        if ($jobcardActivity) {
-            return true;
+            ]);
         }
+
+        if ($addedToContractors) {
+            //  Record activity of success client client/contractor added
+            $jobcardActivity = oq_saveActivity([$jobcard, $company], 'contractor added', $user);
+        }
+
+        return true;
     }
 
     return false;
@@ -396,10 +664,29 @@ function oq_addContractorToJobcard($jobcard_id, $company, $user, $quoteData = nu
 function oq_failed_validation($data)
 {
     //  If the data has a failed_validation key then the validation did not pass
-    if (is_array($data) && array_key_exists('failed_validation', $data)) {
+    if (is_array($data) && $data['failed_validation'] == true) {
         return true;
     } else {
         return false;
+    }
+}
+
+function oq_failed_validation_return($request, $response, $currentData = null)
+{
+    $validator = $response['validator'];
+
+    if (!empty($validator)) {
+        if (oq_viaAPI($request)) {
+            return oq_api_notify([
+                //  Return the usual laravel error format
+                'message' => 'The given data was invalid.',
+                'errors' => $validator->errors(),
+                'data' => $currentData,
+            ], 400);
+        } else {
+            //  Return back with the alert and failed validation rules
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
     }
 }
 
@@ -552,7 +839,7 @@ function oq_getArray($data)
     return $data;
 }
 
-function oq_createJobcard($request, $user)
+function oq_createOrUpdateJobcard($request, $currJobcard = null, $user)
 {
     /*  Lets get the priority, cost centers, categories and branches
      *  for this new jobcard. At this point we don't know if the user
@@ -574,32 +861,36 @@ function oq_createJobcard($request, $user)
 
     if (is_array($priorityArray)) {
         //  Extract the new priority name and replace the current request value
-        $request->merge(['priority' => $priorityArray['name']]);
+        $request->merge(['priority_name' => $priorityArray['name']]);
     }
 
     if (is_array($cost_centerArray)) {
         //  Extract the cost center name and replace the current request value
-        $request->merge(['cost_center' => $cost_centerArray['name']]);
+        $request->merge(['cost_center_name' => $cost_centerArray['name']]);
     }
 
     if (is_array($categoryArray)) {
         //  Extract the new category name and replace the current request value
-        $request->merge(['category' => $categoryArray['name']]);
+        $request->merge(['category_name' => $categoryArray['name']]);
     }
 
     if (is_array($branchArray)) {
         //  Extract the new company branch name and replace the current request value
-        $request->merge(['branch' => $branchArray['name']]);
+        $request->merge(['branch_name' => $branchArray['name']]);
     }
 
     //  Lets get the image file if it exists
-    $imageFile = oq_getFile($request->only('image'));
-
-    //  Add all uploads for validation
-    $fileArray = array_merge(array('image' => $imageFile), $request->all());
+    if (!empty($request->only('new_jobcard_image'))) {
+        //  Grab image file
+        $imageFile = oq_getFile($request->only('new_jobcard_image'));
+        //  Add all uploads for validation
+        $fileArray = array_merge(array('new_jobcard_image' => $imageFile), $request->all());
+    } else {
+        $fileArray = $request->all();
+    }
 
     //  Get the rules for validating a jobcard on creation
-    $rules = oq_jobcard_create_v_rules(Auth::user());
+    $rules = oq_jobcard_create_v_rules($user);
 
     //  Customized error messages for validating a jobcard on creation
     $messages = oq_jobcard_create_v_msgs($request);
@@ -610,60 +901,69 @@ function oq_createJobcard($request, $user)
     // Check to see if validation fails or passes
     if ($validator->fails()) {
         //  Notify the user that validation failed
-        oq_notify('Couldn\'t create jobcard, check your information!', 'danger');
+        oq_notify('Couldn\'t update jobcard, check your information!', 'danger');
         //  Return back with errors and old inputs
-        return  ['failed_validation' => Redirect::back()->withErrors($validator)->withInput()];
+        return  ['failed_validation' => true, 'validator' => $validator];
     }
 
     if (is_array($priorityArray)) {
+        $request->merge(['priority_name' => $priorityArray['name']]);
         //  Save the new priority and assign it back to the request input value
-        $priorityCreated = oq_createPriority($priorityArray['name'], $priorityArray['desc'], $priorityArray['color'], Auth::user());
+        $priorityCreated = oq_createOrUpdatePriority($request, null, $user->companyBranch->company, $user);
         //  Update request parameter with the priority id
-        $request->merge(['priority' => $priorityCreated->id]);
+        $request->merge(['priority_id' => $priorityCreated->id]);
     }
 
     if (is_array($cost_centerArray)) {
+        $request->merge(['cost_center_name' => $cost_centerArray['name']]);
         //  Save the new cost center and assign it back to the request input value
-        $costcenterCreated = oq_createCostCenter($cost_centerArray['name'], $cost_centerArray['desc'], Auth::user());
+        $costcenterCreated = oq_createOrUpdateCostCenter($request, null, $user->companyBranch->company, $user);
         //  Update request parameter with the cost center id
-        $request->merge(['cost_center' => $costcenterCreated->id]);
+        $request->merge(['cost_center_id' => $costcenterCreated->id]);
     }
 
     if (is_array($categoryArray)) {
+        $request->merge(['category_name' => $categoryArray['name']]);
         //  Save the new priority and assign it back to the request input value
-        $categoryCreated = oq_createCategory($categoryArray['name'], $categoryArray['desc'], Auth::user());
+        $categoryCreated = oq_createOrUpdateCategory($request, null, $user->companyBranch->company, $user);
         //  Update request parameter with the category id
-        $request->merge(['category' => $categoryCreated->id]);
+        $request->merge(['category_id' => $categoryCreated->id]);
     }
 
     if (is_array($branchArray)) {
+        $request->merge(['branch_name' => $branchArray['name']]);
         //  Save the new branch and assign it back to the request input value
-        $branchCreated = oq_createBranch($branchArray['name'], Auth::user()->companyBranch->company, $user);
+        $branchCreated = oq_createOrUpdatebranch($request, null, $user->companyBranch->company, $user);
         //  Extract the new company branch name and replace the current request value
-        $request->merge(['branch' => $branchCreated->id]);
+        $request->merge(['company_branch_id' => $branchCreated->id]);
     }
 
-    //  Create the jobcard
-    $jobcard = \App\Jobcard::create([
-        'title' => $request->input('title'),
-        'description' => $request->input('description'),
-        'start_date' => $request->input('start_date'),
-        'end_date' => $request->input('end_date'),
-        'status_id' => 1,
-        'priority_id' => $request->input('priority'),
-        'cost_center_id' => $request->input('cost_center'),
-        'company_branch_id' => $request->input('branch'),
-        'category_id' => $request->input('category'),
-        'who_created_id' => Auth::id(),
-    ]);
+    foreach ($request->all() as $key => $value) {
+        $request[str_replace('jobcard_', '', $key)] = $value;
+        unset($request[$key]);
+    }
 
-    //  If the jobcard was created successfully
+    if ($currJobcard == null) {
+        //  Create the jobcard
+        $jobcard = \App\Jobcard::create($request->all());
+        $status = 'created';
+    } else {
+        //  Update the existing jobcard
+        $jobcard = $currJobcard->update($request->all());
+        $status = 'updated';
+    }
+
+    //  If the jobcard was created/updated successfully
     if ($jobcard) {
-        // re-retrieve the instance to get all of the fields in the table.
-        $jobcard = $jobcard->fresh();
+        //  re-retrieve the instance to get all of the fields in the table.
+        if ($currJobcard == null) {
+            $jobcard = $jobcard->fresh();
+        } else {
+            $jobcard = $currJobcard->fresh();
+        }
 
         //  Record activity of a jobcard created
-        $jobcardCreatedActivity = oq_saveActivity($jobcard, 'created', $user);
+        $jobcardCreatedActivity = oq_saveActivity($jobcard, $status, $user);
 
         /*  Allocate the process form for tracking status
          *
@@ -674,112 +974,230 @@ function oq_createJobcard($request, $user)
 
         //  If we have the jobcard image and has been approved, then save it to Amazon S3 bucket
         if ($request->hasFile('new_jobcard_image')) {
-            $document = oq_saveDocument($jobcard, Input::file('new_jobcard_image'), 'jobcard_images', 'samples', $user);
+            $document = oq_saveDocument($request, $jobcard, Input::file('new_jobcard_image'), 'jobcard_images', 'samples', $user);
         }
 
         //  Notify the user that the jobcard creation was successful
-        oq_notify('Jobcard created successfully!', 'success');
+        oq_notify('Jobcard '.$status.' successfully!', 'success');
     } else {
         //  Record activity of a failed jobcard during creation
-        $jobcardCreatedActivity = oq_saveActivity(null, 'jobcard creation failed', $user);
+        $failType = ($status == 'created') ? 'create' : 'update';
+        $jobcardCreatedActivity = oq_saveActivity(null, 'jobcard '.$failType.' failed', $user);
 
         //  Notify the user that the jobcard creation was unsuccessful
-        oq_notify('Something went wrong creating the jobcard. Please try again', 'warning');
+        oq_notify('Something went wrong '.$status.' the jobcard. Please try again', 'warning');
     }
 
     return $jobcard;
 }
 
-function oq_createPriority($name, $desc, $color, $user)
+function oq_createOrUpdatePriority($request, $currPriority = null, $company, $user)
 {
-    $priorityCreated = $user->companyBranch->company->priorities()->create([
-        'name' => $name,
-        'description' => $desc,
-        'color_code' => $color,
-        'who_created_id' => $user->id,
-    ]);
+    //  Get the rules for validating a priority on creation
+    $rules = oq_priority_create_v_rules();
 
-    //  If the document was uploaded successfully
-    if ($priorityCreated) {
+    //  Customized error messages for validating a priority on creation
+    $messages = oq_priority_create_v_msgs();
+
+    // Now pass the input and rules into the validator
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    // Check to see if validation fails or passes
+    if ($validator->fails()) {
+        //  Notify the user that validation failed
+        oq_notify('Couldn\'t create priority "'.$request->input('priority_name').'", check your information!', 'danger');
+        //  Return back with errors and old inputs
+        return  ['failed_validation' => true, 'validator' => $validator];
+    }
+
+    //  Lets get all instanes of the priority inputs and rename approprietly
+    $tempRequest = oq_replaceRequestInputNames($request, 'priority_');
+
+    if ($currPriority == null) {
+        //  Create the priority
+        $priority = $company->priorities()->create($tempRequest->all());
+        $status = 'created';
+    } else {
+        //  Update the existing priority
+        $priority = $currPriority->update($tempRequest->all());
+        $status = 'updated';
+    }
+
+    //  If the priority was created successfully
+    if ($priority) {
+        //  re-retrieve the instance to get all of the fields in the table.
+        if ($currPriority == null) {
+            $priority = $priority->fresh();
+        } else {
+            $priority = $currPriority->fresh();
+        }
+
         //  Record activity of a new priority created
-        $priorityCreatedActivity = oq_saveActivity($priorityCreated, 'created', $user);
+        $priorityActivity = oq_saveActivity($priority, $status, $user);
     } else {
         //  Record activity of a failed priority during creation
-        $priorityCreatedActivity = oq_saveActivity(null, 'priority creation failed', $user);
+        $failType = ($status == 'created') ? 'create' : 'update';
+        $priorityActivity = oq_saveActivity(null, 'priority '.$failType.' failed', $user);
     }
 
-    return $priorityCreated;
+    return $priority;
 }
 
-function oq_createCostCenter($name, $desc, $user)
+function oq_createOrUpdateCostCenter($request, $currCostCenter = null, $company, $user)
 {
-    //  Save the new cost center and assign it back to the request input value
-    $costcenterCreated = $user->companyBranch->company->costCenters()->create([
-        'name' => $name,
-        'description' => $desc,
-        'who_created_id' => $user->id,
-    ]);
+    //  Get the rules for validating a cost center on creation
+    $rules = oq_cost_center_create_v_rules();
+
+    //  Customized error messages for validating a cost center on creation
+    $messages = oq_cost_center_create_v_msgs();
+
+    // Now pass the input and rules into the validator
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    // Check to see if validation fails or passes
+    if ($validator->fails()) {
+        //  Notify the user that validation failed
+        oq_notify('Couldn\'t create cost center "'.$request->input('cost_center_name').'", check your information!', 'danger');
+        //  Return back with errors and old inputs
+        return  ['failed_validation' => true, 'validator' => $validator];
+    }
+
+    //  Lets get all instanes of the cost center inputs and rename approprietly
+    $tempRequest = oq_replaceRequestInputNames($request, 'cost_center_');
+
+    if ($currCostCenter == null) {
+        //  Create the cost center
+        $cost_center = $company->costcenters()->create($tempRequest->all());
+        $status = 'created';
+    } else {
+        //  Update the existing cost center
+        $cost_center = $currCostCenter->update($tempRequest->all());
+        $status = 'updated';
+    }
 
     //  If the cost center was created successfully
-    if ($costcenterCreated) {
+    if ($cost_center) {
+        //  re-retrieve the instance to get all of the fields in the table.
+        if ($currCostCenter == null) {
+            $cost_center = $cost_center->fresh();
+        } else {
+            $cost_center = $currCostCenter->fresh();
+        }
+
         //  Record activity of a new cost center created
-        $costcenterCreatedActivity = oq_saveActivity($costcenterCreated, 'created', $user);
+        $cost_centerActivity = oq_saveActivity($cost_center, $status, $user);
     } else {
         //  Record activity of a failed cost center during creation
-        $costcenterCreatedActivity = oq_saveActivity(null, 'cost center creation failed', $user);
+        $failType = ($status == 'created') ? 'create' : 'update';
+        $cost_centerActivity = oq_saveActivity(null, 'cost center '.$failType.' failed', $user);
     }
 
-    return $costcenterCreated;
+    return $cost_center;
 }
 
-function oq_createCategory($name, $desc, $user)
+function oq_createOrUpdateCategory($request, $currCategory = null, $company, $user)
 {
-    //  Save the new category and assign it back to the request input value
-    $categoryCreated = $user->companyBranch->company->categories()->create([
-        'name' => $name,
-        'description' => $desc,
-        'who_created_id' => $user->id,
-    ]);
+    //  Get the rules for validating a category on creation
+    $rules = oq_category_create_v_rules();
+
+    //  Customized error messages for validating a category on creation
+    $messages = oq_category_create_v_msgs();
+
+    // Now pass the input and rules into the validator
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    // Check to see if validation fails or passes
+    if ($validator->fails()) {
+        //  Notify the user that validation failed
+        oq_notify('Couldn\'t create category '.$request->input('category_name').', check your information!', 'danger');
+        //  Return back with errors and old inputs
+        return  ['failed_validation' => true, 'validator' => $validator];
+    }
+
+    //  Lets get all instanes of the category inputs and rename approprietly
+    $tempRequest = oq_replaceRequestInputNames($request, 'category_');
+
+    if ($currCategory == null) {
+        //  Create the category
+        $category = $company->categories()->create($tempRequest->all());
+        $status = 'created';
+    } else {
+        //  Update the existing category
+        $category = $currCategory->update($tempRequest->all());
+        $status = 'updated';
+    }
 
     //  If the category was created successfully
-    if ($categoryCreated) {
+    if ($category) {
+        //  re-retrieve the instance to get all of the fields in the table.
+        if ($currCategory == null) {
+            $category = $category->fresh();
+        } else {
+            $category = $currCategory->fresh();
+        }
+
         //  Record activity of a new category created
-        $categoryCreatedActivity = oq_saveActivity($categoryCreated, 'created', $user);
+        $categoryActivity = oq_saveActivity($category, $status, $user);
     } else {
         //  Record activity of a failed category during creation
-        $categoryCreatedActivity = oq_saveActivity(null, 'category creation failed', $user);
+        $failType = ($status == 'created') ? 'create' : 'update';
+        $categoryActivity = oq_saveActivity(null, 'category '.$failType.' failed', $user);
     }
 
-    return $categoryCreated;
+    return $category;
 }
 
-function oq_createBranch($name = null, $company, $user)
+function oq_createOrUpdatebranch($request, $currBranch = null, $company, $user)
 {
-    //  Create the branch
-    if ($name != null) {
-        $branchCreated = \App\CompanyBranch::create([
-            'name' => $name,
-            'company_id' => $company->id,
-        ]);
-    } else {
-        $branchCreated = \App\CompanyBranch::create([
-            /*   name field will use default value from migration table   */
-            'company_id' => $company->id,
-        ]);
+    //  Get the rules for validating a branch on creation
+    $rules = oq_branch_create_v_rules();
+
+    //  Customized error messages for validating a branch on creation
+    $messages = oq_branch_create_v_msgs();
+
+    // Now pass the input and rules into the validator
+    $validator = Validator::make($request->all(), $rules, $messages);
+
+    // Check to see if validation fails or passes
+    if ($validator->fails()) {
+        //  Notify the user that validation failed
+        oq_notify('Couldn\'t create branch '.$request->input('branch_name').', check your information!', 'danger');
+        //  Return back with errors and old inputs
+        return  ['failed_validation' => true, 'validator' => $validator];
     }
+
+    //  Lets get all instanes of the branch inputs and rename approprietly
+    $tempRequest = oq_replaceRequestInputNames($request, 'branch_');
+    $tempRequest->merge(['company_id' => $company->id]);
+
+    if ($currBranch == null) {
+        //  Create the branch
+        $branch = \App\CompanyBranch::create($tempRequest->all());
+        $status = 'created';
+    } else {
+        //  Update the existing branch
+        $branch = $currBranch->update($tempRequest->all());
+        $status = 'updated';
+    }
+
     //  If the branch was created successfully
-    if ($branchCreated) {
-        // re-retrieve the instance to get all of the fields in the table.
-        $branchCreated = $branchCreated->fresh();
+    if ($branch) {
+        //  re-retrieve the instance to get all of the fields in the table.
+        if ($currBranch == null) {
+            $branch = $branch->fresh();
+        } else {
+            $branch = $currBranch->fresh();
+        }
 
         //  Record activity of a new branch created
-        $branchCreatedActivity = oq_saveActivity($branchCreated, 'created', $user);
+        $branchActivity = oq_saveActivity($branch, $status, $user);
     } else {
         //  Record activity of a failed branch during creation
-        $branchCreatedActivity = oq_saveActivity(null, 'branch creation failed', $user);
+        $failType = ($status == 'created') ? 'create' : 'update';
+        $branchActivity = oq_saveActivity(null, 'branch '.$failType.' failed', $user);
     }
 
-    return $branchCreated;
+    return $branch;
 }
 
 function oq_createdBy($model)
@@ -807,4 +1225,16 @@ function oq_formatSizeUnits($bytes)
     }
 
     return $bytes;
+}
+
+function oq_replaceRequestInputNames($request, $name)
+{
+    $tempRequest = new \Illuminate\Http\Request();
+
+    //  Lets get all instanes of the branch inputs and rename approprietly
+    foreach ($request->all() as $key => $value) {
+        $tempRequest[str_replace($name, '', $key)] = $value;
+    }
+
+    return $tempRequest;
 }

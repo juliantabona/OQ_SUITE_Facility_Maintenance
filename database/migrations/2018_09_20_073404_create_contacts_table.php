@@ -15,6 +15,7 @@ class CreateContactsTable extends Migration
             $table->increments('id');
             $table->integer('company_id')->unsigned();
             $table->integer('contact_id')->unsigned();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

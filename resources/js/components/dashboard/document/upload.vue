@@ -34,8 +34,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(file, key) in files"
-                                class="clickable-row">
+                            <tr v-for="(file, key) in files" :key="'file_'+key" class="clickable-row">
                                 <td>
                                     <div class="lightgallery mt-3">
                                         <img class="preview" v-bind:ref="'image'+parseInt( key )"/>
@@ -51,17 +50,16 @@
                 </div>
             </div>
             <div :class="(files.length == 0 ? 'col-4 offset-8': 'col-4 offset-4')">
-                <div data-toggle="tooltip" data-placement="top" title="Add Image/File" >
-                    <button v-on:click="addFiles()" type="button" class="animated-strips btn btn-success float-right mt-2 pt-2 pb-2 pl-4 pr-4 w-100">                                            
+                <div dv-b-tooltip.hover title="Add Image/File" >
+                    <button v-on:click="addFiles()" type="button" :class="(files.length == 0 ? 'animated-strips btn-success ': 'btn-default ') +'btn float-right mt-2 pt-2 pb-2 pl-4 pr-4 w-100'">                                            
                         <i class="icon-sm icon-doc icons"></i>
                         <span class="mt-4">Add Image/File</span>
                     </button>
                 </div>
             </div>
             <div v-if="files.length != 0" :class="(files.length == 0 ? 'col-4 offset-8': 'col-4')">
-                <div data-toggle="tooltip" data-placement="top" title="Add Image/File" >
+                <div v-b-tooltip.hover title="Add Image/File" >
                     <button v-on:click="submitFiles()" type="button" class="animated-strips btn btn-success float-right mt-2 pt-2 pb-2 pl-4 pr-4 w-100">                                            
-                        <i class="icon-sm icon-doc icons"></i>
                         <span class="mt-4">Upload</span>
                     </button>
                 </div>
@@ -76,7 +74,7 @@
 
 <script>
   export default {
-    props:['modelId', 'modelType'],
+    props:['modelId', 'modelType', 'storageLocation', 'groupType'],
     /*
       Defines the data used by the component
     */
@@ -149,9 +147,9 @@
         }
 
         /*
-          Make the request to the POST /select-files URL
+          Make the request to the POST /documents URL
         */
-        axios.post( '/documents?id='+this.modelId+'&&type='+this.modelType,
+        axios.post( '/api/documents?id='+this.modelId+'&&model='+this.modelType+'&&location='+this.storageLocation+'&&type='+this.groupType,
           formData,
           {
             headers: {
@@ -163,13 +161,20 @@
             }.bind(this)
           }
         ).then(function(response){
-          console.log('SUCCESS!!');
-          self.$emit('uploaded', response['data']);
+          console.log('uploaded');
+          console.log(response.data);
           self.isUploading = false;
+          self.$emit('uploaded', response.data);
+
+          let docCount = self.files.length;
+          let docMsg = (docCount == 1) ? docCount+' document added' : docCount+' documents added';
+          
+          self.$snotify.success(docMsg);
+
           self.files = [];
         })
-        .catch(function(response){
-          console.log('FAILURE!!');
+        .catch(function(error){
+          console.log(error);
           self.isUploading = false;
           self.files = [];
         });

@@ -3,9 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\AdvancedFilter\Dataviewer;
 
 class Company extends Model
 {
+    use SoftDeletes;
+    use Dataviewer;
+
     protected $table = 'companies';
     /**
      * The attributes that are mass assignable.
@@ -14,7 +19,17 @@ class Company extends Model
      */
     protected $fillable = [
         'name', 'description', 'city', 'state_or_region', 'address', 'industry', 'type', 'website_link',
-        'profile_doc_url', 'phone_ext', 'phone_num', 'email',
+        'profile_doc_url', 'phone_ext', 'phone_num', 'email', 'logo_url',
+    ];
+
+    protected $allowedFilters = [
+        'name', 'description', 'city', 'state_or_region', 'address', 'industry', 'type', 'website_link',
+        'profile_doc_url', 'phone_ext', 'phone_num', 'email', 'created_at',
+    ];
+
+    protected $orderable = [
+        'name', 'description', 'city', 'state_or_region', 'address', 'industry', 'type', 'website_link',
+        'profile_doc_url', 'phone_ext', 'phone_num', 'email', 'created_at',
     ];
 
     public function creator()

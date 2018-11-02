@@ -24,6 +24,8 @@ class CreateCompaniesTable extends Migration
             $table->string('profile_doc_url')->nullable();
             $table->integer('phone_id')->unsigned()->nullable();
             $table->string('email')->nullable();
+            $table->string('logo_url')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

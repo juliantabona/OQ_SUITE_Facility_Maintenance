@@ -1,49 +1,42 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="{{ app()->getLocale() }}">
+    <head>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ env('APP_NAME', 'OQ - Facility Maintenance') }}</title>
+        <title>{{ env('APP_NAME', 'OQ - Facility Maintenance') }}</title>
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.css">
+        <!-- Fonts -->
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+        <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
 
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
+        <!-- plugins:css -->
+        <link rel="stylesheet" href="{{ asset('css/plugins/mdi/css/materialdesignicons.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/plugins/simple-line-icons/css/simple-line-icons.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/plugins/perfect-scrollbar/dist/css/perfect-scrollbar.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/plugins/pace/themes/custom/custom-pace.css') }}">
+        <!-- endinject -->
 
-    <!-- CSS Dependencies -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ URL::asset('css/themes/shards/shards.min.css') }}">
-    <link rel="stylesheet" href="{{ URL::asset('css/main.css') }}">
+        <!-- App Compilled Styles -->
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-    <!-- Additional CSS -->
-    @yield('style')
+        <!-- Dashboard Styles -->
+        <link href="{{ asset('css/themes/victory/style.css') }}" rel="stylesheet">
+        <link rel="stylesheet" href="{{ URL::asset('css/main.css') }}">
 
-    <!-- JS Dependencies -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-</head>
-<body>
-    <div id="app">
-        <main>
-            <!-- Content -->
-            @yield('content')
-
-            <!-- Footer -->
-            @include('web.layouts.footer.default')
-        </main>
-
-        <!-- JavaScript Dependencies: jQuery, Popper.js, Bootstrap JS, Shards JS -->
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="{{ URL::asset('js/themes/shards/shards.min.js') }}"></script>
-        <!-- Additional JS -->
-        @yield('js')
-    </div>
-</body>
+        <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}" />        
+    </head>
+    <body>
+        <div id="app">
+            <main-dashboard></main-dashboard>
+        </div>
+    </body>
+    <!-- JavaScript Dependencies: jQuery, Popper.js, Bootstrap JS, Shards JS -->
+    <script src="{{ asset('js/plugins/popper.js/dist/umd/popper.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </html>

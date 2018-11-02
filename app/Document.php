@@ -4,6 +4,8 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\AdvancedFilter\Dataviewer;
 
 Relation::morphMap([
     'user' => 'App\User',
@@ -13,6 +15,9 @@ Relation::morphMap([
 
 class Document extends Model
 {
+    use SoftDeletes;
+    use Dataviewer;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -20,6 +25,14 @@ class Document extends Model
      */
     protected $fillable = [
         'name', 'type', 'description', 'mime', 'size', 'url',
+    ];
+
+    protected $allowedFilters = [
+        'name', 'type', 'description', 'mime', 'size', 'url', 'created_at', 'documentable_id', 'documentable_type',
+    ];
+
+    protected $orderable = [
+        'name', 'type', 'description', 'mime', 'size', 'url', 'created_at',
     ];
 
     public function creator()

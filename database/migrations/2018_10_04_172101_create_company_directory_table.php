@@ -16,6 +16,7 @@ class CreateCompanyDirectoryTable extends Migration
             $table->integer('company_id')->unsigned();
             $table->integer('belongs_to_id')->unsigned();
             $table->string('type')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

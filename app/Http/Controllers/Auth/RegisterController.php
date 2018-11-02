@@ -46,6 +46,16 @@ class RegisterController extends Controller
     }
 
     /**
+     *  After the user is successfully registered,
+     *  we hook into the registered() function from "RegistersUsers"
+     *  and create the token used during authorization for API calls.
+     */
+    protected function registered(Request $request, $user)
+    {
+        return $user->generateToken($request);
+    }
+
+    /**
      * Get a validator for an incoming registration request.
      *
      * @param array $data
@@ -57,9 +67,10 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'username' => 'required|string|max:20|unique:users',
+            'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:6|confirmed',
+            'company_name' => 'required|max:255',
         ]);
     }
 
@@ -137,7 +148,7 @@ class RegisterController extends Controller
                     ]);
 
                     //  Send email to the user to activate account
-                    Mail::to($data['email'])->send(new ActivateAccount($user));
+                    //Mail::to($data['email'])->send(new ActivateAccount($user));
 
                     //  Notify the user that account was created successfully
                     Session::forget('alert');
@@ -146,6 +157,9 @@ class RegisterController extends Controller
             }
         }
 
-        return $user;
+        return User::where('id', $user->id)->with([
+                        'companyBranch' => function ($query) {
+                            $query->with('company');
+                        }, ])->first();
     }
 }

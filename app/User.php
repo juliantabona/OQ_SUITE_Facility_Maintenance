@@ -2,12 +2,14 @@
 
 namespace App;
 
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\URL;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use HasApiTokens, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -72,5 +74,31 @@ class User extends Authenticatable
         //  If the avatar is not empty ('', NULL, false, e.t.c) then return the avatar url
         //  Otherwise return the default avatar placeholder
         return !empty($value) ? $value : '/images/assets/placeholders/profile_placeholder.png';
+    }
+
+    public function generateToken($request)
+    {
+        $http = new \GuzzleHttp\Client();
+
+        $response = $http->post(URL::to('/').'/oauth/token', [
+            'form_params' => [
+                'grant_type' => 'password',
+                'client_id' => '2',
+                'client_secret' => 'foS6HXOHHJzUV6sURHRqUpmjF66RVVAYETbiJsqs',
+                'username' => $request->input('email'),
+                'password' => $request->input('password'),
+                'scope' => '',
+            ],
+        ]);
+
+        //  Lets get an array instead of a stdObject so that we can return without errors
+        $response = json_decode($response->getBody(), true);
+
+        return response()->json(
+                ['data' => [
+                    'auth' => $response,            //  API ACCESS TOKEN
+                    'user' => $this->toArray(),     //  NEW REGISTERED USER
+                    ],
+                ], 201);                            //  201 STATUS  - Resource Created
     }
 }

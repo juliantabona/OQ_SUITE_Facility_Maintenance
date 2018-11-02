@@ -7,9 +7,36 @@
 
 require('./bootstrap');
 
+//  For our custom routes
+import VueRouter from 'vue-router';
+import router from './routes.js';
+//  For bootstrap
+import BootstrapVue from 'bootstrap-vue';
+//  For toast notifications
+import Snotify from 'vue-snotify';
+//  For authentication handling
+import auth from './auth.js';
+
 window.Vue = require('vue');
 
-//Imports Moment.js for use by vue components in formatting dates
+//  For our custom routes
+Vue.use(VueRouter);
+//  Use Bootstrap & Tooltips
+Vue.use(BootstrapVue);
+//  For toast notifications
+Vue.use(Snotify);
+
+//  For Pagination
+Vue.component('pagination', require('laravel-vue-pagination'));
+
+//  Global event manager, to emit changes/updates
+//  such as when user has logged in e.g) auth.js
+window.Event = new Vue;
+
+//  For authentication handling
+window.auth = auth;
+
+//  Imports Moment.js for use by vue components in formatting dates
 Vue.use(require('vue-moment'));
 
 /**
@@ -18,13 +45,50 @@ Vue.use(require('vue-moment'));
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+ /**
+ * DASHBOARD LAYOUT COMPONENTS
+ */
+Vue.component('main-dashboard', require('./components/layout/main.vue'));
+Vue.component('top-main-menu', require('./components/layout/top-menu/main.vue'));
+Vue.component('left-main-menu', require('./components/layout/left-menu/main.vue'));
+Vue.component('settings-widget', require('./components/layout/sidebar/settings-widget.vue'));
+Vue.component('todo-widget', require('./components/layout/sidebar/todo-widget.vue'));
+Vue.component('alert', require('./components/layout/alert/main.vue'));
+Vue.component('app-footer', require('./components/layout/footer/main.vue'));
+
+
 Vue.component('loader', require('./components/loaderComponent.vue'));
-Vue.component('jobcard-body', require('./components/jobcard/body.vue'));
-Vue.component('document-list', require('./components/document/documentList.vue'));
-Vue.component('document-uploader', require('./components/upload.vue'));
-Vue.component('company-side-widget', require('./components/company/sideWidget.vue'));
-Vue.component('example-component', require('./components/ExampleComponent.vue'));
+Vue.component('jobcard-body', require('./components/dashboard/jobcard/body.vue'));
+Vue.component('document-list', require('./components/dashboard/document/documentList.vue'));
+Vue.component('document-uploader', require('./components/dashboard/document/upload.vue'));
+Vue.component('company-side-widget', require('./components/dashboard/company/sideWidget.vue'));
+Vue.component('contractor-list-widget', require('./components/dashboard/company/contractorListWidget.vue'));
+
+ /**
+ * DASHBOARD MODALS
+ */
+Vue.component('create-company-modal', require('./components/modal/createCompany.vue'));
+Vue.component('edit-company-modal', require('./components/modal/editCompany.vue'));
+
+
+
+Vue.component(
+    'passport-clients',
+    require('./components/passport/Clients.vue')
+);
+
+Vue.component(
+    'passport-authorized-clients',
+    require('./components/passport/AuthorizedClients.vue')
+);
+
+Vue.component(
+    'passport-personal-access-tokens',
+    require('./components/passport/PersonalAccessTokens.vue')
+);
 
 const app = new Vue({
-    el: '#app'
+    el: '#app',
+    //  For our custom routes
+    router
 });

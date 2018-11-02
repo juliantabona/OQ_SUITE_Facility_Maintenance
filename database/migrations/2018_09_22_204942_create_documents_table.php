@@ -20,6 +20,7 @@ class CreateDocumentsTable extends Migration
             $table->integer('size')->unsigned()->nullable();
             $table->string('url')->nullable();
             $table->morphs('documentable');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

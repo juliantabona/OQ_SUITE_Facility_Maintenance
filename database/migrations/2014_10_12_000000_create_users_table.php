@@ -35,6 +35,7 @@ class CreateUsersTable extends Migration
             $table->string('city')->nullable();
             $table->string('accessibility')->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

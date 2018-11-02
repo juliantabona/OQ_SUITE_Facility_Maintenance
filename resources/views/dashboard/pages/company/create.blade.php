@@ -31,7 +31,7 @@
                         <div class="card-body p-3 pt-4">
                             <form method="POST" action="{{ route('company-store') }}" enctype="multipart/form-data">
                                 @csrf
-                                <input type="hidden" value="{{ app('request')->input('type') == "contractor" ? 'contractor': 'client' }}" name="new_company_type">
+                                <input type="hidden" value="{{ app('request')->input('type') == "contractor" ? 'contractor': 'client' }}" name="company_type">
                                 <div class="row">
 
                                     <div class="col-12">
@@ -39,25 +39,25 @@
                                             <span class="badge badge-warning text-white">Attach Company Logo : </span><br/>
                                             <p class="d-inline text-muted">Logo size is limited to not greater than <b>2MB</b>. Only <b>jpeg, jpg, png and gif</b> are accepted.</p>
                                         </div>
-                                        <div class="form-group{{ $errors->has('new_company_logo') ? ' has-error' : '' }}">
-                                                @if ($errors->has('new_company_logo'))
+                                        <div class="form-group{{ $errors->has('company_logo') ? ' has-error' : '' }}">
+                                                @if ($errors->has('company_logo'))
                                                     <span class="help-block invalid-feedback d-block">
                                                         <span class="badge badge-danger text-white mr-2">Error : </span>
-                                                        <strong>{{ $errors->first('new_company_logo') }}</strong>
+                                                        <strong>{{ $errors->first('company_logo') }}</strong>
                                                     </span>
                                                 @endif  
-                                                <input type="file" data-max-file-size="2mb" data-default-file="{{ old('new_company_logo') }}" data-height="100"
-                                                class="dropify form-control {{ $errors->has('new_company_logo') ? ' is-invalid' : '' }}" name="new_company_logo">                                      
+                                                <input type="file" data-max-file-size="2mb" data-default-file="{{ old('company_logo') }}" data-height="100"
+                                                class="dropify form-control {{ $errors->has('company_logo') ? ' is-invalid' : '' }}" name="company_logo">                                      
                                         </div>
                                     </div>
     
                                     <div class="col-12">
                                         <h4>Company Details*</h4>
                                         <div class="form-group">
-                                            <input type="text" name="new_company_name" placeholder="Enter company name..." value="{{ old('new_company_name') }}" class="form-control{{ $errors->has('new_company_name') ? '  is-invalid' : '' }}" autocomplete="off">
-                                            @if ($errors->has('new_company_name'))
+                                            <input type="text" name="company_name" placeholder="Enter company name..." value="{{ old('company_name') }}" class="form-control{{ $errors->has('company_name') ? '  is-invalid' : '' }}" autocomplete="off">
+                                            @if ($errors->has('company_name'))
                                                 <span class="help-block invalid-feedback d-block">
-                                                    <strong>{{ $errors->first('new_company_name') }}</strong>
+                                                    <strong>{{ $errors->first('company_name') }}</strong>
                                                 </span>
                                             @endif        
                                         </div>
@@ -65,10 +65,10 @@
         
                                     <div class="col-12">
                                         <div class="form-group">
-                                            <input type="text" name="new_company_city" placeholder="Enter company city..." value="{{ old('new_company_city') }}" class="form-control{{ $errors->has('new_company_city') ? '  is-invalid' : '' }}" autocomplete="off">
-                                            @if ($errors->has('new_company_city'))
+                                            <input type="text" name="company_city" placeholder="Enter company city..." value="{{ old('company_city') }}" class="form-control{{ $errors->has('company_city') ? '  is-invalid' : '' }}" autocomplete="off">
+                                            @if ($errors->has('company_city'))
                                                 <span class="help-block invalid-feedback d-block">
-                                                    <strong>{{ $errors->first('new_company_city') }}</strong>
+                                                    <strong>{{ $errors->first('company_city') }}</strong>
                                                 </span>
                                             @endif        
                                         </div>
@@ -76,10 +76,10 @@
                                     
                                     <div class="col-12">
                                         <div class="form-group">
-                                            <input type="text" name="new_company_state_or_region" placeholder="Enter company state/region..." value="{{ old('new_company_state_or_region') }}" class="form-control{{ $errors->has('new_company_state_or_region') ? '  is-invalid' : '' }}" autocomplete="off">
-                                            @if ($errors->has('new_company_state_or_region'))
+                                            <input type="text" name="company_state_or_region" placeholder="Enter company state/region..." value="{{ old('company_state_or_region') }}" class="form-control{{ $errors->has('company_state_or_region') ? '  is-invalid' : '' }}" autocomplete="off">
+                                            @if ($errors->has('company_state_or_region'))
                                                 <span class="help-block invalid-feedback d-block">
-                                                    <strong>{{ $errors->first('new_company_state_or_region') }}</strong>
+                                                    <strong>{{ $errors->first('company_state_or_region') }}</strong>
                                                 </span>
                                             @endif        
                                         </div>
@@ -87,10 +87,10 @@
         
                                     <div class="col-12">
                                         <div class="form-group">
-                                            <input type="text" name="new_company_address" placeholder="Enter company address..." value="{{ old('new_company_address') }}" class="form-control{{ $errors->has('new_company_address') ? '  is-invalid' : '' }}" autocomplete="off">
-                                            @if ($errors->has('new_company_address'))
+                                            <input type="text" name="company_address" placeholder="Enter company address..." value="{{ old('company_address') }}" class="form-control{{ $errors->has('company_address') ? '  is-invalid' : '' }}" autocomplete="off">
+                                            @if ($errors->has('company_address'))
                                                 <span class="help-block invalid-feedback d-block">
-                                                    <strong>{{ $errors->first('new_company_address') }}</strong>
+                                                    <strong>{{ $errors->first('company_address') }}</strong>
                                                 </span>
                                             @endif        
                                         </div>
@@ -99,11 +99,11 @@
                                     <div class="col-12">
                                         <h4>Contact Details*</h4>
                                         <div class="form-group">
-                                            <input type="email" name="new_company_email" placeholder="Enter company email address"
-                                                value="{{ old('new_company_email') }}"  class="form-control{{ $errors->has('new_company_email') ? '  is-invalid' : '' }}" autocomplete="off">
-                                                @if ($errors->has('new_company_email'))
+                                            <input type="email" name="company_email" placeholder="Enter company email address"
+                                                value="{{ old('company_email') }}"  class="form-control{{ $errors->has('company_email') ? '  is-invalid' : '' }}" autocomplete="off">
+                                                @if ($errors->has('company_email'))
                                                     <span class="help-block invalid-feedback d-block">
-                                                        <strong>{{ $errors->first('new_company_email') }}</strong>
+                                                        <strong>{{ $errors->first('company_email') }}</strong>
                                                     </span>
                                                 @endif                                                
                                         </div>
@@ -114,17 +114,17 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">+</span>
                                             </div>
-                                            <input type="text"  class="form-control{{ $errors->has('new_company_phone_ext') ? '  is-invalid' : '' }}" name="new_company_phone_ext" value="{{ old('new_company_phone_ext') }}" placeholder="Country code..." autocomplete="off">
-                                            <input type="text"  class="form-control{{ $errors->has('new_company_phone_num') ? '  is-invalid' : '' }}" name="new_company_phone_num" value="{{ old('new_company_phone_num') }}" placeholder="Phone number..." autocomplete="off">
-                                            @if ($errors->has('new_company_phone_ext'))
+                                            <input type="text"  class="form-control{{ $errors->has('company_phone_ext') ? '  is-invalid' : '' }}" name="company_phone_ext" value="{{ old('company_phone_ext') }}" placeholder="Country code..." autocomplete="off">
+                                            <input type="text"  class="form-control{{ $errors->has('company_phone_num') ? '  is-invalid' : '' }}" name="company_phone_num" value="{{ old('company_phone_num') }}" placeholder="Phone number..." autocomplete="off">
+                                            @if ($errors->has('company_phone_ext'))
                                                 <span class="help-block invalid-feedback d-block">
-                                                    <strong>{{ $errors->first('new_company_phone_ext') }}</strong>
+                                                    <strong>{{ $errors->first('company_phone_ext') }}</strong>
                                                 </span>
                                                 <br/>
                                             @endif
-                                            @if ($errors->has('new_company_phone_num'))
+                                            @if ($errors->has('company_phone_num'))
                                                 <span class="help-block invalid-feedback d-block">
-                                                    <strong>{{ $errors->first('new_company_phone_num') }}</strong>
+                                                    <strong>{{ $errors->first('company_phone_num') }}</strong>
                                                 </span>
                                             @endif
                                         </div>

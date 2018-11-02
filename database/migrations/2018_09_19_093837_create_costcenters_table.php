@@ -16,6 +16,7 @@ class CreateCostcentersTable extends Migration
             $table->string('name')->nullable();
             $table->text('description')->nullable();
             $table->morphs('costcenter');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
