@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Mail;
 use App\User;
+use App\VerifyUser;
 use App\Company;
 use App\CompanyBranch;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
-use App\Mail\ActivateAccount;
 use Illuminate\Http\Request;
-use Session;
-use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -89,11 +86,15 @@ class RegisterController extends Controller
             'username' => $data['username'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'verifyToken' => Str::random(40),
         ]);
 
         //  If the user was created successfully
         if ($user) {
+            $verification = VerifyUser::create([
+                'user_id' => $user->id,
+                'token' => sha1(time()),
+              ]);
+
             //  Create the company
             $company = Company::create([
                 'name' => $data['company_name'],
@@ -147,12 +148,8 @@ class RegisterController extends Controller
                         'company_branch_id' => $user->company_branch_id,
                     ]);
 
-                    //  Send email to the user to activate account
-                    //Mail::to($data['email'])->send(new ActivateAccount($user));
-
                     //  Notify the user that account was created successfully
-                    Session::forget('alert');
-                    Session::flash('alert', array('Account created successfully!', 'icon-check icons', 'success'));
+                    oq_notify('Account created successfully!', 'success');
                 }
             }
         }

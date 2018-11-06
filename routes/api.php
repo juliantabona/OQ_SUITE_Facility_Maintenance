@@ -40,6 +40,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/login', 'Auth\LoginController@login');
 Route::post('/register', 'Auth\RegisterController@register');
+Route::post('/register/resend-activation/', 'Auth\AccountActivation@resend');
+Route::post('/register/activate-account', 'Auth\AccountActivation@activate');
 
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('/logout', 'Auth\LoginController@logout');
@@ -62,6 +64,24 @@ Route::get('branches/{branch_id}', 'Api\CompanyBranchController@show');
 Route::post('branches', 'Api\CompanyBranchController@store');
 Route::put('branches/{branch_id}', 'Api\CompanyBranchController@update');
 Route::delete('branches/{branch_id}', 'Api\CompanyBranchController@delete');
+
+/*   COMPANY CLIENTS RESOURCE ROUTES
+     -  Get, Show, Update, Trash, Delete
+*/
+Route::get('clients', 'Api\ClientController@index');
+//Route::get('companies/{company_id}', 'Api\ClientController@show');
+//Route::post('companies', 'Api\ClientController@store');
+//Route::put('companies/{company_id}', 'Api\ClientController@update');
+//Route::delete('companies/{company_id}', 'Api\ClientController@delete');
+
+/*   COMPANY CONTRACTORS RESOURCE ROUTES
+     -  Get, Show, Update, Trash, Delete
+*/
+Route::get('contractors', 'Api\ContractorController@index');
+//Route::get('companies/{company_id}', 'Api\ContractorController@show');
+//Route::post('companies', 'Api\ContractorController@store');
+//Route::put('companies/{company_id}', 'Api\ContractorController@update');
+//Route::delete('companies/{company_id}', 'Api\ContractorController@delete');
 
 /*   JOBCARD RESOURCE ROUTES
      -  Get, Show, Update, Trash, Delete

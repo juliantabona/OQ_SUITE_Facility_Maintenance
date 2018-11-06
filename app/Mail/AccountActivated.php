@@ -26,6 +26,6 @@ class AccountActivated extends Mailable
      */
     public function build()
     {
-        return $this->subject('Account Activated!')->view('dashboard.emails.account_activated');
+        return $this->subject('Account Activated!')->view('emails.account_activated');
     }
 }

@@ -24,8 +24,9 @@ class RecentActivity extends Model
     protected $table = 'recent_activities';
 
     protected $casts = [
-        'detail' => 'collection',
+        'detail' => 'array',
     ];
+
     /**
      * The attributes that are mass assignable.
      *

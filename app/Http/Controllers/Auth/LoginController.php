@@ -63,10 +63,27 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        if (oq_viaAPI($request)) {
-            return $user->generateToken($request);
+        //  Check if the user activated their account
+        if (!$user->verified) {
+            //  API Response
+            if (oq_viaAPI($request)) {
+                return oq_api_notify([
+                    'message' => 'Activate account',
+                    'user' => $user,
+                ], 200);
+            } else {
+                //  Notify the user to activate their account
+                oq_notify('Activate account', 'warning');
+
+                //  Go to login page
+                return redirect('login');
+            }
         } else {
-            return redirect()->intended($this->redirectPath());
+            if (oq_viaAPI($request)) {
+                return $user->generateToken($request);
+            } else {
+                return redirect()->intended($this->redirectPath());
+            }
         }
     }
 
@@ -98,43 +115,11 @@ class LoginController extends Controller
             return $this->sendLockoutResponse($request);
         }
 
-        // This section is the only change
         if ($this->guard()->validate($this->credentials($request))) {
             $user = $this->guard()->getLastAttempted();
 
-            // Make sure the user is active
-            if ($user->status == 0) {
-                //  API Response
-                if (oq_viaAPI($request)) {
-                    return oq_api_notify(['data' => 'Activate account'], 200);
-                } else {
-                    //  Notify the user to activate their account
-                    oq_notify('Activate your account first!', 'warning');
-                    //  Go to login page
-                    return redirect()->route('login');
-                }
-                // Check if the account is deativated
-            } elseif ($user->status == 2) {
-                //  API Response
-                if (oq_viaAPI($request)) {
-                    return oq_api_notify(['data' => 'Account deactivated'], 200);
-                } else {
-                    //  Notify the user to activate their account
-                    oq_notify('This account has been deactivated!', 'danger');
-                    //  Go to login page
-                    return redirect()->route('login');
-                }
-            } elseif (!empty($user->deleted_at)) {
-                //  API Response
-                if (oq_viaAPI($request)) {
-                    return oq_api_notify(['data' => 'Account deleted'], 200);
-                } else {
-                    //  Notify the user to activate their account
-                    oq_notify('This account has been deleted!', 'danger');
-                    //  Go to login page
-                    return redirect()->route('login');
-                }
-            } elseif ($this->attemptLogin($request)) {
+            // Attempt to login
+            if ($this->attemptLogin($request)) {
                 // Send the normal successful login response
                 return $this->sendLoginResponse($request);
             } else {

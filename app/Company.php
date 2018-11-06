@@ -23,12 +23,12 @@ class Company extends Model
     ];
 
     protected $allowedFilters = [
-        'name', 'description', 'city', 'state_or_region', 'address', 'industry', 'type', 'website_link',
+        'id', 'name', 'description', 'city', 'state_or_region', 'address', 'industry', 'type', 'website_link',
         'profile_doc_url', 'phone_ext', 'phone_num', 'email', 'created_at',
     ];
 
     protected $orderable = [
-        'name', 'description', 'city', 'state_or_region', 'address', 'industry', 'type', 'website_link',
+        'id', 'name', 'description', 'city', 'state_or_region', 'address', 'industry', 'type', 'website_link',
         'profile_doc_url', 'phone_ext', 'phone_num', 'email', 'created_at',
     ];
 

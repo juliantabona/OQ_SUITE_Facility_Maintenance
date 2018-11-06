@@ -56,13 +56,32 @@ Vue.component('todo-widget', require('./components/layout/sidebar/todo-widget.vu
 Vue.component('alert', require('./components/layout/alert/main.vue'));
 Vue.component('app-footer', require('./components/layout/footer/main.vue'));
 
+ /**
+ * JOBCARD COMPONENTS
+ */
+Vue.component('jobcard-body', require('./components/dashboard/jobcard/show/body.vue'));
 
-Vue.component('loader', require('./components/loaderComponent.vue'));
-Vue.component('jobcard-body', require('./components/dashboard/jobcard/body.vue'));
-Vue.component('document-list', require('./components/dashboard/document/documentList.vue'));
-Vue.component('document-uploader', require('./components/dashboard/document/upload.vue'));
+ /**
+ * COMPANY COMPONENTS
+ */
 Vue.component('company-side-widget', require('./components/dashboard/company/sideWidget.vue'));
 Vue.component('contractor-list-widget', require('./components/dashboard/company/contractorListWidget.vue'));
+
+ /**
+ * DOCUMENT COMPONENTS
+ */
+Vue.component('document-list', require('./components/dashboard/document/documentList.vue'));
+Vue.component('document-uploader', require('./components/dashboard/document/upload.vue'));
+
+ /**
+ * RECENT ACTIVITY COMPONENTS
+ */
+Vue.component('recent-activity-widget', require('./components/dashboard/widgets/recentActivityWidget.vue'));
+
+ /**
+ * LOADER COMPONENTS
+ */
+Vue.component('loader', require('./components/loaderComponent.vue'));
 
  /**
  * DASHBOARD MODALS

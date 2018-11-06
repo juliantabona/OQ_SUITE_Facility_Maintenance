@@ -33,7 +33,7 @@
                 </div>
             </li>
             <li class="nav-item border-top border-bottom">
-                <router-link :to="{ name: 'login'}" class="nav-link">
+                <router-link :to="{ name: 'dashboard'}" class="nav-link">
                     <i class="icon-rocket menu-icon text-dark"></i>
                     <span class="menu-title text-dark">Overview</span>
                 </router-link>
@@ -45,16 +45,16 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="/clients" class="nav-link">
+                <router-link :to="{ name: 'clients'}" class="nav-link">
                     <i class="icon-emotsmile menu-icon text-dark"></i>
                     <span class="menu-title text-dark">Clients</span>
-                </a>
+                </router-link>
             </li>
             <li class="nav-item">
-                <a href="/clients" class="nav-link">
+                <router-link :to="{ name: 'contractors'}" class="nav-link">
                     <i class="icon-briefcase menu-icon text-dark"></i>
                     <span class="menu-title text-dark">Contractors</span>
-                </a>
+                </router-link>
             </li>
             <li class="nav-item d-none d-lg-block">
                 <a data-toggle="collapse" href="#sub-jobcards" aria-expanded="false" aria-controls="sidebar-layouts" class="nav-link collapsed">

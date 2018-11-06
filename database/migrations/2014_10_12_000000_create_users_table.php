@@ -25,10 +25,9 @@ class CreateUsersTable extends Migration
             $table->string('additional_email')->nullable();
             $table->string('username')->nullable();
             $table->string('password')->nullable();
-            $table->boolean('status')->default(0);
-            $table->string('verifyToken')->nullable();
-            $table->text('settings')->nullable();
-            $table->text('tutorial_status')->nullable();
+            $table->boolean('verified')->default(false);
+            $table->json('settings')->nullable();
+            $table->json('tutorial_status')->nullable();
             $table->integer('company_branch_id')->unsigned()->nullable();
             $table->string('position')->nullable();
             $table->string('country')->nullable();

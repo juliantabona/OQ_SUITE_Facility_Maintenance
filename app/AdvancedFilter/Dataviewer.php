@@ -8,9 +8,14 @@ trait Dataviewer
 {
     public function scopeAdvancedFilter($query)
     {
+        //  e.g company. added to created_at to create company.created_at
+        $specificOrderColumn = request('order_column_ext') ? request('order_column_ext').'.' : '';
+
         return $this->process($query, request()->all())
             ->orderBy(
-                request('order_column', 'created_at'),
+                //  e.g company.created_at
+                $specificOrderColumn.request('order_column', 'created_at'),
+
                 request('order_direction', 'desc')
             )
             ->paginate(request('limit', 10));

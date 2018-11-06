@@ -14,7 +14,7 @@ class CreateJobcardsTable extends Migration
         Schema::create('jobcards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->json('description')->nullable();
             $table->timestampTz('start_date')->nullable();
             $table->timestampTz('end_date')->nullable();
             $table->integer('step_id')->unsigned()->nullable();

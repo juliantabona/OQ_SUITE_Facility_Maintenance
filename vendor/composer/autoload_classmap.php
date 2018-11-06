@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\AdvancedFilter\\CustomQueryBuilder' => $baseDir . '/app/AdvancedFilter/CustomQueryBuilder.php',
+    'App\\AdvancedFilter\\Dataviewer' => $baseDir . '/app/AdvancedFilter/Dataviewer.php',
     'App\\Category' => $baseDir . '/app/Category.php',
     'App\\Company' => $baseDir . '/app/Company.php',
     'App\\CompanyBranch' => $baseDir . '/app/CompanyBranch.php',
@@ -15,6 +17,7 @@ return array(
     'App\\Document' => $baseDir . '/app/Document.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\AccountActivation' => $baseDir . '/app/Http/Controllers/AccountActivation.php',
+    'App\\Http\\Controllers\\Api\\AccountActivation' => $baseDir . '/app/Http/Controllers/Auth/AccountActivation.php',
     'App\\Http\\Controllers\\Api\\CategoryController' => $baseDir . '/app/Http/Controllers/Api/CategoryController.php',
     'App\\Http\\Controllers\\Api\\CompanyBranchController' => $baseDir . '/app/Http/Controllers/Api/CompanyBranchController.php',
     'App\\Http\\Controllers\\Api\\CompanyController' => $baseDir . '/app/Http/Controllers/Api/CompanyController.php',
@@ -53,6 +56,7 @@ return array(
     'App\\Providers\\RouteServiceProvider' => $baseDir . '/app/Providers/RouteServiceProvider.php',
     'App\\RecentActivity' => $baseDir . '/app/RecentActivity.php',
     'App\\User' => $baseDir . '/app/User.php',
+    'App\\VerifyUser' => $baseDir . '/app/VerifyUser.php',
     'App\\View' => $baseDir . '/app/View.php',
     'Asm89\\Stack\\Cors' => $vendorDir . '/asm89/stack-cors/src/Asm89/Stack/Cors.php',
     'Asm89\\Stack\\CorsService' => $vendorDir . '/asm89/stack-cors/src/Asm89/Stack/CorsService.php',

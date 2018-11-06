@@ -14,7 +14,7 @@ class JobcardController extends Controller
         if (request('withtrashed') == 1) {
             try {
                 //  Run query
-                $jobcards = Jobcard::withTrashed()->orderBy(oq_getOrder()[0], oq_getOrder()[1])->paginate(oq_getLimit());
+                $jobcards = Jobcard::withTrashed()->advancedFilter();
             } catch (\Exception $e) {
                 return oq_api_notify_error('Query Error', $e->getMessage(), 404);
             }
@@ -22,7 +22,7 @@ class JobcardController extends Controller
         } elseif (request('onlytrashed') == 1) {
             try {
                 //  Run query
-                $jobcards = Jobcard::onlyTrashed()->orderBy(oq_getOrder()[0], oq_getOrder()[1])->paginate(oq_getLimit());
+                $jobcards = Jobcard::onlyTrashed()->advancedFilter();
             } catch (\Exception $e) {
                 return oq_api_notify_error('Query Error', $e->getMessage(), 404);
             }
@@ -89,7 +89,6 @@ class JobcardController extends Controller
         try {
             //  Run query
             $contractors = Jobcard::find($jobcard_id)->contractorsList()->paginate();
-            //advancedFilter()
         } catch (\Exception $e) {
             return oq_api_notify_error('Query Error', $e->getMessage(), 404);
         }

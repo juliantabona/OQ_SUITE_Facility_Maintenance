@@ -14,7 +14,7 @@ class CreateRecentActivitiesTable extends Migration
         Schema::create('recent_activities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type')->nullable();
-            $table->text('detail')->nullable();
+            $table->json('detail')->nullable();
             $table->integer('who_created_id')->unsigned()->nullable();
             $table->integer('company_branch_id')->unsigned()->nullable();
             $table->morphs('trackable');

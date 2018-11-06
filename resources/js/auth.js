@@ -5,6 +5,7 @@ class Auth {
     }
 
     login(token, user){        
+        console.log('set token and user');
         window.localStorage.setItem('token', token);
         window.localStorage.setItem('user', JSON.stringify(user));
 

@@ -38,7 +38,7 @@
     </div>
 </template>
 <script type="text/javascript">
-    import Filterable from '../../layout/Filterable.vue'
+    import Filterable from '../../../layout/Filterable.vue'
     export default {
         components: { Filterable },
         data() {

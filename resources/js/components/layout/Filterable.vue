@@ -89,17 +89,16 @@
 
 <template>
     <div class="filterable">
-        <div v-show="isLoading" class="card mt-4">
+        <div v-show="!isLoading" class="card">
             <div class="card-body">
-                <img src="/images/assets/icons/star_loader.svg" alt="Loader" style=" width: 40px;">Getting jobcards...
+                <loader :isLoading="!isLoading" :msg="'Getting '+resourceName+'...'"></loader>
             </div>
         </div>
         <div v-show="!isLoading" class="card pt-4 pl-3 pr-3 pb-0">
             <div class="card-body">
                 <div class="d-flex table-responsive">
                     <div class="d-flex table-responsive">
-                        <i class="float-left icon-flag icon-sm icons ml-3"></i>
-                        <h6 class="card-title float-left mb-0 ml-2">All Jobcards</h6>
+                        <h6 class="card-title float-left mb-0 ml-2"><slot name="header-title"></slot></h6>
                         <div class="btn-group ml-auto mr-2 border-0">
                             <input type="text" class="form-control" placeholder="Search Here">
                             <button class="btn btn-sm btn-primary"><i class="icon-magnifier icons"></i> Search</button>
@@ -276,7 +275,8 @@
         props: {
             url: String,
             filterGroups: Array,
-            orderables: Array
+            orderables: Array,
+            resourceName: String
         },
         data() {
             return {

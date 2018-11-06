@@ -15,8 +15,8 @@ class CreateProcessFormsTable extends Migration
             $table->increments('id');
             $table->string('name')->nullable();
             $table->string('description')->nullable();
-            $table->text('form_structure')->nullable();
-            $table->text('doc_structure')->nullable();
+            $table->json('form_structure')->nullable();
+            $table->json('doc_structure')->nullable();
             $table->string('type')->nullable();
             $table->boolean('selected')->default(0);
             $table->boolean('deletable')->default(0);

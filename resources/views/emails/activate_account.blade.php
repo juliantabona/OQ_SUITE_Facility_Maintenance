@@ -170,7 +170,7 @@
                                                 <table border="0" cellspacing="0" cellpadding="0" class="mobile-button-container">
                                                     <tr>
                                                         <td align="center" style="border-radius: 3px;">
-                                                            <a href="{{ route('activate-account') }}?email={{ $user->email }}&token={{ $user->verifyToken }}" target="_blank" 
+                                                            <a href="{{ URL::to('/') .'api/register/verify/' .$user->verification->token }}" target="_blank" 
                                                             style=" font-size: 16px;
                                                                     font-family: Helvetica,Arial,sans-serif;
                                                                     color: #ffffff;

@@ -138,31 +138,6 @@ function oq_url_to_array($url, $dimension = 0)
     return explode(',', $url);
 }
 
-function oq_getLimit()
-{
-    if (!empty(request('limit'))) {
-        return $limit = request('limit');
-    }
-}
-
-function oq_getOrder()
-{
-    $order_by = 'created_at';
-    $order_type = 'asc';
-
-    if (!empty(request('order_type'))) {
-        if (request('order_type') == 'asc' || request('order_type') == 'desc') {
-            $order_type = request('order_type');
-        }
-    }
-
-    if (!empty(request('order_by'))) {
-        $order_by = request('order_by');
-    }
-
-    return [$order_by, $order_type];
-}
-
 /**
  * mb_stripos all occurences
  * based on http://www.php.net/manual/en/function.strpos.php#87061.
@@ -627,18 +602,29 @@ function oq_addOrUpdateContractorToJobcard($jobcard_id, $company, $user, $reques
 
         $doc_id = !empty($document) ? $document->id : null;
 
+        //  Remove all characters except numbers and the period (.) to save proper money
+        $amount = preg_replace('/[^0-9.]/', '', $request->input('company_total_price'));
+
         if ($type == 'create') {
-            //  Add the company as part of the jobcards list of potential contractors
-            $addedToContractors = $jobcard->contractorsList()->attach([$company->id => [
-                    'amount' => $request->input('company_total_price'),
+            try {
+                //  Add the company as part of the jobcards list of potential contractors
+                $addedToContractors = $jobcard->contractorsList()->attach([$company->id => [
+                    'amount' => $amount,
                     'quotation_doc_id' => $doc_id,
                 ]]);
+            } catch (\Exception $e) {
+                return oq_api_notify_error('Query Error', $e->getMessage(), 404);
+            }
         } else {
-            //  Add the company as part of the jobcards list of potential contractors
-            $addedToContractors = $jobcard->contractorsList()->updateExistingPivot($company->id, [
-                'amount' => $request->input('company_total_price'),
-                'quotation_doc_id' => $doc_id,
-            ]);
+            try {
+                //  Add the company as part of the jobcards list of potential contractors
+                $addedToContractors = $jobcard->contractorsList()->updateExistingPivot($company->id, [
+                    'amount' => $amount,
+                    'quotation_doc_id' => $doc_id,
+                ]);
+            } catch (\Exception $e) {
+                return oq_api_notify_error('Query Error', $e->getMessage(), 404);
+            }
         }
 
         if ($addedToContractors) {

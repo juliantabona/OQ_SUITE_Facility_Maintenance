@@ -5,7 +5,7 @@
         transition: all 0.8s ease;
     }
     .slide-fade-leave-active {
-        transition: all 0.8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+        transition: all 0.5s cubic-bezier(1.0, 0.5, 0.8, 1.0);
     }
     .slide-fade-enter, .slide-fade-leave-to{
         transform: translateX(-50%);
@@ -34,7 +34,7 @@
 
 <template>
     <main>
-        <div class="container-scroller p-0" v-if="['login', 'register'].indexOf($route.name) == -1">
+        <div class="container-scroller p-0" v-if="noLayout.indexOf($route.name) == -1">
             <div class="container-fluid page-body-wrapper">
                 <div class="row row-offcanvas row-offcanvas-right">
                     <!-- Right sidebar with instant settings & todo list widgets-->
@@ -65,7 +65,7 @@
         <!-- Put Login, Register, Password Reset, e.t.c content here -->
         <!-- Usually guests who are not loggedIn can access this content -->
         <transition name="slide-fade">
-            <router-view v-if="['login', 'register'].indexOf($route.name) > -1"></router-view>
+            <router-view v-if="noLayout.indexOf($route.name) > -1"></router-view>
         </transition>
     </main>
 </template>
@@ -73,6 +73,7 @@
     export default {
         data() {
             return {
+                noLayout: ['login', 'register', 'activate-account', 'activate-account-token'],
                 authenticated: auth.check(),
                 user: auth.user
             };
@@ -81,10 +82,10 @@
             logout() {
                 //  Log user out
                 auth.logout();
+
                 console.log('go to login page...');
                 //  Navigate to the login page
-                //this.$router.push('/login');
-                this.$router.push({ name: 'login'})
+                this.$router.push({ name: 'login' })
             }
         },
         mounted() {

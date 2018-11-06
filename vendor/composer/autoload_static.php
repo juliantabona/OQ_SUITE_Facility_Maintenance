@@ -442,6 +442,8 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
     );
 
     public static $classMap = array (
+        'App\\AdvancedFilter\\CustomQueryBuilder' => __DIR__ . '/../..' . '/app/AdvancedFilter/CustomQueryBuilder.php',
+        'App\\AdvancedFilter\\Dataviewer' => __DIR__ . '/../..' . '/app/AdvancedFilter/Dataviewer.php',
         'App\\Category' => __DIR__ . '/../..' . '/app/Category.php',
         'App\\Company' => __DIR__ . '/../..' . '/app/Company.php',
         'App\\CompanyBranch' => __DIR__ . '/../..' . '/app/CompanyBranch.php',
@@ -451,6 +453,7 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         'App\\Document' => __DIR__ . '/../..' . '/app/Document.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\AccountActivation' => __DIR__ . '/../..' . '/app/Http/Controllers/AccountActivation.php',
+        'App\\Http\\Controllers\\Api\\AccountActivation' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/AccountActivation.php',
         'App\\Http\\Controllers\\Api\\CategoryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/CategoryController.php',
         'App\\Http\\Controllers\\Api\\CompanyBranchController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/CompanyBranchController.php',
         'App\\Http\\Controllers\\Api\\CompanyController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/CompanyController.php',
@@ -489,6 +492,7 @@ class ComposerStaticInitff46611e87f2dd5f7100857e963b216e
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\RecentActivity' => __DIR__ . '/../..' . '/app/RecentActivity.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
+        'App\\VerifyUser' => __DIR__ . '/../..' . '/app/VerifyUser.php',
         'App\\View' => __DIR__ . '/../..' . '/app/View.php',
         'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/Cors.php',
         'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/Asm89/Stack/CorsService.php',

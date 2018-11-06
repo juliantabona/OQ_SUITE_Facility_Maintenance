@@ -173,14 +173,18 @@
                 <!-- Login Form -->
                 <div class="login-form">
                     <img src="/images/assets/logo/OQ-INFINITE-B-150X84.gif" alt="logo" class="mb-4">
-                    <h5>Login</h5>
-                    <form id="Login" ng-submit="vm.login()" autocomplete="off" novalidate="">
+                    <h5 v-if="!activationVerified">Login</h5>
+                    <div v-if="activationVerified" class="alert alert-success" role="alert">
+                        Account Activated! Go ahead and login.
+                    </div>
+                    <form id="Login" autocomplete="off" novalidate="">
                         <div :class="'form-group'+(loginErrors.email ? ' has-error' : '')
                                                     +(loginErrors.username ? ' has-error' : '')">
                             <input type="email" name="identity" v-model="identity" :class="'form-control' 
                                     +(loginErrors.email ? ' is-invalid' : '')
                                     +(loginErrors.username ? ' is-invalid' : '')" 
-                                    placeholder="Email/Username" autofocus>
+                                    placeholder="Email/Username" 
+                                    autocomplete="off" autofocus>
                             <span v-if="loginErrors.email" class="help-block invalid-feedback d-block">
                                 <strong>
                                     {{ loginErrors.email[0] }}
@@ -195,7 +199,7 @@
                         <div :class="'form-group'+(loginErrors.password ? ' has-error' : '')">
                             <input type="password" name="password" v-model="password" :class="'form-control' 
                                     +(loginErrors.password ? ' is-invalid' : '')" 
-                                    placeholder="Password">
+                                    placeholder="Password" autocomplete="off">
                             <span v-if="loginErrors.password" class="help-block invalid-feedback d-block">
                                 <strong>{{ loginErrors.password[0] }}</strong>
                             </span>
@@ -206,7 +210,7 @@
                         <button v-show="!isLoggingIn" type="button" @click="login" class="btn btn-primary mt-2">Login</button>
                         <div class="mt-4">
                             <a href="#" class="mr-3">Forgot password?</a>
-                            <a href="#">Create Account?</a>
+                            <router-link :to="{ name: 'register'}">Create Account?</router-link>
                         </div>
                     </form>
                     <div class="promo-box mt-5" flex="">
@@ -233,6 +237,7 @@ export default {
             password: '',
             loginErrors: [],
             isLoggingIn:false,
+            activationVerified: false,
             slickOptions: {
                 dots: true,
                 speed: 1000,
@@ -244,11 +249,23 @@ export default {
             },
         };
     },
-
+    created () {
+        this.identity = '';
+        this.password = '';
+        //  If the account was activated and the user was redirected to this login page
+        //  Check the URL to confirm if the account was activated. It should have a
+        //  Parameter called activated that is equal to the username of the 
+        //  activated account e.g) "app-domain.com/login?activated=juliantabona" 
+        if(this.$route.query.activated){
+            this.activationVerified = true;
+            this.identity = this.$route.query.activated;
+        }
+    },
     // All slick methods can be used too, example here
     methods: {
         login() {
             const self = this;
+
             //  Start loader
             self.isLoggingIn = true
 
@@ -256,12 +273,20 @@ export default {
                 identity: this.identity,
                 password: this.password
             };
+            
             axios.post('/api/login', loginData)
                 .then(({data}) => {
                     console.log(data);
-                    let response = data;
-                    let token = response.data.auth.access_token;
-                    let user = response.data.user;
+
+                    if(data.message == 'Activate account'){
+                        self.$router.push({ path: 'activate-account', 
+                            query: { 
+                                email: data.user.email }
+                            });
+                    }
+                    
+                    let token = data.auth.access_token;
+                    let user = data.user;
 
                     //  Stop loader
                     self.isLoggingIn = false;
@@ -270,15 +295,22 @@ export default {
                     //  Include token in all further axios api calls
                     auth.login(token, user);
 
+                    console.log('go to dashboard');
+
                     //  Navigate to the dashboard
                     self.$router.push('/dashboard');
                 })         
                 .catch(({response}) => { 
-                    console.error(response);
+
                     //  Stop loader
                     self.isLoggingIn = false;     
-                    //  Grab errors              
-                    self.loginErrors = response.data.errors;
+                    
+                    if(response){
+                        console.error(response);
+
+                        //  Grab errors              
+                        self.loginErrors = response.data.errors;
+                    }
                 });
         }
     },

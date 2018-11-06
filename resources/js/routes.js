@@ -11,6 +11,10 @@ let routes = [
         component: require('./components/auth/Register.vue')
     },
     {
+        path: '/activate-account', name: 'activate-account',
+        component: require('./components/auth/ActivateAccount.vue')
+    },
+    {
         //  Dashboard overview
         path: '/dashboard', name: 'dashboard',
         component: require('./components/dashboard/overview.vue')
@@ -18,19 +22,29 @@ let routes = [
     {
         //  Get all jobcards
         path: '/jobcards', name: 'jobcards',
-        component: require('./components/dashboard/jobcard/list2.vue'),
+        component: require('./components/dashboard/jobcard/list/main.vue'),
     },
     {
         //  Show one jobcard
         path: '/jobcards/:id', name: 'show-jobcard',
-        component: require('./components/dashboard/jobcard/main.vue'),
+        component: require('./components/dashboard/jobcard/show/main.vue'),
         props: true
     },
     {
         //  Create jobcard
         path: '/jobcards/create', name: 'create-jobcard',
-        component: require('./components/dashboard/jobcard/create.vue'),
-    }
+        component: require('./components/dashboard/jobcard/create/main.vue'),
+    },
+    {
+        //  Get all clients
+        path: '/clients', name: 'clients',
+        component: require('./components/dashboard/company/client/list/main.vue'),
+    },
+    {
+        //  Get all contractors
+        path: '/contractors', name: 'contractors',
+        component: require('./components/dashboard/company/contractor/list/main.vue'),
+    },
 ];
 
 export default new VueRouter({

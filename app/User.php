@@ -11,6 +11,10 @@ class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
+    protected $casts = [
+        'settings' => 'array',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -18,7 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'first_name', 'last_name', 'gender', 'date_of_birth', 'bio', 'address', 'phone_ext', 'phone_num', 'email',
-        'additional_email', 'username', 'password', 'status', 'verifyToken', 'settings', 'tutorial_status',
+        'additional_email', 'username', 'password', 'verifyToken', 'settings', 'tutorial_status',
         'company_branch_id', 'position', 'country', 'city', 'accessibility',
     ];
 
@@ -30,6 +34,11 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function verification()
+    {
+        return $this->hasOne('App\VerifyUser');
+    }
 
     /**
      *   Get the users company. A user must belong to a company to access more
@@ -84,8 +93,8 @@ class User extends Authenticatable
             'form_params' => [
                 'grant_type' => 'password',
                 'client_id' => '2',
-                'client_secret' => 'foS6HXOHHJzUV6sURHRqUpmjF66RVVAYETbiJsqs',
-                'username' => $request->input('email'),
+                'client_secret' => 'U7xlr123YP2FPzakHTX66Kp1xncnmkQNDHbuMelQ',
+                'username' => $this->email,
                 'password' => $request->input('password'),
                 'scope' => '',
             ],
@@ -93,12 +102,16 @@ class User extends Authenticatable
 
         //  Lets get an array instead of a stdObject so that we can return without errors
         $response = json_decode($response->getBody(), true);
-
+        /*
         return response()->json(
-                ['data' => [
+                [
                     'auth' => $response,            //  API ACCESS TOKEN
-                    'user' => $this->toArray(),     //  NEW REGISTERED USER
-                    ],
+                    'user' => $this->toArray(),      //  NEW REGISTERED USER
                 ], 201);                            //  201 STATUS  - Resource Created
+        */
+        return oq_api_notify([
+                    'auth' => $response,            //  API ACCESS TOKEN
+                    'user' => $this->toArray(),      //  NEW REGISTERED USER
+                ], 201);
     }
 }
