@@ -39,4 +39,10 @@
     <!-- JavaScript Dependencies: jQuery, Popper.js, Bootstrap JS, Shards JS -->
     <script src="{{ asset('js/plugins/popper.js/dist/umd/popper.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
+
+    <!-- REMOVE ALL BELOW -->
+    <script src="{{ asset('js/custom/dashboard.js') }}"></script>
+    <script src="{{ asset('js/plugins/chart.js/dist/Chart.min.js') }}"></script>
+    <script src="{{ asset('js/custom/chart.js') }}"></script>
+
 </html>

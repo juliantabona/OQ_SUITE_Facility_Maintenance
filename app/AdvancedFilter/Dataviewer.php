@@ -6,15 +6,15 @@ use Illuminate\Validation\ValidationException;
 
 trait Dataviewer
 {
-    public function scopeAdvancedFilter($query)
+    public function scopeAdvancedFilter($query, $order_join = '')
     {
         //  e.g company. added to created_at to create company.created_at
-        $specificOrderColumn = request('order_column_ext') ? request('order_column_ext').'.' : '';
+        $order_join = !empty($order_join) ? $order_join.'.' : '';
 
         return $this->process($query, request()->all())
             ->orderBy(
                 //  e.g company.created_at
-                $specificOrderColumn.request('order_column', 'created_at'),
+                $order_join.request('order_column', 'created_at'),
 
                 request('order_direction', 'desc')
             )

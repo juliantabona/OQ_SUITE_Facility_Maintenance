@@ -14,7 +14,8 @@ class CreateCompanyDirectoryTable extends Migration
         Schema::create('company_directory', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('company_id')->unsigned();
-            $table->integer('belongs_to_id')->unsigned();
+            $table->integer('owning_branch_id')->unsigned();
+            $table->integer('owning_company_id')->unsigned();
             $table->string('type')->nullable();
             $table->softDeletes();
             $table->timestamps();

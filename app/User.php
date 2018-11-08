@@ -6,10 +6,12 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\URL;
+use App\AdvancedFilter\Dataviewer;
 
 class User extends Authenticatable
 {
     use HasApiTokens, Notifiable;
+    use Dataviewer;
 
     protected $casts = [
         'settings' => 'array',
@@ -24,6 +26,16 @@ class User extends Authenticatable
         'first_name', 'last_name', 'gender', 'date_of_birth', 'bio', 'address', 'phone_ext', 'phone_num', 'email',
         'additional_email', 'username', 'password', 'verifyToken', 'settings', 'tutorial_status',
         'company_branch_id', 'position', 'country', 'city', 'accessibility',
+    ];
+
+    protected $allowedFilters = [
+        'id', 'first_name', 'last_name', 'gender', 'date_of_birth', 'bio', 'address', 'phone_ext', 'phone_num', 'email',
+        'additional_email', 'position', 'country', 'city', 'accessibility', 'created_at',
+    ];
+
+    protected $orderable = [
+        'id', 'first_name', 'last_name', 'gender', 'date_of_birth', 'bio', 'address', 'phone_ext', 'phone_num', 'email',
+        'additional_email', 'position', 'country', 'city', 'accessibility', 'created_at',
     ];
 
     /**

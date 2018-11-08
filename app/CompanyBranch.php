@@ -34,6 +34,38 @@ class CompanyBranch extends Model
         return $this->belongsTo('App\Company', 'company_id');
     }
 
+    public function companyDirectory()
+    {
+        return $this->belongsToMany('App\Company', 'company_directory', 'owning_branch_id', 'company_id')
+                    ->withPivot('id', 'type', 'owning_branch_id', 'owning_company_id')
+                    ->withTimestamps();
+    }
+
+    public function clients()
+    {
+        return $this->companyDirectory()
+                    ->where('company_directory.type', 'client');
+    }
+
+    public function contractors()
+    {
+        return $this->companyDirectory()
+                    ->where('company_directory.type', 'contractor');
+    }
+
+    public function userDirectory()
+    {
+        return $this->belongsToMany('App\User', 'user_directory', 'owning_branch_id', 'user_id')
+                    ->withPivot('id', 'type', 'owning_branch_id', 'owning_company_id')
+                    ->withTimestamps();
+    }
+
+    public function staff()
+    {
+        return $this->userDirectory()
+                    ->where('user_directory.type', 'staff');
+    }
+
     /**
      *   Get the jobcards that belong to the branch.
      */

@@ -25,11 +25,11 @@
                                     <table class="table mt-3 border-top">
                                         <thead>
                                             <tr>
-                                                <th>Resource</th>
-                                                <th>Activity Type</th>
-                                                <th>Activity Details</th>
-                                                <th>Created At</th>
-                                                <th>Action</th>
+                                                <th style="width:10%;">Resource</th>
+                                                <th style="width:15%;">Activity Type</th>
+                                                <th style="width:45%;">Activity Details</th>
+                                                <th style="width:15%;">Created At</th>
+                                                <th style="width:15%;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -85,9 +85,9 @@
                 //  Current resources name
                 var resourceName = activity.trackable_type;
                 //  Common resource names
-                var resources = ['user', 'company', 'companybranch'];
+                var resources = ['user', 'company', 'companybranch', 'jobcard', 'document'];
                 //  Names we want to replace with
-                var names = ['User', 'Company', 'Company Branch'];
+                var names = ['User', 'Company', 'Company Branch', 'Jobcard', 'Document'];
 
                 //  For the activity locate the index location of its name 
                 var position = resources.indexOf(resourceName);
@@ -101,12 +101,15 @@
                 }
             },
             describeActivity(activity){
+
+                let creator = ' <a href="#">'+activity.created_by.first_name+' '+activity.created_by.last_name+'</a>';
+
                 //  User type of activity
                 if(activity.trackable_type == 'user'){
                     if(activity.type == 'created'){
                         return 'Account created for <a href="#" v-b-tooltip.hover :title="Sample tooltip">'+
-                                    '<b>'+activity.detail.user.first_name+' '+activity.detail.user.last_name+'</b>'+
-                                '</a>';
+                                    activity.detail.user.first_name+' '+activity.detail.user.last_name+
+                                '</a> by' + creator;
                     }
                 }
 
@@ -114,8 +117,8 @@
                 if(activity.trackable_type == 'company'){
                     if(activity.type == 'created'){
                         return 'Company created,  <a href="#" v-b-tooltip.hover :title="Sample tooltip">'+
-                                    '<b>'+activity.detail.company.name+'</b>'+
-                                '</a>';
+                                    activity.detail.company.name+
+                                '</a> by' + creator;
                     }
                 }
 
@@ -126,8 +129,26 @@
                         location = location ? ' located in ' + location : '';
 
                         return 'Company branch created and named <a href="#" v-b-tooltip.hover :title="Sample tooltip">'+
-                                    '<b>"'+activity.detail.branch.name+'"</b>'+ 
-                                '</a>' + location;
+                                    '"'+activity.detail.branch.name+'"'+ 
+                                '</a> by' + location + creator;
+                    }
+                }
+
+                //  Activity type of activity
+                if(activity.trackable_type == 'jobcard'){
+                    if(activity.type == 'created'){
+                        return 'Jobcard reference #'+activity.trackable_id+' - <a href="#" v-b-tooltip.hover :title="Sample tooltip">'+
+                                    activity.detail.jobcard.title+ 
+                                '</a> created by' + creator;
+                    }
+                }
+
+                //  Activity type of activity
+                if(activity.trackable_type == 'document'){
+                    if(activity.type == 'jobcard uploaded'){
+                        return 'Document ref #'+activity.trackable_id+' also named - <a href="#">'+
+                                    activity.detail.document.name+ 
+                                '</a> uploaded to Jobcard by' + creator;
                     }
                 }
             },
@@ -143,13 +164,13 @@
                 /*  Specify other related model data to collect, just separate by comma (,) and extend with a period (.)
                 *  E.g) selectedContractors.branches will bring all selected contractors and their company branches
                 */
-                let connections = 'client,contractorsList,category,priority,costcenter,createdby';
+                let connections = 'createdBy';
 
                 /*  Specify limit for pagination
                 */
                 let limit = 3;
 
-                axios.get('/api/recentactivities?page='+page)
+                axios.get('/api/recentactivities?connections='+connections+'&page='+page)
                  .then(({data}) => {
                     console.log(data);
                     

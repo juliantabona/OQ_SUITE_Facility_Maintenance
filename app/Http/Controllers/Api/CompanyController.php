@@ -149,7 +149,7 @@ class CompanyController extends Controller
          */
 
         //  Save the company as part of the companies client/contractor directory depending on the type
-        oq_addCompanyToDirectory($user->companyBranch->company->id, $company, $request->input('company_relation'), $user);
+        oq_addCompanyToDirectory($company, $request->input('company_relation'), $user);
 
         /*  If we have the Jobcard ID within the request, then we can add the client/contractor
         *  to the jobcard respectively as either the jobcard assigned client/potential contractor

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\AdvancedFilter\Dataviewer;
 
 Relation::morphMap([
     'user' => 'App\User',
@@ -20,6 +21,7 @@ Relation::morphMap([
 class RecentActivity extends Model
 {
     use SoftDeletes;
+    use Dataviewer;
 
     protected $table = 'recent_activities';
 
@@ -40,6 +42,14 @@ class RecentActivity extends Model
     {
         return $this->morphMany('App\Creator', 'creatable');
     }
+
+    protected $allowedFilters = [
+        'id', 'type', 'company_branch_id', 'created_at',
+    ];
+
+    protected $orderable = [
+        'id', 'type', 'company_branch_id', 'created_at',
+    ];
 
     /**
      * Get all of the owning documentable models.

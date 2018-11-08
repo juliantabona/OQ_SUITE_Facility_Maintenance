@@ -503,10 +503,13 @@ function oq_createOrUpdateCompany($request, $currCompany, $user)
  * @return true  for complete success, everything worked!
  * @return false for complete/partial fail during execution
  */
-function oq_addCompanyToDirectory($owningCompany_id, $company, $type, $user)
+function oq_addCompanyToDirectory($company, $type, $user)
 {
+    $owningBranch_id = $user->companyBranch->id;
+    $owningCompany_id = $user->companyBranch->company->id;
+
     //  Let us add the company to the owning company as type of client/contractor
-    $addedToDirectory = $company->companyDirectory()->attach($owningCompany_id, ['type' => $type]);
+    $addedToDirectory = $company->companyDirectory()->attach($owningCompany_id, ['type' => $type, 'owning_branch_id' => $owningBranch_id]);
 
     if ($addedToDirectory) {
         return true;
@@ -960,7 +963,7 @@ function oq_createOrUpdateJobcard($request, $currJobcard = null, $user)
 
         //  If we have the jobcard image and has been approved, then save it to Amazon S3 bucket
         if ($request->hasFile('new_jobcard_image')) {
-            $document = oq_saveDocument($request, $jobcard, Input::file('new_jobcard_image'), 'jobcard_images', 'samples', $user);
+            $document = oq_saveDocument($request, $jobcard, Input::file('new_jobcard_image'), 'jobcard_images', 'jobcard', $user);
         }
 
         //  Notify the user that the jobcard creation was successful

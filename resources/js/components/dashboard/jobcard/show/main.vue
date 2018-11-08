@@ -46,7 +46,6 @@
                 </div>
                 <company-side-widget :company-id="clientId" :jobcard-id="id"></company-side-widget>
                 <contractor-list-widget :jobcard-id="id"></contractor-list-widget>
-                <recent-activity-widget></recent-activity-widget>
             </div>
         </div>
     </div>

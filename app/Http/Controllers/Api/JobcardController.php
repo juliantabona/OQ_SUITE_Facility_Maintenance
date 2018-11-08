@@ -109,6 +109,9 @@ class JobcardController extends Controller
 
     public function store(Request $request)
     {
+        //  Current authenticated user
+        $user = auth('api')->user();
+
         /*  Validate and Create the new jobcard and associated branch and upload related documents
          *  [e.g logo, jobcard profile, other documents]. Update recent activities
          *
@@ -118,7 +121,7 @@ class JobcardController extends Controller
          *  @return Validator - If validation failed
          *  @return jobcard - If successful
          */
-        $response = oq_createOrUpdateJobcard($request, null, null);
+        $response = oq_createOrUpdateJobcard($request, null, $user);
 
         //  If the validation did not pass
         if (oq_failed_validation($response)) {
@@ -151,8 +154,10 @@ class JobcardController extends Controller
          *  @return Validator - If validation failed
          *  @return jobcard - If successful
          */
+        //  Current authenticated user
+        $user = auth('api')->user();
 
-        $response = oq_createOrUpdateJobcard($request, $jobcard, null);
+        $response = oq_createOrUpdateJobcard($request, $jobcard, $user);
 
         //  If the validation did not pass
         if (oq_failed_validation($response)) {

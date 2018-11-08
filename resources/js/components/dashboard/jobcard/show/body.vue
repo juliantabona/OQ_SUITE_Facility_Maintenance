@@ -100,7 +100,7 @@
                     </div>
                     <document-list 
                         v-bind:model-id="id" model-type="jobcard" 
-                        v-bind:storage-location="'jobcard_images'"  v-bind:group-type="'samples'" >
+                        v-bind:storage-location="'jobcard_images'" v-bind:group-type="'jobcard'" >
                     </document-list>
                 </div>
             </div>

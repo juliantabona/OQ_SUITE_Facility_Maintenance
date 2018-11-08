@@ -1,7 +1,11 @@
 <template>
     <div class="container">
         <div class="content">
-            <filterable v-bind="filterable">
+            <filterable v-bind="filterable" :resource-name="'jobcards'">
+                <template slot="header-title">
+                    <i class="icon-docs mr-2"></i>
+                    Jobcards
+                </template>
                 <thead slot="thead">
                     <tr>
                         <th style="width: 5%">ID</th>

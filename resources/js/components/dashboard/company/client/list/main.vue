@@ -46,7 +46,7 @@
         data() {
             return {
                 filterable: {
-                    url: '/api/clients?company_branch_id=1&order_column_ext=companies',
+                    url: '/api/clients?id='+auth.user.company_branch_id,
                     orderables: [
                         {title: 'Id', name: 'id'},
                         {title: 'Name', name: 'name'},

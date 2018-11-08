@@ -25,15 +25,15 @@ let routes = [
         component: require('./components/dashboard/jobcard/list/main.vue'),
     },
     {
+        //  Create jobcard
+        path: '/jobcards/create', name: 'create-jobcard',
+        component: require('./components/dashboard/jobcard/create/main.vue'),
+    },
+    {
         //  Show one jobcard
         path: '/jobcards/:id', name: 'show-jobcard',
         component: require('./components/dashboard/jobcard/show/main.vue'),
         props: true
-    },
-    {
-        //  Create jobcard
-        path: '/jobcards/create', name: 'create-jobcard',
-        component: require('./components/dashboard/jobcard/create/main.vue'),
     },
     {
         //  Get all clients
@@ -44,6 +44,16 @@ let routes = [
         //  Get all contractors
         path: '/contractors', name: 'contractors',
         component: require('./components/dashboard/company/contractor/list/main.vue'),
+    },
+    {
+        //  Get all contractors
+        path: '/staff', name: 'staff',
+        component: require('./components/dashboard/user/staff/list/main.vue'),
+    },
+    {
+        //  Get all recent activities
+        path: '/recentactivities', name: 'recentactivities',
+        component: require('./components/dashboard/recentActivity/list/main.vue'),
     },
 ];
 

@@ -119,17 +119,10 @@ class Company extends Model
                     ->orderBy('created_at', 'desc');
     }
 
-    /*
-    public function recentActivities()
-    {
-        return $this->hasManyThrough('App\RecentActivity', 'App\CompanyBranch');
-    }
-    */
-
     public function companyDirectory()
     {
-        return $this->belongsToMany('App\Company', 'company_directory', 'belongs_to_id', 'company_id')
-                    ->withPivot('id', 'type')
+        return $this->belongsToMany('App\Company', 'company_directory', 'owning_company_id', 'company_id')
+                    ->withPivot('id', 'type', 'owning_branch_id', 'owning_company_id')
                     ->withTimestamps();
     }
 
@@ -145,12 +138,25 @@ class Company extends Model
                     ->where('company_directory.type', 'contractor');
     }
 
-    public function contactDirectory()
+    public function userDirectory()
     {
-        return $this->belongsToMany('App\User', 'contact_directory', 'belongs_to_id', 'user_id')
-                    ->withPivot('id')
+        return $this->belongsToMany('App\User', 'user_directory', 'owning_company_id', 'user_id')
+                    ->withPivot('id', 'type', 'owning_branch_id', 'owning_company_id')
                     ->withTimestamps();
     }
+
+    public function staff()
+    {
+        return $this->userDirectory()
+                    ->where('user_directory.type', 'staff');
+    }
+
+    /*
+    public function recentActivities()
+    {
+        return $this->hasManyThrough('App\RecentActivity', 'App\CompanyBranch');
+    }
+    */
 
     /*  Get the clients for this company. A client is basically another company that this company is doing work for.
      *  A client can be stored without necessary having work to be done for them, but stored for profilling purposes.

@@ -3,7 +3,7 @@
         <div class="content">
             <filterable v-bind="filterable" :resource-name="'contractors'">
                 <template slot="header-title">
-                    <i class="icon-emotsmile mr-2"></i>
+                    <i class="icon-briefcase mr-2"></i>
                     Contractors
                 </template>
                 <thead slot="thead">
@@ -46,7 +46,7 @@
         data() {
             return {
                 filterable: {
-                    url: '/api/contractors?company_branch_id=1&order_column_ext=companies',
+                    url: '/api/contractors?id='+auth.user.company_branch_id,
                     orderables: [
                         {title: 'Id', name: 'id'},
                         {title: 'Name', name: 'name'},

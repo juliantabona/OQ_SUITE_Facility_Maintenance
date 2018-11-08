@@ -14,17 +14,7 @@ class RecentActivityController extends Controller
         if (request('withtrashed') == 1) {
             try {
                 //  Run query
-                $recentActivities =
-                    RecentActivity::withTrashed()->orderBy(oq_getOrder()[0], oq_getOrder()[1])
-                                    ->where(function ($query) {
-                                        if (!empty(request('where'))) {
-                                            $wheres = explode(',', request('where'));
-                                            foreach ($wheres as $where) {
-                                                $clause = explode('.', $where);
-                                                $query->where($clause[0], $clause[1], $clause[2]);
-                                            }
-                                        }
-                                    })->paginate(oq_getLimit());
+                $recentActivities = RecentActivity::withTrashed()->advancedFilter();
             } catch (\Exception $e) {
                 return oq_api_notify_error('Query Error', $e->getMessage(), 404);
             }
@@ -32,17 +22,7 @@ class RecentActivityController extends Controller
         } elseif (request('onlytrashed') == 1) {
             try {
                 //  Run query
-                $recentActivities =
-                    RecentActivity::onlyTrashed()->orderBy(oq_getOrder()[0], oq_getOrder()[1])
-                                    ->where(function ($query) {
-                                        if (!empty(request('where'))) {
-                                            $wheres = explode(',', request('where'));
-                                            foreach ($wheres as $where) {
-                                                $clause = explode('.', $where);
-                                                $query->where($clause[0], $clause[1], $clause[2]);
-                                            }
-                                        }
-                                    })->paginate(oq_getLimit());
+                $recentActivities = RecentActivity::onlyTrashed()->advancedFilter();
             } catch (\Exception $e) {
                 return oq_api_notify_error('Query Error', $e->getMessage(), 404);
             }
@@ -50,17 +30,7 @@ class RecentActivityController extends Controller
         } else {
             try {
                 //  Run query
-                $recentActivities =
-                    RecentActivity::orderBy(oq_getOrder()[0], oq_getOrder()[1])
-                                    ->where(function ($query) {
-                                        if (!empty(request('where'))) {
-                                            $wheres = explode(',', request('where'));
-                                            foreach ($wheres as $where) {
-                                                $clause = explode('.', $where);
-                                                $query->where($clause[0], $clause[1], $clause[2]);
-                                            }
-                                        }
-                                    })->paginate(oq_getLimit());
+                $recentActivities = RecentActivity::advancedFilter();
             } catch (\Exception $e) {
                 return oq_api_notify_error('Query Error', $e->getMessage(), 404);
             }

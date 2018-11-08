@@ -1,4 +1,11 @@
 <style>
+    .filterable .img-thumbnail{
+        width: 100px !important;
+        min-height: 45px !important;
+        padding: 1px !important;
+        margin: 0;
+        height: auto;
+    }
 
     .filterable .card {
         background: #fff;
@@ -27,6 +34,10 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+    }
+
+    .filterable .border-bottom {
+        border-bottom: 1px solid #f3f3f3 !important;
     }
 
     .filterable select {
@@ -89,9 +100,9 @@
 
 <template>
     <div class="filterable">
-        <div v-show="!isLoading" class="card">
+        <div v-show="isLoading" class="card">
             <div class="card-body">
-                <loader :isLoading="!isLoading" :msg="'Getting '+resourceName+'...'"></loader>
+                <loader :isLoading="isLoading" :msg="'Getting '+resourceName+'...'"></loader>
             </div>
         </div>
         <div v-show="!isLoading" class="card pt-4 pl-3 pr-3 pb-0">
@@ -100,7 +111,7 @@
                     <div class="d-flex table-responsive">
                         <h6 class="card-title float-left mb-0 ml-2"><slot name="header-title"></slot></h6>
                         <div class="btn-group ml-auto mr-2 border-0">
-                            <input type="text" class="form-control" placeholder="Search Here">
+                            <input type="text" class="form-control" :placeholder="'Search '+resourceName+'...'">
                             <button class="btn btn-sm btn-primary"><i class="icon-magnifier icons"></i> Search</button>
                         </div>
                         <div class="btn-group">
@@ -116,7 +127,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="filterable-export col-5">
-                        <span>Jobcards match</span> 
+                        <span>{{ capitalizeFirstLetter(resourceName) }} match</span> 
                         <select class="form-control-sm d-inline">
                             <option value="and">All</option> 
                             <option value="or">Any</option>
@@ -232,6 +243,11 @@
         </div>
         <div class="card card-hoverable" v-show="collection.data && collection.data.length && !isLoading">
             <div class="card-body">
+                <div v-show="collection" class="row border-bottom">
+                    <div class="col-12">
+                        <pagination :data="collection" @pagination-change-page="fetch" class="float-right"></pagination>
+                    </div>
+                </div>
                 <div class="table-responsive table-hover">
                     <table class="table pt-2">
                         <slot name="thead"></slot>
@@ -312,6 +328,9 @@
             this.addFilter()
         },
         methods: {
+            capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            },
             toggleAdvancedFilter(){
                 return this.advancedFilterShow = !this.advancedFilterShow;
             },

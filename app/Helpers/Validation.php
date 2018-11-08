@@ -101,8 +101,8 @@ function oq_jobcard_create_v_rules($user = null)
     return $rules = array_merge([
         //  General Rules
         'jobcard_title' => 'required|max:255|min:3',
-        'jobcard_start_date' => 'sometimes|date_format:"Y-m-d"|required',
-        'jobcard_end_date' => 'sometimes|date_format:"Y-m-d"|required|after:today',
+        'jobcard_start_date' => 'sometimes|date_format:"Y-m-d H:i:s"|required',
+        'jobcard_end_date' => 'sometimes|date_format:"Y-m-d H:i:s"|required|after:today',
 
         /*  Advanced Validation
         *

@@ -26,7 +26,7 @@ class DocumentController extends Controller
         $uploadedFiles = [];
 
         foreach ($files as $file) {
-            $document = oq_saveDocument($model, $file, 'jobcard_images', 'samples', $user);
+            $document = oq_saveDocument($model, $file, 'jobcard_images', 'jobcard', $user);
             array_push($uploadedFiles, $document);
         }
 

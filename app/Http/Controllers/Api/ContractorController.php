@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\CompanyBranch;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -11,54 +10,70 @@ class ContractorController extends Controller
     public function index(Request $request)
     {
         $contractors = null;
+        $model_id = request('id');
+        $model_type = request('model', 'CompanyBranch');
 
-        //  Get the branch id
-        if (!empty(request('company_branch_id'))) {
-            $company_branch_id = request('company_branch_id');
+        //  If we have the model and id specified
+        if (!empty($model_id)) {
+            //  Get the associated model other default to get the branch model instance
+            $DynamicModel = '\\App\\'.$model_type;
+
+            if (class_exists($DynamicModel) && in_array($model_type, ['Company', 'CompanyBranch'])) {
+                //  To avoid sql order_by error for ambigious fields e.g) created_at
+                //  we must specify the order_join to archieve companies.field e.g) companies.created_at
+                $order_join = 'companies';
+
+                //  Get all and trashed
+                if (request('withtrashed') == 1) {
+                    try {
+                        //  Run query
+                        $model = $DynamicModel::withTrashed()->where('id', $model_id)->first();
+                        if (count($model)) {
+                            $contractors = $model->contractors()->advancedFilter($order_join);
+                        }
+                    } catch (\Exception $e) {
+                        return oq_api_notify_error('Query Error', $e->getMessage(), 404);
+                    }
+                    //  Get only trashed
+                } elseif (request('onlytrashed') == 1) {
+                    try {
+                        //  Run query
+                        $model = $DynamicModel::onlyTrashed()->where('id', $model_id)->first();
+                        if (count($model)) {
+                            $contractors = $model->contractors()->advancedFilter($order_join);
+                        }
+                    } catch (\Exception $e) {
+                        return oq_api_notify_error('Query Error', $e->getMessage(), 404);
+                    }
+                    //  Get all except trashed
+                } else {
+                    try {
+                        //  Run query
+                        $model = $DynamicModel::where('id', $model_id)->first();
+                        if (count($model)) {
+                            $contractors = $model->contractors()->advancedFilter($order_join);
+                        }
+                    } catch (\Exception $e) {
+                        return oq_api_notify_error('Query Error', $e->getMessage(), 404);
+                    }
+                }
+
+                if (count($contractors)) {
+                    //  Eager load other relationships wanted if specified
+                    if (request('connections')) {
+                        $contractors->load(oq_url_to_array(request('connections')));
+                    }
+
+                    //  Action was executed successfully
+                    return oq_api_notify($contractors, 200);
+                }
+            } else {
+                //  No such class, the user provided incorrect details
+                return oq_api_notify_error('Class does not exist. Only company or companyBranch are accepted as models', null, 404);
+            }
         } else {
             //  No branch id specified error
-            return oq_api_notify_error('include company_branch_id', null, 404);
-        }
-
-        //  Check if a branch with the given id exists
-        $branchExists = CompanyBranch::where('id', $company_branch_id)->count();
-
-        if ($branchExists) {
-            //  Get all and trashed
-            if (request('withtrashed') == 1) {
-                try {
-                    //  Run query
-                    $contractors = CompanyBranch::withTrashed()->where('id', $company_branch_id)->first()->company()->first()->contractors()->advancedFilter();
-                } catch (\Exception $e) {
-                    return oq_api_notify_error('Query Error', $e->getMessage(), 404);
-                }
-                //  Get only trashed
-            } elseif (request('onlytrashed') == 1) {
-                try {
-                    //  Run query
-                    $contractors = CompanyBranch::onlyTrashed()->where('id', $company_branch_id)->first()->company()->first()->contractors()->advancedFilter();
-                } catch (\Exception $e) {
-                    return oq_api_notify_error('Query Error', $e->getMessage(), 404);
-                }
-                //  Get all except trashed
-            } else {
-                try {
-                    //  Run query
-                    $contractors = CompanyBranch::where('id', $company_branch_id)->first()->company()->first()->contractors()->advancedFilter();
-                } catch (\Exception $e) {
-                    return oq_api_notify_error('Query Error', $e->getMessage(), 404);
-                }
-            }
-
-            if (count($contractors)) {
-                //  Eager load other relationships wanted if specified
-                if (request('connections')) {
-                    $contractors->load(oq_url_to_array(request('connections')));
-                }
-
-                //  Action was executed successfully
-                return oq_api_notify($contractors, 200);
-            }
+            return oq_api_notify_error('include branch or company id', null, 404);
         }
 
         //  No resource found

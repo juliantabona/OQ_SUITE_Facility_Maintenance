@@ -30,6 +30,11 @@
     opacity: 0;
     display: none;
     }
+    .table th, .jsgrid .jsgrid-table th, .table td, .jsgrid .jsgrid-table td {
+        vertical-align: middle;
+        font-size: 0.875rem;
+        line-height: 20px;
+    }
 </style>
 
 <template>
@@ -47,7 +52,6 @@
                         <!-- Top menu with logo, profile and message icons -->
                         <top-main-menu></top-main-menu>
                         <div class="pr-3 pl-3">
-                            <alert></alert>
                             <vue-snotify></vue-snotify>
                             <!-- Dashboard content -->
                             <!-- Put Profile, Jobcards, Staff e.t.c resource content here -->

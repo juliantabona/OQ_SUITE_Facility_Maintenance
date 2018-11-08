@@ -89,6 +89,9 @@ class DocumentController extends Controller
 
     public function store(Request $request)
     {
+        //  Current authenticated user
+        $user = auth('api')->user();
+
         //  If we have the model and id specified
         if (!empty(request('model')) && !empty(request('id'))) {
             //  Get the associated model responsible fo the upload
@@ -149,7 +152,7 @@ class DocumentController extends Controller
              *  @return document - If successful
              */
 
-            $response = oq_saveDocument($request, $model, $document, $location, $type, null);
+            $response = oq_saveDocument($request, $model, $document, $location, $type, $user);
 
             //  If the validation did not pass during upload
             if (oq_failed_validation($response)) {
@@ -166,6 +169,9 @@ class DocumentController extends Controller
 
     public function update(Request $request, $document_id)
     {
+        //  Current authenticated user
+        $user = auth('api')->user();
+
         //  Get the document, even if trashed
         $document = Document::withTrashed()->where('id', $document_id)->first();
 
@@ -186,7 +192,7 @@ class DocumentController extends Controller
          *  @return document - If successful
          */
 
-        $response = oq_updateDocument($request, $document, $user = null);
+        $response = oq_updateDocument($request, $document, $user);
 
         //  If the validation did not pass
         if (oq_failed_validation($response)) {

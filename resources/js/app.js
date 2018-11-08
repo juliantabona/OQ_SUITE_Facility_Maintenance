@@ -14,6 +14,10 @@ import router from './routes.js';
 import BootstrapVue from 'bootstrap-vue';
 //  For toast notifications
 import Snotify from 'vue-snotify';
+
+import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
+import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.min.css';
+
 //  For authentication handling
 import auth from './auth.js';
 
@@ -53,7 +57,6 @@ Vue.component('top-main-menu', require('./components/layout/top-menu/main.vue'))
 Vue.component('left-main-menu', require('./components/layout/left-menu/main.vue'));
 Vue.component('settings-widget', require('./components/layout/sidebar/settings-widget.vue'));
 Vue.component('todo-widget', require('./components/layout/sidebar/todo-widget.vue'));
-Vue.component('alert', require('./components/layout/alert/main.vue'));
 Vue.component('app-footer', require('./components/layout/footer/main.vue'));
 
  /**
@@ -89,7 +92,7 @@ Vue.component('loader', require('./components/loaderComponent.vue'));
 Vue.component('create-company-modal', require('./components/modal/createCompany.vue'));
 Vue.component('edit-company-modal', require('./components/modal/editCompany.vue'));
 
-
+Vue.component('vue-ctk-date-time-picker', VueCtkDateTimePicker);
 
 Vue.component(
     'passport-clients',

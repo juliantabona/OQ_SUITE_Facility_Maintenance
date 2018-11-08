@@ -29,6 +29,12 @@ use Illuminate\Http\Request;
     503: Service unavailable. Pretty self explanatory, but also another code that is not going to be returned explicitly by the application.
 */
 
+Route::get('tests', 'Api\TestController@index');
+Route::get('tests/{test_id}', 'Api\TestController@show');
+Route::post('tests', 'Api\TestController@store');
+Route::put('tests/{test_id}', 'Api\TestController@update');
+Route::delete('tests/{test_id}', 'Api\TestController@delete');
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -69,19 +75,28 @@ Route::delete('branches/{branch_id}', 'Api\CompanyBranchController@delete');
      -  Get, Show, Update, Trash, Delete
 */
 Route::get('clients', 'Api\ClientController@index');
-//Route::get('companies/{company_id}', 'Api\ClientController@show');
+//Route::get('companies/{client_id}', 'Api\ClientController@show');
 //Route::post('companies', 'Api\ClientController@store');
-//Route::put('companies/{company_id}', 'Api\ClientController@update');
-//Route::delete('companies/{company_id}', 'Api\ClientController@delete');
+//Route::put('companies/{client_id}', 'Api\ClientController@update');
+//Route::delete('companies/{client_id}', 'Api\ClientController@delete');
 
 /*   COMPANY CONTRACTORS RESOURCE ROUTES
      -  Get, Show, Update, Trash, Delete
 */
 Route::get('contractors', 'Api\ContractorController@index');
-//Route::get('companies/{company_id}', 'Api\ContractorController@show');
-//Route::post('companies', 'Api\ContractorController@store');
-//Route::put('companies/{company_id}', 'Api\ContractorController@update');
-//Route::delete('companies/{company_id}', 'Api\ContractorController@delete');
+//Route::get('contractors/{contractor_id}', 'Api\ContractorController@show');
+//Route::post('contractors', 'Api\ContractorController@store');
+//Route::put('contractors/{contractor_id}', 'Api\ContractorController@update');
+//Route::delete('contractors/{contractor_id}', 'Api\ContractorController@delete');
+
+/*   COMPANY STAFF RESOURCE ROUTES
+     -  Get, Show, Update, Trash, Delete
+*/
+Route::get('staff', 'Api\StaffController@index');
+//Route::get('staff/{staff_id}', 'Api\StaffController@show');
+//Route::post('staff', 'Api\StaffController@store');
+//Route::put('staff/{staff_id}', 'Api\StaffController@update');
+//Route::delete('staff/{staff_id}', 'Api\StaffController@delete');
 
 /*   JOBCARD RESOURCE ROUTES
      -  Get, Show, Update, Trash, Delete
